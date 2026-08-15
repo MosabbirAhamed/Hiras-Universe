@@ -1,4 +1,5 @@
 "use client"
+
 import React, { useEffect, useState } from 'react'
 import { useToast } from '../../../src/components/admin/Toast'
 
@@ -11,71 +12,123 @@ type Settings = {
   address?: string
   currency?: string
   currencySymbol?: string
-  social?: any
+  social?: Record<string, string>
   footerText?: string
   logo?: string
   favicon?: string
-  defaultSeo?: any
+  defaultSeo?: { title?: string; description?: string }
 }
 
-export default function AdminSettings(){
-  const [s, setS] = useState<Settings>({})
-  const [loading, setLoading] = useState(false)
+export default function AdminSettings() {
+  const [settings, setSettings] = useState<Settings>({})
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
   const toast = useToast()
 
-  useEffect(()=>{ fetch('/api/settings').then(r=>r.json()).then(setS).catch(()=>{}) }, [])
+  useEffect(() => {
+    fetch('/api/settings', { cache: 'no-store' })
+      .then(async (response) => {
+        const data = await response.json().catch(() => null)
+        if (!response.ok) throw new Error(data?.error || 'Could not load store settings')
+        setSettings(data || {})
+      })
+      .catch((loadError) => setError(loadError instanceof Error ? loadError.message : 'Could not load store settings'))
+      .finally(() => setLoading(false))
+  }, [])
 
-  async function save(){
-    setLoading(true)
-    try{
-      const res = await fetch('/api/settings', { method: 'PUT', body: JSON.stringify(s), headers: { 'content-type':'application/json' } })
-      setLoading(false)
-      if (res.ok){ toast?.show('Settings saved'); return }
-      const txt = await res.text(); toast?.show('Save failed: '+txt)
-    }catch(e:any){ setLoading(false); toast?.show('Save failed: '+String(e)) }
+  async function save() {
+    setSaving(true)
+    setError('')
+    try {
+      const response = await fetch('/api/settings', {
+        method: 'PUT',
+        body: JSON.stringify(settings),
+        headers: { 'content-type': 'application/json' }
+      })
+      const data = await response.json().catch(() => null)
+      if (!response.ok) throw new Error(data?.error || 'Could not save store settings')
+      toast?.show('Settings saved successfully')
+    } catch (saveError) {
+      const message = saveError instanceof Error ? saveError.message : 'Could not save store settings'
+      setError(message)
+      toast?.show(message)
+    } finally {
+      setSaving(false)
+    }
   }
+
+  const inputClass = 'mt-1.5 min-h-10 w-full rounded border border-gray-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-mocha focus:ring-2 focus:ring-mocha/10'
+
+  if (loading) return <div className="py-12 text-center text-sm text-taupe">Loading store settings...</div>
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-medium">Store Settings</h1>
+      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <button onClick={save} className="px-3 py-2 bg-mocha text-ivory rounded">{loading? 'Saving...':'Save Settings'}</button>
+          <h1 className="text-2xl font-medium text-charcoal">Store settings</h1>
+          <p className="mt-1 text-sm text-taupe">Manage store identity, contact details, and default search metadata.</p>
         </div>
+        <button
+          type="button"
+          onClick={save}
+          disabled={saving}
+          className="min-h-10 rounded bg-mocha px-4 py-2 text-sm font-medium text-ivory transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {saving ? 'Saving...' : 'Save settings'}
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white border rounded p-4">
-          <h3 className="font-medium mb-2">General</h3>
-          <label className="block text-xs">Store name</label>
-          <input className="w-full border p-2 rounded" value={s.storeName||''} onChange={e=>setS({...s, storeName: e.target.value})} />
-          <label className="block text-xs mt-2">Description</label>
-          <textarea className="w-full border p-2 rounded" value={s.description||''} onChange={e=>setS({...s, description: e.target.value})} />
-          <label className="block text-xs mt-2">Logo URL</label>
-          <input className="w-full border p-2 rounded" value={s.logo||''} onChange={e=>setS({...s, logo: e.target.value})} />
-          <label className="block text-xs mt-2">Favicon URL</label>
-          <input className="w-full border p-2 rounded" value={s.favicon||''} onChange={e=>setS({...s, favicon: e.target.value})} />
+      {error && (
+        <div role="alert" className="mb-5 rounded border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
         </div>
+      )}
 
-        <div className="bg-white border rounded p-4">
-          <h3 className="font-medium mb-2">Contact & Locale</h3>
-          <label className="block text-xs">Contact email</label>
-          <input className="w-full border p-2 rounded" value={s.contactEmail||''} onChange={e=>setS({...s, contactEmail: e.target.value})} />
-          <label className="block text-xs mt-2">Support email</label>
-          <input className="w-full border p-2 rounded" value={s.supportEmail||''} onChange={e=>setS({...s, supportEmail: e.target.value})} />
-          <label className="block text-xs mt-2">Phone</label>
-          <input className="w-full border p-2 rounded" value={s.phone||''} onChange={e=>setS({...s, phone: e.target.value})} />
-          <label className="block text-xs mt-2">Address</label>
-          <input className="w-full border p-2 rounded" value={s.address||''} onChange={e=>setS({...s, address: e.target.value})} />
-        </div>
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <section className="rounded-lg border border-cream bg-white p-4 sm:p-5">
+          <h2 className="mb-4 font-medium text-charcoal">General</h2>
+          <label className="block text-sm font-medium">Store name
+            <input className={inputClass} value={settings.storeName || ''} onChange={(event) => setSettings({ ...settings, storeName: event.target.value })} />
+          </label>
+          <label className="mt-4 block text-sm font-medium">Description
+            <textarea className={`${inputClass} min-h-24 resize-y`} value={settings.description || ''} onChange={(event) => setSettings({ ...settings, description: event.target.value })} />
+          </label>
+          <label className="mt-4 block text-sm font-medium">Logo URL
+            <input className={inputClass} value={settings.logo || ''} onChange={(event) => setSettings({ ...settings, logo: event.target.value })} />
+          </label>
+          <label className="mt-4 block text-sm font-medium">Favicon URL
+            <input className={inputClass} value={settings.favicon || ''} onChange={(event) => setSettings({ ...settings, favicon: event.target.value })} />
+          </label>
+        </section>
 
-        <div className="bg-white border rounded p-4 md:col-span-2">
-          <h3 className="font-medium mb-2">SEO Defaults</h3>
-          <label className="block text-xs">Default SEO title</label>
-          <input className="w-full border p-2 rounded" value={(s.defaultSeo?.title)||''} onChange={e=>setS({...s, defaultSeo: { ...(s.defaultSeo||{}), title: e.target.value }})} />
-          <label className="block text-xs mt-2">Default SEO description</label>
-          <textarea className="w-full border p-2 rounded" value={(s.defaultSeo?.description)||''} onChange={e=>setS({...s, defaultSeo: { ...(s.defaultSeo||{}), description: e.target.value }})} />
-        </div>
+        <section className="rounded-lg border border-cream bg-white p-4 sm:p-5">
+          <h2 className="mb-4 font-medium text-charcoal">Contact and locale</h2>
+          <label className="block text-sm font-medium">Contact email
+            <input type="email" className={inputClass} value={settings.contactEmail || ''} onChange={(event) => setSettings({ ...settings, contactEmail: event.target.value })} />
+          </label>
+          <label className="mt-4 block text-sm font-medium">Support email
+            <input type="email" className={inputClass} value={settings.supportEmail || ''} onChange={(event) => setSettings({ ...settings, supportEmail: event.target.value })} />
+          </label>
+          <label className="mt-4 block text-sm font-medium">Phone
+            <input type="tel" className={inputClass} value={settings.phone || ''} onChange={(event) => setSettings({ ...settings, phone: event.target.value })} />
+          </label>
+          <label className="mt-4 block text-sm font-medium">Address
+            <input className={inputClass} value={settings.address || ''} onChange={(event) => setSettings({ ...settings, address: event.target.value })} />
+          </label>
+        </section>
+
+        <section className="rounded-lg border border-cream bg-white p-4 sm:p-5 lg:col-span-2">
+          <h2 className="mb-4 font-medium text-charcoal">SEO defaults</h2>
+          <div className="grid gap-4 lg:grid-cols-2">
+            <label className="block text-sm font-medium">Default SEO title
+              <input className={inputClass} value={settings.defaultSeo?.title || ''} onChange={(event) => setSettings({ ...settings, defaultSeo: { ...settings.defaultSeo, title: event.target.value } })} />
+            </label>
+            <label className="block text-sm font-medium">Default SEO description
+              <textarea className={`${inputClass} min-h-24 resize-y`} value={settings.defaultSeo?.description || ''} onChange={(event) => setSettings({ ...settings, defaultSeo: { ...settings.defaultSeo, description: event.target.value } })} />
+            </label>
+          </div>
+        </section>
       </div>
     </div>
   )

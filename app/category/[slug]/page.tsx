@@ -53,9 +53,10 @@ export default async function CategoryPage({ params }: { params: { slug: string 
   )
 
   return (
-    <div className="site-container py-8 md:py-12">
-      <div className="mb-8 max-w-2xl">
-        <h1 className="text-2xl sm:text-3xl font-serif font-bold text-charcoal">{category.name}</h1>
+    <div className="site-container py-10 sm:py-12 md:py-16">
+      <div className="mb-10 max-w-2xl sm:mb-12">
+        <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-mocha">Curated collection</p>
+        <h1 className="text-3xl font-serif font-bold text-charcoal sm:text-4xl">{category.name}</h1>
         {category.description && (
           <p className="mt-2 text-sm text-taupe leading-relaxed">{category.description}</p>
         )}
@@ -64,8 +65,8 @@ export default async function CategoryPage({ params }: { params: { slug: string 
       {filtered.length > 0 ? (
         <ProductGrid products={filtered} categories={categories} />
       ) : (
-        <div className="p-12 text-center text-taupe bg-ivory border border-cream rounded-lg">
-          <p className="font-serif text-lg text-charcoal mb-2">No Products Available</p>
+        <div className="border border-cream bg-ivory px-6 py-16 text-center text-taupe sm:px-12">
+          <p className="mb-2 font-serif text-lg text-charcoal">No Products Available</p>
           <p className="text-xs">There are currently no active products in this collection.</p>
         </div>
       )}

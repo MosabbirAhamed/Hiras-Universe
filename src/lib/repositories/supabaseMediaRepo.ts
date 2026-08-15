@@ -39,7 +39,7 @@ export async function getAllMedia(): Promise<Media[]> {
 }
 
 // eslint-disable-next-line no-unused-vars
-export async function saveAllMedia(_list: Media[]) {}
+export async function saveAllMedia(_list: Media[]) { }
 
 export async function createMediaFromUpload(opts: {
   filename: string
@@ -112,8 +112,9 @@ export async function deleteMediaById(id: string): Promise<boolean> {
     .single()
   if (findErr || !item) return false
 
-  // Remove from storage
-  await db.storage.from(BUCKET).remove([item.filename])
+  // Remove from storage before deleting its database metadata.
+  const { error: storageError } = await db.storage.from(BUCKET).remove([item.filename])
+  if (storageError) throw new Error(storageError.message)
 
   // Remove from DB
   const { error } = await db.from('media').delete().eq('id', id)
@@ -139,4 +140,4 @@ export async function findMediaByFilename(filename: string): Promise<Media | und
   return rowToMedia(data)
 }
 
-export {}
+export { }

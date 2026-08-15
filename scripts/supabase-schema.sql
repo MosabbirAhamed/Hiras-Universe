@@ -207,7 +207,7 @@ BEGIN
     IF NOT FOUND THEN
       RAISE EXCEPTION 'product_not_found';
     END IF;
-    IF NOT v_product.active OR v_product.visibility = 'hidden' THEN
+    IF NOT v_product.active THEN
       RAISE EXCEPTION 'product_unavailable';
     END IF;
 

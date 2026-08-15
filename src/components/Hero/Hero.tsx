@@ -94,12 +94,12 @@ export const Hero = ({
   image = '/products/hero-1.webp'
 }: HeroProps) => {
   return (
-    <section className="pt-4 sm:pt-6 space-y-6">
+    <section className="pt-4 sm:pt-6 space-y-4 sm:space-y-5">
 
       {/* =====================================================
           HERO
       ====================================================== */}
-      <div className="relative overflow-hidden rounded-2xl border border-cream min-h-[430px] sm:min-h-[480px] md:min-h-[500px] lg:min-h-[520px]">
+      <div className="relative min-h-[480px] overflow-hidden rounded-lg border border-black/10 shadow-[0_18px_50px_rgba(34,34,34,0.08)] sm:min-h-[520px] md:min-h-[540px] lg:min-h-[570px]">
 
         {/* Full Clear Background Image */}
         <div className="absolute inset-0">
@@ -109,7 +109,7 @@ export const Hero = ({
             fill
             priority
             sizes="100vw"
-            className="object-cover object-center"
+            className="object-cover object-[62%_center] sm:object-center"
           />
         </div>
 
@@ -117,24 +117,24 @@ export const Hero = ({
             TEXT CONTENT
             Image-এর empty left side-এর উপর থাকবে
         ================================================== */}
-        <div className="relative z-10 min-h-[430px] sm:min-h-[480px] md:min-h-[500px] lg:min-h-[520px]">
+        <div className="relative z-10 min-h-[500px] sm:min-h-[520px] md:min-h-[540px] lg:min-h-[570px] bg-gradient-to-r from-[#f6f1eb]/95 via-[#f6f1eb]/80 to-transparent md:bg-none">
 
-          <div className="h-full w-full md:w-[58%] lg:w-[55%] p-6 sm:p-10 md:p-12 lg:p-16 xl:p-20 flex flex-col justify-center">
+          <div className="flex min-h-[500px] w-[88%] flex-col justify-end p-6 pb-10 sm:min-h-[520px] sm:w-[72%] sm:p-10 sm:pb-12 md:min-h-[540px] md:w-[55%] md:justify-center md:bg-[#f6f1eb]/90 md:p-12 lg:min-h-[570px] lg:w-[50%] lg:p-16 xl:p-20">
 
             {/* Label */}
             <div className="mb-3 sm:mb-4">
-              <span className="text-2xs sm:text-xs font-semibold uppercase tracking-[0.2em] text-mocha/90 font-sans">
+              <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-mocha font-sans">
                 TIMELESS MODESTY
               </span>
             </div>
 
             {/* Heading */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-serif font-bold text-charcoal leading-[1.08] tracking-tight whitespace-pre-line">
+            <h1 className="whitespace-pre-line font-serif text-4xl font-semibold leading-[1.04] text-charcoal sm:text-5xl md:text-5xl lg:text-6xl xl:text-[68px]">
               {headline}
             </h1>
 
             {/* Description */}
-            <p className="mt-5 sm:mt-6 text-sm sm:text-base md:text-lg text-taupe leading-relaxed max-w-xl font-sans">
+            <p className="mt-5 max-w-md text-sm leading-6 text-charcoal/70 sm:mt-6 sm:text-base sm:leading-7 md:text-[17px] font-sans">
               {sub}
             </p>
 
@@ -143,46 +143,14 @@ export const Hero = ({
 
               <Link
                 href="/collections/women"
-                className="
-                  px-6 sm:px-8
-                  py-3.5 sm:py-4
-                  bg-mocha
-                  text-ivory
-                  text-xs sm:text-sm
-                  font-semibold
-                  tracking-wider
-                  uppercase
-                  rounded-md
-                  hover:opacity-90
-                  transition
-                  inline-flex
-                  items-center
-                  justify-center
-                "
+                className="btn-primary inline-flex min-h-[48px] items-center justify-center px-6 py-3 text-xs font-semibold uppercase tracking-[0.12em] sm:px-8"
               >
                 SHOP WOMEN
               </Link>
 
               <Link
                 href="/collections/men"
-                className="
-                  px-6 sm:px-8
-                  py-3.5 sm:py-4
-                  bg-white
-                  border
-                  border-cream
-                  text-charcoal
-                  text-xs sm:text-sm
-                  font-semibold
-                  tracking-wider
-                  uppercase
-                  rounded-md
-                  hover:bg-cream/60
-                  transition
-                  inline-flex
-                  items-center
-                  justify-center
-                "
+                className="btn-ghost inline-flex min-h-[48px] items-center justify-center bg-white/70 px-6 py-3 text-xs font-semibold uppercase tracking-[0.12em] sm:px-8"
               >
                 SHOP MEN
               </Link>
@@ -203,34 +171,18 @@ export const Hero = ({
         {benefits.map((b, i) => (
           <div
             key={i}
-            className="
-              bg-white/80
-              border
-              border-cream
-              rounded-xl
-              p-4 sm:p-5
-              flex
-              flex-col
-              sm:flex-row
-              items-center
-              sm:items-start
-              text-center
-              sm:text-left
-              gap-3
-              hover:border-mocha/30
-              transition
-            "
+            className="flex items-center gap-3 border border-black/10 bg-white/55 p-3.5 text-left transition-colors hover:border-mocha/30 sm:p-4"
           >
 
             {/* Icon */}
             <div
               className="
-                w-10
-                h-10
+                w-9
+                h-9
                 rounded-full
-                bg-ivory
+                bg-cream
                 border
-                border-cream
+                border-black/5
                 flex
                 items-center
                 justify-center
@@ -243,11 +195,11 @@ export const Hero = ({
 
             {/* Text */}
             <div>
-              <div className="text-xs sm:text-sm font-serif font-bold text-charcoal">
+              <div className="text-xs sm:text-sm font-sans font-semibold text-charcoal">
                 {b.title}
               </div>
 
-              <div className="text-2xs sm:text-xs text-taupe mt-0.5 font-sans leading-relaxed">
+              <div className="hidden text-[11px] text-taupe mt-0.5 font-sans leading-relaxed sm:block">
                 {b.desc}
               </div>
             </div>

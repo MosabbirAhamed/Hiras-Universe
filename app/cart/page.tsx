@@ -62,11 +62,11 @@ export default function CartPage() {
   }
 
   return (
-    <div className="site-container py-8 md:py-12">
+    <div className="site-container py-8 sm:py-10 md:py-12">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-cream pb-4 mb-8">
+      <div className="mb-8 flex flex-col justify-between gap-3 border-b border-black/10 pb-5 sm:flex-row sm:items-end">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-charcoal">Shopping Bag</h1>
+          <h1 className="font-serif text-3xl font-semibold text-charcoal sm:text-4xl">Shopping Bag</h1>
           <p className="text-sm text-taupe mt-1">
             {itemCount} {itemCount === 1 ? 'item' : 'items'} in your bag
           </p>
@@ -109,7 +109,7 @@ export default function CartPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
         {/* Left Column: Items List */}
         <div className="lg:col-span-8 space-y-4">
-          <div className="divide-y divide-cream border-t border-b border-cream">
+          <div className="divide-y divide-black/10 border-y border-black/10">
             {items.map((item) => {
               const product = item.product
               const variant = item.variant
@@ -123,7 +123,7 @@ export default function CartPage() {
                 <div key={itemKey} className="py-5 flex flex-col sm:flex-row gap-4 sm:items-center justify-between">
                   {/* Item Image & Info */}
                   <div className="flex gap-4 items-center">
-                    <div className="relative w-20 h-20 sm:w-24 sm:h-24 bg-cream rounded-md overflow-hidden flex-shrink-0 border border-cream">
+                    <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg border border-black/10 bg-cream sm:h-24 sm:w-24">
                       {productHref ? (
                         <Link href={productHref}>
                           <Image
@@ -187,7 +187,7 @@ export default function CartPage() {
 
                   {/* Quantity Controls & Line Total */}
                   <div className="flex items-center justify-between sm:justify-end gap-6 pt-2 sm:pt-0 border-t sm:border-t-0 border-cream/50">
-                    <div className="flex items-center border border-taupe/30 rounded-md bg-white">
+                    <div className="flex h-11 items-center overflow-hidden rounded-md border border-black/15 bg-white">
                       <button
                         type="button"
                         onClick={() => decrementQuantity(item.productId, item.variantId)}
@@ -244,8 +244,8 @@ export default function CartPage() {
 
         {/* Right Column: Order Summary */}
         <div className="lg:col-span-4">
-          <div className="bg-cream border border-cream rounded-lg p-6 space-y-5 sticky top-24">
-            <h2 className="font-serif text-xl font-bold text-charcoal">Order Summary</h2>
+          <div className="sticky top-32 space-y-5 rounded-lg border border-black/10 bg-white/70 p-5 shadow-[0_12px_32px_rgba(34,34,34,0.06)] sm:p-6">
+            <h2 className="font-serif text-xl font-semibold text-charcoal">Order Summary</h2>
 
             <div className="space-y-3 text-sm text-charcoal divide-y divide-taupe/20">
               <div className="flex justify-between pt-2 first:pt-0">
@@ -264,7 +264,7 @@ export default function CartPage() {
 
             <Link
               href="/checkout"
-              className="w-full py-3.5 bg-mocha text-ivory font-medium text-sm rounded-md hover:opacity-90 transition shadow-sm flex items-center justify-center min-h-[48px]"
+              className="btn-primary flex min-h-[50px] w-full items-center justify-center py-3.5 text-sm font-medium"
             >
               Proceed to Checkout
             </Link>

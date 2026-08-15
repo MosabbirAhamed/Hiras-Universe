@@ -1,10 +1,13 @@
 import { NextResponse } from 'next/server'
 import { getSettings, saveSettings } from '../../../src/lib/repositories/fileRepo'
+
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 import { requireAdmin } from '../../../src/lib/serverHelpers'
 
 export async function GET() {
   const data = await getSettings()
-  return NextResponse.json(data)
+  return NextResponse.json(data, { headers: { 'Cache-Control': 'no-store' } })
 }
 
 export async function PUT(req: Request) {
@@ -30,7 +33,7 @@ export async function PUT(req: Request) {
 
     await saveSettings(allowed)
     return NextResponse.json({ ok: true })
-  } catch (e:any) {
+  } catch (e: any) {
     return NextResponse.json({ error: String(e) }, { status: 400 })
   }
 }

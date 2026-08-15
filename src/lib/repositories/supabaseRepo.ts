@@ -273,6 +273,18 @@ export async function saveCategories(categories: Category[]) {
   if (error) throw new Error(error.message)
 }
 
+export async function deleteCategory(id: string): Promise<boolean> {
+  const db = getAdminClient()
+  const { data, error } = await db
+    .from('categories')
+    .delete()
+    .eq('id', id)
+    .select('id')
+    .maybeSingle()
+  if (error) throw new Error(error.message)
+  return data !== null
+}
+
 // ─── SETTINGS (all stored as keyed rows in `settings` table) ─────────────────
 
 async function getSetting<T>(key: string, fallback: T): Promise<T> {

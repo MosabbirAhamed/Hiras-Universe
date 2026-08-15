@@ -110,11 +110,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
         />
       </head>
-      <body className="bg-ivory text-charcoal antialiased flex flex-col min-h-screen">
+      <body className="bg-ivory text-charcoal antialiased flex min-h-screen flex-col">
         <ThemeInjector />
         <CartProvider>
           <Header />
-          <main className="flex-1 min-h-[calc(100vh-160px)]">{children}</main>
+          <main className="flex min-h-0 flex-1 flex-col">{children}</main>
           <Footer />
           <CartDrawer />
         </CartProvider>

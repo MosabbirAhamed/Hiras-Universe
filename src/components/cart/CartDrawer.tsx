@@ -61,9 +61,9 @@ export default function CartDrawer() {
       />
 
       {/* Drawer Panel */}
-      <div className="relative w-full max-w-md bg-ivory h-full shadow-2xl flex flex-col z-10 animate-slide-left border-l border-cream">
+      <div className="relative z-10 flex h-full w-full max-w-md flex-col border-l border-black/10 bg-ivory shadow-2xl animate-slide-left">
         {/* Drawer Header */}
-        <div className="p-4 md:p-5 border-b border-cream flex items-center justify-between bg-ivory">
+        <div className="flex items-center justify-between border-b border-black/10 bg-ivory p-4 md:p-5">
           <div className="flex items-center gap-2">
             <h2 className="font-serif text-lg md:text-xl font-medium text-charcoal">Shopping Bag</h2>
             {isHydrated && itemCount > 0 && (
@@ -75,7 +75,7 @@ export default function CartDrawer() {
           <button
             onClick={closeDrawer}
             aria-label="Close shopping bag"
-            className="p-2 rounded-full hover:bg-cream text-taupe hover:text-charcoal transition focus:outline-none focus:ring-2 focus:ring-gold"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full text-taupe transition-colors hover:bg-cream hover:text-charcoal focus:outline-none focus:ring-2 focus:ring-gold"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
@@ -107,7 +107,7 @@ export default function CartDrawer() {
               </Link>
             </div>
           ) : (
-            <div className="divide-y divide-cream">
+            <div className="divide-y divide-black/10">
               {items.map((item) => {
                 const product = item.product
                 const variant = item.variant
@@ -119,7 +119,7 @@ export default function CartDrawer() {
                 return (
                   <div key={itemKey} className="py-4 first:pt-0 last:pb-0 flex gap-3 sm:gap-4">
                     {/* Thumbnail */}
-                    <div className="relative w-20 h-20 sm:w-24 sm:h-24 bg-cream rounded-md overflow-hidden flex-shrink-0 border border-cream">
+                    <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg border border-black/10 bg-cream sm:h-24 sm:w-24">
                       {productHref ? (
                         <Link href={productHref} onClick={closeDrawer}>
                           <Image
@@ -194,7 +194,7 @@ export default function CartDrawer() {
 
                       {/* Quantity Controls & Line Total */}
                       <div className="flex items-center justify-between mt-3 pt-1">
-                        <div className="flex items-center border border-cream rounded bg-white">
+                        <div className="flex h-9 items-center overflow-hidden rounded-md border border-black/15 bg-white">
                           <button
                             onClick={() => decrementQuantity(item.productId, item.variantId)}
                             aria-label={`Decrease quantity of ${product?.name || 'item'}`}
@@ -229,7 +229,7 @@ export default function CartDrawer() {
 
         {/* Drawer Footer */}
         {isHydrated && items.length > 0 && (
-          <div className="p-4 md:p-5 border-t border-cream bg-ivory space-y-3">
+          <div className="space-y-3 border-t border-black/10 bg-white/55 p-4 md:p-5">
             <div className="flex items-center justify-between text-base">
               <span className="text-taupe">Subtotal</span>
               <span className="font-semibold text-charcoal text-lg">{formatPrice(subtotal)}</span>
@@ -240,14 +240,14 @@ export default function CartDrawer() {
               <Link
                 href="/cart"
                 onClick={closeDrawer}
-                className="w-full text-center px-4 py-2.5 border border-taupe/40 text-charcoal font-medium text-sm rounded-md hover:bg-cream transition flex items-center justify-center min-h-[44px]"
+                className="btn-ghost flex min-h-[48px] w-full items-center justify-center px-4 py-2.5 text-center text-sm font-medium"
               >
                 View Bag
               </Link>
               <Link
                 href="/checkout"
                 onClick={closeDrawer}
-                className="w-full px-4 py-2.5 bg-mocha text-ivory font-medium text-sm rounded-md hover:opacity-90 transition flex items-center justify-center min-h-[44px] text-center"
+                className="btn-primary flex min-h-[48px] w-full items-center justify-center px-4 py-2.5 text-center text-sm font-medium"
               >
                 Checkout
               </Link>

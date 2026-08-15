@@ -26,10 +26,11 @@ export default async function ProductsPage() {
   const visibleProducts = products.filter((p) => p.active !== false && p.visibility !== 'hidden')
 
   return (
-    <div className="site-container py-8 md:py-12">
-      <div className="mb-8 max-w-2xl">
-        <h1 className="text-2xl sm:text-3xl font-serif font-bold text-charcoal">All Products</h1>
-        <p className="mt-2 text-sm text-taupe">
+    <div className="site-container py-10 sm:py-12 md:py-16">
+      <div className="mb-10 max-w-2xl sm:mb-12">
+        <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-mocha">The full edit</p>
+        <h1 className="text-3xl font-serif font-bold text-charcoal sm:text-4xl">All Products</h1>
+        <p className="mt-3 max-w-xl text-sm leading-6 text-taupe">
           Browse our curated catalog of handcrafted essentials and timeless modest styles.
         </p>
       </div>
@@ -37,8 +38,8 @@ export default async function ProductsPage() {
       {visibleProducts.length > 0 ? (
         <ProductGrid products={visibleProducts} categories={categories} />
       ) : (
-        <div className="p-12 text-center text-taupe bg-ivory border border-cream rounded-lg">
-          <p className="font-serif text-lg text-charcoal mb-2">No Products Found</p>
+        <div className="border border-cream bg-ivory px-6 py-16 text-center text-taupe sm:px-12">
+          <p className="mb-2 font-serif text-lg text-charcoal">No Products Found</p>
           <p className="text-xs">Check back soon for new arrivals and upcoming drops.</p>
         </div>
       )}

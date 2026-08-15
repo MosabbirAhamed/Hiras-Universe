@@ -1,6 +1,6 @@
 import assert from 'assert'
 
-const BASE_URL = 'http://localhost:3006'
+const BASE_URL = process.env.BASE_URL ?? 'http://localhost:3006'
 
 async function checkUrl(path) {
   const url = `${BASE_URL}${path}`
@@ -19,11 +19,11 @@ async function run() {
   assert(Array.isArray(products), 'Products must be an array')
   assert(products.length >= 3, 'Must have at least 3 products')
 
-  const p3 = products.find(p => p.id === 'p-3')
-  assert(p3, 'Product p-3 must exist')
-  assert.strictEqual(p3.hasVariants, true, 'p-3 must have hasVariants=true')
-  assert.strictEqual(p3.variants.length, 3, 'p-3 must have 3 variants')
-  assert.strictEqual(p3.stock, 44, 'p-3 derived stock must be 25+15+4=44')
+  const variantProduct = products.find(p => p.slug === 'signature-handcrafted-tupi')
+  assert(variantProduct, 'Signature handcrafted product must exist')
+  assert.strictEqual(variantProduct.hasVariants, true, 'Signature product must have hasVariants=true')
+  assert.strictEqual(variantProduct.variants.length, 3, 'Signature product must have 3 variants')
+  assert.strictEqual(variantProduct.stock, 44, 'Signature product derived stock must be 25+15+4=44')
   console.log('✓ /api/products returned valid normalized variant and simple products')
 
   // 2. Check Storefront Product Pages

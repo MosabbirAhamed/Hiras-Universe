@@ -4,29 +4,37 @@ import { getNavigation } from '../../lib/repositories/fileRepo'
 import CartButton from './CartButton'
 import MobileMenuDrawer from './MobileMenuDrawer'
 
+const permanentLinks = [
+  { label: 'Shop All', url: '/products' },
+  { label: 'Collections', url: '/category' }
+]
+
 export const Header = async () => {
   const nav = await getNavigation()
+  const configuredLinks = (nav || [])
+    .filter((item: any) => item.active && item.location !== 'footer' && item.url)
+    .sort((a: any, b: any) => a.order - b.order)
+    .map((item: any) => ({ label: item.label, url: item.url }))
+  const primaryLinks = [...permanentLinks.slice(0, 1), ...configuredLinks, ...permanentLinks.slice(1)]
+    .filter((item, index, links) => links.findIndex((candidate) => candidate.url === item.url) === index)
+    .slice(0, 5)
 
   return (
-    <div className="sticky top-0 z-40 bg-ivory shadow-2xs">
+    <div className="sticky top-0 z-40 bg-ivory shadow-[0_1px_12px_rgba(34,34,34,0.05)]">
       {/* Top Announcement Bar */}
-      <div className="bg-[#3e2e24] text-[#f6f1eb] text-2xs sm:text-xs py-2 border-b border-[#2e2017]">
+      <div className="bg-[#292724] text-[#f6f1eb] text-[11px] sm:text-xs py-2 border-b border-black/10">
         <div className="site-container flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2 sm:gap-4 overflow-hidden whitespace-nowrap">
-            <span className="flex items-center gap-1.5 font-medium">
-              <span className="text-[#c5a059]">✦</span> Free Delivery on orders over Tk 2,000
+          <div className="flex items-center gap-4 overflow-hidden whitespace-nowrap">
+            <span className="flex items-center gap-2 font-medium">
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#c5a059]" aria-hidden="true" />
+              Free delivery over Tk 2,000
             </span>
-            <span className="hidden md:inline-flex items-center gap-1.5 text-cream/80">
-              <span>•</span> Premium Quality
-            </span>
-            <span className="hidden lg:inline-flex items-center gap-1.5 text-cream/80">
-              <span>•</span> Easy Returns
-            </span>
+            <span className="hidden md:inline text-white/65">Premium quality, thoughtfully selected</span>
           </div>
-          <div className="flex items-center gap-3 text-cream/90 flex-shrink-0">
+          <div className="flex items-center gap-3 text-white/80 flex-shrink-0">
             <Link
               href="/track-order"
-              className="hover:text-white transition flex items-center gap-1 font-medium"
+              className="hover:text-white transition-colors flex items-center gap-1.5 font-medium"
             >
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10" />
@@ -39,52 +47,40 @@ export const Header = async () => {
       </div>
 
       {/* Main Navigation Header */}
-      <header className="border-b border-cream bg-ivory/95 backdrop-blur-sm">
-        <div className="site-container flex items-center justify-between py-3.5 md:py-4">
+      <header className="border-b border-black/5 bg-ivory/95 backdrop-blur-md">
+        <div className="site-container flex min-h-[68px] items-center justify-between py-2.5 md:min-h-[76px] md:py-3">
           {/* Left: Brand / Logo */}
           <div className="flex items-center gap-3 sm:gap-4">
             <MobileMenuDrawer navItems={nav || []} />
             <Link href="/" className="group flex flex-col">
-              <span className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-charcoal group-hover:text-mocha transition">
+              <span className="font-serif text-xl sm:text-2xl font-semibold tracking-tight text-charcoal group-hover:text-mocha transition-colors">
                 Hira&apos;s Universe
               </span>
-              <span className="text-[10px] tracking-widest uppercase text-taupe -mt-1 font-sans">
+              <span className="mt-0.5 text-[9px] font-medium uppercase tracking-[0.2em] text-taupe">
                 Tradition. Refined.
               </span>
             </Link>
           </div>
 
           {/* Center: Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-6 lg:gap-8 text-sm tracking-wide font-medium text-charcoal/80">
-            <Link href="/products" className="hover:text-mocha transition py-1">
-              Products
-            </Link>
-            <Link href="/category" className="hover:text-mocha transition py-1">
-              Categories
-            </Link>
-            <Link href="/collections/women" className="hover:text-mocha transition py-1">
-              Women
-            </Link>
-            <Link href="/collections/men" className="hover:text-mocha transition py-1">
-              Men
-            </Link>
-            <Link href="/category/tupi" className="hover:text-mocha transition py-1">
-              Tupi
-            </Link>
-            <Link href="/category" className="hover:text-mocha transition py-1">
-              Collections
-            </Link>
-            <Link href="/track-order" className="hover:text-mocha transition py-1 text-mocha font-semibold">
-              Track Order
-            </Link>
+          <nav className="hidden items-center gap-5 text-[13px] font-medium text-charcoal/75 md:flex lg:gap-7" aria-label="Primary navigation">
+            {primaryLinks.map((item, index) => (
+              <Link
+                key={item.url}
+                href={item.url}
+                className={`${index === primaryLinks.length - 1 ? 'hidden lg:block ' : ''}border-b border-transparent py-2 transition-colors hover:border-mocha hover:text-mocha`}
+              >
+                {item.label}
+              </Link>
+            ))}
           </nav>
 
           {/* Right: Controls & Shopping Bag */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-0.5 sm:gap-1.5">
             <Link
               href="/products"
               aria-label="Search products"
-              className="p-2 text-charcoal hover:text-mocha transition"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full text-charcoal hover:bg-cream hover:text-mocha transition-colors"
               title="Search Products"
             >
               <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -96,7 +92,7 @@ export const Header = async () => {
             <Link
               href="/admin/login"
               aria-label="Account Login"
-              className="p-2 hidden sm:inline-flex text-charcoal hover:text-mocha transition"
+              className="hidden h-11 w-11 items-center justify-center rounded-full text-charcoal hover:bg-cream hover:text-mocha transition-colors sm:inline-flex"
               title="Account"
             >
               <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">

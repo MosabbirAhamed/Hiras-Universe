@@ -35,10 +35,10 @@ export const ProductCard = ({
   const productHref = slug ? `/products/${slug}` : undefined
 
   return (
-    <article className="w-full bg-cream rounded overflow-hidden flex flex-col">
+    <article className="group flex h-full w-full flex-col overflow-hidden rounded-lg border border-black/10 bg-white/55 transition duration-300 hover:-translate-y-0.5 hover:border-mocha/25 hover:shadow-[0_14px_32px_rgba(34,34,34,0.08)]">
 
       {/* Product Image */}
-      <div className="relative w-full aspect-[4/3] overflow-hidden rounded-t">
+      <div className="relative w-full aspect-[4/5] overflow-hidden bg-cream">
 
         {productHref ? (
           <Link
@@ -51,7 +51,7 @@ export const ProductCard = ({
               alt={title}
               fill
               sizes="(max-width: 640px) 176px, 220px"
-              className="object-cover transition-transform duration-300 hover:scale-[1.02]"
+              className="object-cover transition-transform duration-500 group-hover:scale-[1.035]"
             />
           </Link>
         ) : (
@@ -68,22 +68,7 @@ export const ProductCard = ({
         <button
           type="button"
           aria-label={`Save ${title} to wishlist`}
-          className="
-            absolute
-            top-3
-            right-3
-            z-10
-            w-9
-            h-9
-            rounded-full
-            bg-ivory
-            border
-            border-cream
-            flex
-            items-center
-            justify-center
-            text-mocha
-          "
+          className="absolute right-2.5 top-2.5 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white/90 text-mocha shadow-sm transition-colors hover:bg-white"
         >
           <svg
             width="14"
@@ -103,29 +88,29 @@ export const ProductCard = ({
 
         {/* Sale Badge */}
         {onSale && (
-          <div className="absolute left-3 top-3 z-10 rounded bg-mocha px-2 py-1 text-xs text-ivory">
+          <div className="absolute left-2.5 top-2.5 z-10 rounded bg-mocha px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-ivory">
             Sale
           </div>
         )}
       </div>
 
       {/* Product Information */}
-      <div className="p-4 flex flex-col flex-1">
+      <div className="flex flex-1 flex-col p-3.5 sm:p-4">
 
         <div>
           {/* Category */}
           {category && (
-            <div className="mb-1 text-xs text-taupe">
+            <div className="mb-1.5 text-[10px] font-medium uppercase tracking-[0.12em] text-taupe">
               {category}
             </div>
           )}
 
           {/* Product Name */}
-          <h3 className="text-sm font-medium text-charcoal">
+          <h3 className="min-h-[40px] text-sm font-semibold leading-5 text-charcoal">
             {productHref ? (
               <Link
                 href={productHref}
-                className="hover:underline"
+                className="transition-colors hover:text-mocha"
               >
                 {title}
               </Link>
@@ -135,7 +120,7 @@ export const ProductCard = ({
           </h3>
 
           {/* Price */}
-          <div className="mt-2">
+          <div className="mt-2.5 min-h-[21px]">
             {salePrice ? (
               <div className="flex items-baseline gap-3">
                 <span className="text-sm text-sale font-semibold">
@@ -148,7 +133,7 @@ export const ProductCard = ({
                 </span>
               </div>
             ) : (
-              <div className="text-sm text-mocha">
+              <div className="text-sm font-semibold text-mocha">
                 {pricePrefix ? `${pricePrefix} ` : ''}
                 {price}
               </div>
@@ -157,32 +142,13 @@ export const ProductCard = ({
         </div>
 
         {/* Action */}
-        <div className="mt-4">
+        <div className="mt-auto pt-4">
 
           {hasVariants && productHref ? (
             <Link
               href={productHref}
               aria-label={`Select options for ${title}`}
-              className="
-                w-full
-                block
-                text-center
-                text-sm
-                font-medium
-                border
-                rounded-md
-                px-3
-                py-2
-                min-h-[44px]
-                leading-[26px]
-                transition
-                active:scale-[0.99]
-                text-charcoal
-                bg-ivory
-                hover:bg-mocha
-                hover:text-ivory
-                border-cream
-              "
+              className="btn-ghost block min-h-[44px] w-full px-3 py-2 text-center text-xs font-semibold uppercase leading-[26px] tracking-wider active:scale-[0.99]"
             >
               Select Options
             </Link>

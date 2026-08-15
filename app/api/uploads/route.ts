@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server'
 import { createMediaFromUpload, getAllMedia, findMediaByFilename, deleteMediaById, findMediaById } from '../../../src/lib/repositories/mediaRepo'
+
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 import { requireAdmin } from '../../../src/lib/serverHelpers'
 import path from 'path'
 
@@ -36,7 +39,7 @@ export async function POST(req: Request) {
 
 export async function GET() {
   const list = await getAllMedia()
-  return NextResponse.json(list)
+  return NextResponse.json(list, { headers: { 'Cache-Control': 'no-store' } })
 }
 
 export async function DELETE(req: Request) {

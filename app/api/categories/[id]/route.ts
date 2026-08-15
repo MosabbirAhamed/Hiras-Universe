@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getCategories, getCategoryById, saveCategories } from '../../../../src/lib/repositories/fileRepo'
+import { getCategories, getCategoryById, saveCategories, deleteCategory } from '../../../../src/lib/repositories/fileRepo'
 import { requireAdmin } from '../../../../src/lib/serverHelpers'
 
 export async function GET(req: Request, { params }: { params: { id: string } }) {
@@ -26,8 +26,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
   const ok = requireAdmin(req.headers.get('cookie') ?? undefined)
   if (!ok) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   const { id } = params
-  const cats = await getCategories()
-  const next = cats.filter(c => c.id !== id)
-  await saveCategories(next)
+  const deleted = await deleteCategory(id)
+  if (!deleted) return NextResponse.json({ error: 'not found' }, { status: 404 })
   return NextResponse.json({ ok: true })
 }

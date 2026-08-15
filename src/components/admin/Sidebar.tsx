@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 
-const items = [
+export const adminNavItems = [
   { id: 'dashboard', label: 'Dashboard', href: '/admin' },
   { id: 'products', label: 'Products', href: '/admin/products' },
   { id: 'categories', label: 'Categories', href: '/admin/categories' },
@@ -17,12 +17,21 @@ const items = [
 
 export default function Sidebar() {
   return (
-    <aside className="w-64 hidden md:block bg-white border-r border-gray-100">
-      <div className="p-6">
-        <div className="font-serif text-xl mb-6">Hira&apos;s Universe</div>
-        <nav className="space-y-1">
-          {items.map(it => (
-            <Link key={it.id} href={it.href} className="block px-3 py-2 rounded hover:bg-gray-50">{it.label}</Link>
+    <aside className="hidden w-64 shrink-0 border-r border-gray-100 bg-white md:block">
+      <div className="sticky top-0 p-5 lg:p-6">
+        <div className="mb-6 border-b border-cream pb-5">
+          <div className="font-serif text-xl text-charcoal">{"Hira's Universe"}</div>
+          <div className="mt-1 text-xs text-taupe">Store administration</div>
+        </div>
+        <nav className="space-y-1" aria-label="Admin navigation">
+          {adminNavItems.map((item) => (
+            <Link
+              key={item.id}
+              href={item.href}
+              className="flex min-h-10 items-center rounded px-3 py-2 text-sm text-gray-600 transition hover:bg-cream/40 hover:text-charcoal"
+            >
+              {item.label}
+            </Link>
           ))}
         </nav>
       </div>

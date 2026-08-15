@@ -1,13 +1,11 @@
 import React from 'react'
+import { getAllMedia } from '../../../src/lib/repositories/mediaRepo'
 import MediaLibrary from './MediaLibrary'
 
-async function getMedia() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL ?? ''}/api/uploads`, { cache: 'no-store' })
-  return res.json()
-}
+export const dynamic = 'force-dynamic'
 
 export default async function AdminMediaPage() {
-  const media = await getMedia()
+  const media = await getAllMedia()
   return (
     <div>
       <div className="flex items-center justify-between mb-4">

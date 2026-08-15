@@ -92,9 +92,9 @@ export default function CheckoutPage() {
       paymentDetails:
         paymentMethod === 'bkash' || paymentMethod === 'nagad'
           ? {
-              senderNumber: senderNumber || undefined,
-              transactionId: transactionId || undefined
-            }
+            senderNumber: senderNumber || undefined,
+            transactionId: transactionId || undefined
+          }
           : undefined,
       items: items.map((i) => ({
         productId: i.productId,
@@ -131,9 +131,9 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="site-container py-8 md:py-12">
-      <div className="border-b border-cream pb-4 mb-8">
-        <h1 className="text-2xl sm:text-3xl font-serif font-bold text-charcoal">Checkout</h1>
+    <div className="site-container py-8 sm:py-10 md:py-12">
+      <div className="mb-8 border-b border-black/10 pb-5">
+        <h1 className="font-serif text-3xl font-semibold text-charcoal sm:text-4xl">Checkout</h1>
         <p className="text-sm text-taupe mt-1">Please provide your delivery information to complete your order.</p>
       </div>
 
@@ -153,11 +153,11 @@ export default function CheckoutPage() {
         </div>
       )}
 
-      <form onSubmit={handleOrderSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+      <form onSubmit={handleOrderSubmit} className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-12">
         {/* Left Column: Customer & Delivery Details */}
         <div className="lg:col-span-7 space-y-6">
           {/* 1. Contact Information */}
-          <section className="bg-ivory border border-cream rounded-lg p-5 sm:p-6 space-y-4">
+          <section className="space-y-4 rounded-lg border border-black/10 bg-white/65 p-5 sm:p-6">
             <h2 className="font-serif text-lg font-semibold text-charcoal border-b border-cream pb-2">
               1. Contact Information
             </h2>
@@ -173,9 +173,8 @@ export default function CheckoutPage() {
                   placeholder="e.g. Asif Ahmed"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className={`w-full border rounded-md p-2.5 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-mocha transition ${
-                    formErrors.fullName ? 'border-red-500' : 'border-taupe/30'
-                  }`}
+                  className={`w-full border rounded-md p-2.5 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-mocha transition ${formErrors.fullName ? 'border-red-500' : 'border-taupe/30'
+                    }`}
                 />
                 {formErrors.fullName && <p className="text-xs text-red-600 mt-1">{formErrors.fullName}</p>}
               </div>
@@ -190,9 +189,8 @@ export default function CheckoutPage() {
                   placeholder="017XXXXXXXX"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className={`w-full border rounded-md p-2.5 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-mocha transition ${
-                    formErrors.phone ? 'border-red-500' : 'border-taupe/30'
-                  }`}
+                  className={`w-full border rounded-md p-2.5 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-mocha transition ${formErrors.phone ? 'border-red-500' : 'border-taupe/30'
+                    }`}
                 />
                 {formErrors.phone && <p className="text-xs text-red-600 mt-1">{formErrors.phone}</p>}
               </div>
@@ -207,16 +205,15 @@ export default function CheckoutPage() {
                 placeholder="name@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={`w-full border rounded-md p-2.5 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-mocha transition ${
-                  formErrors.email ? 'border-red-500' : 'border-taupe/30'
-                }`}
+                className={`w-full border rounded-md p-2.5 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-mocha transition ${formErrors.email ? 'border-red-500' : 'border-taupe/30'
+                  }`}
               />
               {formErrors.email && <p className="text-xs text-red-600 mt-1">{formErrors.email}</p>}
             </div>
           </section>
 
           {/* 2. Delivery Address */}
-          <section className="bg-ivory border border-cream rounded-lg p-5 sm:p-6 space-y-4">
+          <section className="space-y-4 rounded-lg border border-black/10 bg-white/65 p-5 sm:p-6">
             <h2 className="font-serif text-lg font-semibold text-charcoal border-b border-cream pb-2">
               2. Delivery Address
             </h2>
@@ -229,9 +226,8 @@ export default function CheckoutPage() {
                 <select
                   value={district}
                   onChange={(e) => setDistrict(e.target.value)}
-                  className={`w-full border rounded-md p-2.5 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-mocha transition ${
-                    formErrors.district ? 'border-red-500' : 'border-taupe/30'
-                  }`}
+                  className={`w-full border rounded-md p-2.5 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-mocha transition ${formErrors.district ? 'border-red-500' : 'border-taupe/30'
+                    }`}
                 >
                   {BANGLADESH_DISTRICTS.map((d) => (
                     <option key={d.name} value={d.name}>
@@ -252,9 +248,8 @@ export default function CheckoutPage() {
                   placeholder="e.g. Dhanmondi, Uttara, Mirpur"
                   value={thana}
                   onChange={(e) => setThana(e.target.value)}
-                  className={`w-full border rounded-md p-2.5 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-mocha transition ${
-                    formErrors.thana ? 'border-red-500' : 'border-taupe/30'
-                  }`}
+                  className={`w-full border rounded-md p-2.5 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-mocha transition ${formErrors.thana ? 'border-red-500' : 'border-taupe/30'
+                    }`}
                 />
                 {formErrors.thana && <p className="text-xs text-red-600 mt-1">{formErrors.thana}</p>}
               </div>
@@ -270,9 +265,8 @@ export default function CheckoutPage() {
                 placeholder="House / Flat No., Road No., Sector / Village"
                 value={deliveryAddress}
                 onChange={(e) => setDeliveryAddress(e.target.value)}
-                className={`w-full border rounded-md p-2.5 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-mocha transition ${
-                  formErrors.deliveryAddress ? 'border-red-500' : 'border-taupe/30'
-                }`}
+                className={`w-full border rounded-md p-2.5 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-mocha transition ${formErrors.deliveryAddress ? 'border-red-500' : 'border-taupe/30'
+                  }`}
               />
               {formErrors.deliveryAddress && (
                 <p className="text-xs text-red-600 mt-1">{formErrors.deliveryAddress}</p>
@@ -288,13 +282,13 @@ export default function CheckoutPage() {
                 placeholder="e.g. Please call before delivery"
                 value={deliveryNotes}
                 onChange={(e) => setDeliveryNotes(e.target.value)}
-                className="w-full border border-taupe/30 rounded-md p-2.5 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-mocha transition"
+                className="min-h-[48px] w-full rounded-md border border-taupe/30 bg-white p-3 text-sm transition focus:outline-none focus:ring-1 focus:ring-mocha"
               />
             </div>
           </section>
 
           {/* 3. Payment Method */}
-          <section className="bg-ivory border border-cream rounded-lg p-5 sm:p-6 space-y-4">
+          <section className="space-y-4 rounded-lg border border-black/10 bg-white/65 p-5 sm:p-6">
             <h2 className="font-serif text-lg font-semibold text-charcoal border-b border-cream pb-2">
               3. Payment Method
             </h2>
@@ -302,11 +296,10 @@ export default function CheckoutPage() {
             <div className="space-y-3">
               {/* Cash on Delivery */}
               <label
-                className={`flex items-start gap-3 p-3.5 rounded-md border cursor-pointer transition ${
-                  paymentMethod === 'cod'
-                    ? 'border-mocha bg-cream/50 shadow-xs'
-                    : 'border-taupe/30 bg-white hover:border-taupe'
-                }`}
+                className={`flex items-start gap-3 p-3.5 rounded-md border cursor-pointer transition ${paymentMethod === 'cod'
+                  ? 'border-mocha bg-cream/50 shadow-xs'
+                  : 'border-taupe/30 bg-white hover:border-taupe'
+                  }`}
               >
                 <input
                   type="radio"
@@ -324,11 +317,10 @@ export default function CheckoutPage() {
 
               {/* bKash Manual */}
               <label
-                className={`flex items-start gap-3 p-3.5 rounded-md border cursor-pointer transition ${
-                  paymentMethod === 'bkash'
-                    ? 'border-mocha bg-cream/50 shadow-xs'
-                    : 'border-taupe/30 bg-white hover:border-taupe'
-                }`}
+                className={`flex items-start gap-3 p-3.5 rounded-md border cursor-pointer transition ${paymentMethod === 'bkash'
+                  ? 'border-mocha bg-cream/50 shadow-xs'
+                  : 'border-taupe/30 bg-white hover:border-taupe'
+                  }`}
               >
                 <input
                   type="radio"
@@ -346,11 +338,10 @@ export default function CheckoutPage() {
 
               {/* Nagad Manual */}
               <label
-                className={`flex items-start gap-3 p-3.5 rounded-md border cursor-pointer transition ${
-                  paymentMethod === 'nagad'
-                    ? 'border-mocha bg-cream/50 shadow-xs'
-                    : 'border-taupe/30 bg-white hover:border-taupe'
-                }`}
+                className={`flex items-start gap-3 p-3.5 rounded-md border cursor-pointer transition ${paymentMethod === 'nagad'
+                  ? 'border-mocha bg-cream/50 shadow-xs'
+                  : 'border-taupe/30 bg-white hover:border-taupe'
+                  }`}
               >
                 <input
                   type="radio"
@@ -402,8 +393,8 @@ export default function CheckoutPage() {
 
         {/* Right Column: Order Summary & Placement */}
         <div className="lg:col-span-5">
-          <div className="bg-cream border border-cream rounded-lg p-6 space-y-5 sticky top-24">
-            <h2 className="font-serif text-xl font-bold text-charcoal">Order Summary</h2>
+          <div className="sticky top-32 space-y-5 rounded-lg border border-black/10 bg-white/70 p-5 shadow-[0_12px_32px_rgba(34,34,34,0.06)] sm:p-6">
+            <h2 className="font-serif text-xl font-semibold text-charcoal">Order Summary</h2>
 
             {/* Items review */}
             <div className="divide-y divide-taupe/20 max-h-72 overflow-y-auto pr-1">
@@ -415,7 +406,7 @@ export default function CheckoutPage() {
 
                 return (
                   <div key={itemKey} className="py-3 first:pt-0 last:pb-0 flex items-center gap-3">
-                    <div className="relative w-14 h-14 bg-white rounded border border-cream overflow-hidden flex-shrink-0">
+                    <div className="relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-lg border border-black/10 bg-white">
                       <Image src={thumbnail} alt={product?.name || 'Product'} fill style={{ objectFit: 'cover' }} />
                     </div>
                     <div className="flex-1 min-w-0">

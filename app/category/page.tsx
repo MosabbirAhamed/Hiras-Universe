@@ -21,20 +21,21 @@ export default async function CategoryListPage() {
   const categories = (await getCategories()).filter((c) => c.active !== false)
 
   return (
-    <div className="site-container py-8 md:py-12">
-      <div className="mb-8 max-w-2xl">
-        <h1 className="text-2xl sm:text-3xl font-serif font-bold text-charcoal">Categories</h1>
-        <p className="mt-2 text-sm text-taupe">
+    <div className="site-container py-10 sm:py-12 md:py-16">
+      <div className="mb-10 max-w-2xl sm:mb-12">
+        <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-mocha">Find your essentials</p>
+        <h1 className="text-3xl font-serif font-bold text-charcoal sm:text-4xl">Categories</h1>
+        <p className="mt-3 text-sm leading-6 text-taupe">
           Select a category to browse tailored styles and specialized collections.
         </p>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
         {categories.map((cat) => (
           <Link
             key={cat.id}
             href={`/category/${cat.slug || cat.id}`}
-            className="group block p-6 rounded-lg bg-ivory border border-cream hover:border-mocha hover:shadow-xs transition"
+            className="group flex min-h-[156px] flex-col justify-between border border-cream bg-ivory p-5 transition hover:border-mocha hover:shadow-[0_12px_28px_rgba(34,34,34,0.06)] sm:p-6"
           >
             <div className="font-serif font-semibold text-charcoal group-hover:text-mocha transition">
               {cat.name}
@@ -42,8 +43,8 @@ export default async function CategoryListPage() {
             {cat.description && (
               <div className="text-xs text-taupe mt-1 line-clamp-2">{cat.description}</div>
             )}
-            <span className="text-2xs font-semibold text-mocha uppercase tracking-wider mt-4 inline-block">
-              View Collection →
+            <span className="mt-5 inline-flex items-center gap-2 text-2xs font-semibold uppercase tracking-wider text-mocha">
+              View Collection <span aria-hidden="true">→</span>
             </span>
           </Link>
         ))}

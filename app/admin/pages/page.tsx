@@ -1,28 +1,26 @@
 import React from 'react'
 import Link from 'next/link'
 import { getPages } from '../../../src/lib/repositories/fileRepo'
+import PageList from './PageList'
 
 export default async function AdminPages() {
   const pages = await getPages()
+
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-medium">Pages</h2>
-        <Link href="/admin/pages/new" className="px-3 py-2 bg-mocha text-ivory rounded">Add page</Link>
+      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-medium text-charcoal">Pages</h1>
+          <p className="mt-1 text-sm text-taupe">Manage informational and editorial storefront pages.</p>
+        </div>
+        <Link
+          href="/admin/pages/new"
+          className="inline-flex min-h-10 items-center justify-center rounded bg-mocha px-4 py-2 text-sm font-medium text-ivory transition hover:opacity-90"
+        >
+          Add page
+        </Link>
       </div>
-      <div className="grid gap-2">
-        {pages.map((p:any) => (
-          <div key={p.id} className="p-3 bg-ivory border border-cream rounded flex items-center justify-between">
-            <div>
-              <div className="font-medium">{p.title}</div>
-              <div className="text-sm text-taupe">/{p.slug} — {p.status}</div>
-            </div>
-            <div className="space-x-2">
-              <Link href={`/admin/pages/${p.id}`} className="px-3 py-1 border rounded">Edit</Link>
-            </div>
-          </div>
-        ))}
-      </div>
+      <PageList initialPages={pages} />
     </div>
   )
 }

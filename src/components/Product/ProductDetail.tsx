@@ -68,12 +68,12 @@ const ProductDetail = ({ product, category, categories }: { product: Product; ca
   const maxStock = isOutOfStock
     ? 0
     : hasVariants
-    ? selectedVariant && typeof selectedVariant.stock === 'number'
-      ? selectedVariant.stock
-      : 99
-    : typeof product.stock === 'number'
-    ? Math.max(0, product.stock)
-    : 99;
+      ? selectedVariant && typeof selectedVariant.stock === 'number'
+        ? selectedVariant.stock
+        : 99
+      : typeof product.stock === 'number'
+        ? Math.max(0, product.stock)
+        : 99;
 
   const currentSku = hasVariants && selectedVariant ? selectedVariant.sku : product.sku;
 
@@ -82,8 +82,8 @@ const ProductDetail = ({ product, category, categories }: { product: Product; ca
       ? { current: selectedVariant.salePrice, original: selectedVariant.price, onSale: true }
       : { current: selectedVariant.price, original: null, onSale: false }
     : typeof product.salePrice === 'number' && product.salePrice < product.price
-    ? { current: product.salePrice, original: product.price, onSale: true }
-    : { current: product.price, original: null, onSale: false };
+      ? { current: product.salePrice, original: product.price, onSale: true }
+      : { current: product.price, original: null, onSale: false };
 
   function handleAttributeSelect(attrName: string, value: string) {
     setSelectedAttributes((prev) => ({
@@ -120,10 +120,10 @@ const ProductDetail = ({ product, category, categories }: { product: Product; ca
   }
 
   return (
-    <div className="site-container py-8 grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+    <div className="site-container grid grid-cols-1 gap-8 py-8 sm:py-10 md:grid-cols-2 md:gap-10 lg:gap-14">
       {/* Left: Gallery */}
       <div>
-        <div className="relative w-full aspect-square bg-cream rounded-lg overflow-hidden border border-cream shadow-xs">
+        <div className="relative aspect-square w-full overflow-hidden rounded-lg border border-black/10 bg-cream shadow-[0_14px_36px_rgba(34,34,34,0.07)]">
           <Image src={activeImage} alt={product.name} fill style={{ objectFit: 'cover' }} priority />
         </div>
         {gallery.length > 0 && (
@@ -134,9 +134,8 @@ const ProductDetail = ({ product, category, categories }: { product: Product; ca
                 type="button"
                 onClick={() => setActiveImage(img)}
                 aria-label={`View image ${i + 1} for ${product.name}`}
-                className={`w-16 h-16 sm:w-20 sm:h-20 relative rounded-md overflow-hidden border transition ${
-                  activeImage === img ? 'ring-2 ring-mocha border-transparent' : 'border-cream opacity-80 hover:opacity-100'
-                }`}
+                className={`relative h-16 w-16 overflow-hidden rounded-lg border transition sm:h-20 sm:w-20 ${activeImage === img ? 'ring-2 ring-mocha border-transparent' : 'border-cream opacity-80 hover:opacity-100'
+                  }`}
               >
                 <Image src={img} alt={`${product.name} ${i + 1}`} fill style={{ objectFit: 'cover' }} />
               </button>
@@ -147,7 +146,7 @@ const ProductDetail = ({ product, category, categories }: { product: Product; ca
 
       {/* Right: Info & Actions */}
       <div className="flex flex-col justify-start">
-        <h1 className="text-2xl sm:text-3xl font-serif font-bold text-charcoal mb-2">{product.name}</h1>
+        <h1 className="mb-2 font-serif text-3xl font-semibold leading-tight text-charcoal sm:text-4xl">{product.name}</h1>
 
         {flags.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-3">
@@ -184,13 +183,12 @@ const ProductDetail = ({ product, category, categories }: { product: Product; ca
         {/* Stock Status Badge */}
         <div className="mb-5">
           <span
-            className={`inline-flex items-center px-2.5 py-1 rounded text-xs font-medium ${
-              isOutOfStock
-                ? 'bg-red-50 text-red-700 border border-red-200'
-                : (hasVariants ? selectedVariant?.stockStatus : product.stockStatus) === 'low_stock'
+            className={`inline-flex items-center px-2.5 py-1 rounded text-xs font-medium ${isOutOfStock
+              ? 'bg-red-50 text-red-700 border border-red-200'
+              : (hasVariants ? selectedVariant?.stockStatus : product.stockStatus) === 'low_stock'
                 ? 'bg-amber-50 text-amber-700 border border-amber-200'
                 : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-            }`}
+              }`}
           >
             {isProductInactive && 'Currently Unavailable'}
             {!isProductInactive && isOutOfStock && 'Out of Stock'}
@@ -201,7 +199,7 @@ const ProductDetail = ({ product, category, categories }: { product: Product; ca
 
         {/* Variant Attributes Selection */}
         {hasVariants && attributes.length > 0 && (
-          <div className="space-y-4 mb-6 p-4 rounded-lg bg-cream/50 border border-cream">
+          <div className="mb-6 space-y-5 rounded-lg border border-black/10 bg-white/60 p-4 sm:p-5">
             {attributes.map((attr) => (
               <div key={attr.id} className="space-y-2">
                 <div className="flex justify-between items-baseline text-xs">
@@ -216,11 +214,10 @@ const ProductDetail = ({ product, category, categories }: { product: Product; ca
                         key={val}
                         type="button"
                         onClick={() => handleAttributeSelect(attr.name, val)}
-                        className={`px-3.5 py-1.5 text-xs sm:text-sm font-medium rounded border transition ${
-                          isSelected
-                            ? 'bg-mocha text-ivory border-mocha shadow-xs'
-                            : 'bg-white text-charcoal border-taupe/30 hover:border-mocha hover:bg-cream/40'
-                        }`}
+                        className={`px-3.5 py-1.5 text-xs sm:text-sm font-medium rounded border transition ${isSelected
+                          ? 'bg-mocha text-ivory border-mocha shadow-xs'
+                          : 'bg-white text-charcoal border-taupe/30 hover:border-mocha hover:bg-cream/40'
+                          }`}
                       >
                         {val}
                       </button>
@@ -272,11 +269,10 @@ const ProductDetail = ({ product, category, categories }: { product: Product; ca
               onClick={handleAddToCart}
               disabled={isOutOfStock || adding}
               aria-label={isOutOfStock ? `${product.name} is currently out of stock` : `Add ${product.name} to bag`}
-              className={`flex-1 px-6 py-3 rounded-md font-medium text-sm transition shadow-sm flex items-center justify-center min-h-[44px] ${
-                isOutOfStock
-                  ? 'bg-taupe/40 text-taupe cursor-not-allowed'
-                  : 'bg-mocha text-ivory hover:opacity-90 active:scale-[0.99]'
-              }`}
+              className={`flex-1 px-6 py-3 rounded-md font-medium text-sm transition shadow-sm flex items-center justify-center min-h-[44px] ${isOutOfStock
+                ? 'bg-taupe/40 text-taupe cursor-not-allowed'
+                : 'bg-mocha text-ivory hover:opacity-90 active:scale-[0.99]'
+                }`}
             >
               {isProductInactive ? (
                 'Unavailable'

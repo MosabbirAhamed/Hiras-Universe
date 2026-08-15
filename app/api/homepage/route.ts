@@ -1,10 +1,13 @@
 import { NextResponse } from 'next/server'
 import { getHomepageSections, saveHomepageSections } from '../../../src/lib/repositories/fileRepo'
+
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 import { requireAdmin } from '../../../src/lib/serverHelpers'
 
 export async function GET() {
   const sections = await getHomepageSections()
-  return NextResponse.json(sections)
+  return NextResponse.json(sections, { headers: { 'Cache-Control': 'no-store' } })
 }
 
 export async function PUT(req: Request) {

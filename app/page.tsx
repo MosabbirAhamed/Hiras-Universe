@@ -7,7 +7,6 @@ import ProductCarousel from '../src/components/Product/ProductCarousel'
 import EditorialBanner from '../src/components/Editorial/EditorialBanner'
 import TrustSection from '../src/components/Trust/TrustSection'
 import Newsletter from '../src/components/Newsletter/Newsletter'
-import MobileNav from '../src/components/Navigation/MobileNav'
 import { getCategories, getHomepageSections, getProducts } from '../src/lib/repositories/fileRepo'
 
 export const revalidate = 300
@@ -36,48 +35,46 @@ export default async function Home() {
   const newArrivals = products.filter((product) => product.newArrival)
 
   return (
-    <div className="site-container mx-auto pb-24 safe-bottom-padding">{/* pb for bottom nav safe area */}
+    <div className="site-container pb-16 sm:pb-24">
       <Hero headline={hero.headline} sub={hero.sub} image={hero.image} />
 
-      <section className="mt-5">
+      <section className="mt-12 sm:mt-16">
         <SectionHeading title="Shop by Category" />
         <CategoryScroller categories={categories} />
       </section>
 
-      <section className="mt-6">
+      <section className="mt-14 sm:mt-20">
         <SectionHeading title="Premium Tupi Collection" subtitle="Tradition, refined." />
         <ProductCarousel products={featuredProducts.length ? featuredProducts : products.slice(0, 5)} categories={categories} />
       </section>
 
-      <section className="mt-6">
+      <section className="mt-14 sm:mt-20">
         <SectionHeading title="New Arrivals" />
         <ProductGrid products={(newArrivals.length ? newArrivals : products).slice(0, 8)} categories={categories} />
       </section>
 
-      <section className="mt-6">
+      <section className="mt-14 sm:mt-20">
         <SectionHeading title="Women's Collection" />
         <EditorialBanner />
       </section>
 
-      <section className="mt-6">
+      <section className="mt-14 sm:mt-20">
         <SectionHeading title="Islamic Gift Sets" subtitle="Thoughtful gifts. Timeless blessings." />
         <ProductGrid products={products.slice(0, 4)} categories={categories} />
       </section>
 
-      <section className="mt-6">
+      <section className="mt-14 sm:mt-20">
         <SectionHeading title="Best Sellers" />
         <ProductCarousel products={products.slice(0, 6)} categories={categories} />
       </section>
 
-      <section className="mt-6">
+      <section className="mt-16 sm:mt-24">
         <TrustSection />
       </section>
 
-      <section className="mt-6">
+      <section className="mt-10 sm:mt-12">
         <Newsletter />
       </section>
-
-      <MobileNav />
     </div>
   )
 }

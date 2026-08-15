@@ -20,13 +20,13 @@ const ProductCarousel = ({
   )
 
   return (
-    <div className="mt-3 -mx-4 px-4 w-auto min-w-0">
+    <div className="mt-5 -mx-4 px-4 w-auto min-w-0 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0">
 
       <div
         className="
           flex
           items-stretch
-          gap-3
+          gap-3.5
           overflow-x-auto
           overflow-y-hidden
           pb-3
@@ -47,8 +47,8 @@ const ProductCarousel = ({
 
           const prices = activeVariants.map((v) =>
             typeof v.salePrice === 'number' &&
-            v.salePrice >= 0 &&
-            v.salePrice < v.price
+              v.salePrice >= 0 &&
+              v.salePrice < v.price
               ? v.salePrice
               : v.price
           )
@@ -61,9 +61,9 @@ const ProductCarousel = ({
             <div
               key={p.id}
               className="
-                w-44
+                w-[168px]
                 sm:w-48
-                md:w-52
+                md:w-[218px]
                 flex-shrink-0
                 self-stretch
               "

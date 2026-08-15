@@ -53,19 +53,19 @@ export type CheckoutValidationResult =
 
 export type OrderCalculationResult =
   | {
-      ok: true
-      items: OrderItemSnapshot[]
-      subtotal: number
-      deliveryCharge: number
-      discountTotal: number
-      total: number
-      productStockUpdates: Map<string, { product: Product; variantId?: string; deductedStock: number }>
-    }
+    ok: true
+    items: OrderItemSnapshot[]
+    subtotal: number
+    deliveryCharge: number
+    discountTotal: number
+    total: number
+    productStockUpdates: Map<string, { product: Product; variantId?: string; deductedStock: number }>
+  }
   | {
-      ok: false
-      error: string
-      fieldErrors?: Record<string, string>
-    }
+    ok: false
+    error: string
+    fieldErrors?: Record<string, string>
+  }
 
 /**
  * Sanitize text input: removes HTML tags while preserving Bangla & Unicode text.
@@ -248,6 +248,7 @@ export function calculateAndValidateOrderItems(
   const productsMap = new Map(catalogProducts.map((p) => [p.id, p]))
   const snapshots: OrderItemSnapshot[] = []
   const productStockUpdates = new Map<string, { product: Product; variantId?: string; deductedStock: number }>()
+  const requestedQuantities = new Map<string, number>()
 
   for (let i = 0; i < items.length; i += 1) {
     const item = items[i]
@@ -299,6 +300,9 @@ export function calculateAndValidateOrderItems(
         }
       }
 
+      const stockKey = `${product.id}::${variant.id}`
+      const requestedQuantity = (requestedQuantities.get(stockKey) || 0) + item.quantity
+      requestedQuantities.set(stockKey, requestedQuantity)
       const variantStock = typeof variant.stock === 'number' ? Math.max(0, variant.stock) : 0
       if (variant.stockStatus === 'out_of_stock' || variantStock <= 0) {
         return {
@@ -307,18 +311,18 @@ export function calculateAndValidateOrderItems(
         }
       }
 
-      if (item.quantity > variantStock) {
+      if (requestedQuantity > variantStock) {
         return {
           ok: false,
-          error: `Only ${variantStock} unit(s) available for "${product.name}" (${variant.sku}). You requested ${item.quantity}.`
+          error: `Only ${variantStock} unit(s) available for "${product.name}" (${variant.sku}). You requested ${requestedQuantity}.`
         }
       }
 
       // Calculate authoritative variant price
       const hasValidSalePrice = Boolean(
         typeof variant.salePrice === 'number' &&
-          variant.salePrice >= 0 &&
-          variant.salePrice < variant.price
+        variant.salePrice >= 0 &&
+        variant.salePrice < variant.price
       )
       const unitPrice = hasValidSalePrice ? (variant.salePrice as number) : variant.price
       const regularPrice = variant.price
@@ -345,6 +349,9 @@ export function calculateAndValidateOrderItems(
       })
     } else {
       // 3. Handle Simple Product
+      const stockKey = `${product.id}::default`
+      const requestedQuantity = (requestedQuantities.get(stockKey) || 0) + item.quantity
+      requestedQuantities.set(stockKey, requestedQuantity)
       const productStock = typeof product.stock === 'number' ? Math.max(0, product.stock) : 0
       if (product.stockStatus === 'out_of_stock' || productStock <= 0) {
         return {
@@ -353,18 +360,18 @@ export function calculateAndValidateOrderItems(
         }
       }
 
-      if (item.quantity > productStock) {
+      if (requestedQuantity > productStock) {
         return {
           ok: false,
-          error: `Only ${productStock} unit(s) available for "${product.name}". You requested ${item.quantity}.`
+          error: `Only ${productStock} unit(s) available for "${product.name}". You requested ${requestedQuantity}.`
         }
       }
 
       // Calculate authoritative simple price
       const hasValidSalePrice = Boolean(
         typeof product.salePrice === 'number' &&
-          product.salePrice >= 0 &&
-          product.salePrice < product.price
+        product.salePrice >= 0 &&
+        product.salePrice < product.price
       )
       const unitPrice = hasValidSalePrice ? (product.salePrice as number) : product.price
       const regularPrice = product.price

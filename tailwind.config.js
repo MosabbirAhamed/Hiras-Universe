@@ -11,6 +11,12 @@ module.exports = {
         charcoal: '#222222',
         gold: '#B89A6A'
       },
+      fontSize: {
+        '2xs': ['0.625rem', { lineHeight: '1rem' }],
+      },
+      boxShadow: {
+        '2xs': '0 1px 2px 0 rgb(0 0 0 / 0.04)',
+      },
       spacing: {
         'safe': 'env(safe-area-inset-bottom)'
       }

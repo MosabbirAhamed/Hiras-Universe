@@ -10,6 +10,8 @@ import Newsletter from '../src/components/Newsletter/Newsletter'
 import MobileNav from '../src/components/Navigation/MobileNav'
 import { getCategories, getHomepageSections, getProducts } from '../src/lib/repositories/fileRepo'
 
+export const revalidate = 300
+
 export default async function Home() {
   const [allProducts, allCategories, homepageSections] = await Promise.all([
     getProducts(),
@@ -28,8 +30,8 @@ export default async function Home() {
   const featuredIds: string[] = Array.isArray(featuredProductIds) ? featuredProductIds : []
   const featuredProducts = featuredIds.length
     ? featuredIds
-        .map((id: string) => products.find((product) => product.id === id))
-        .filter((product): product is (typeof products)[number] => Boolean(product))
+      .map((id: string) => products.find((product) => product.id === id))
+      .filter((product): product is (typeof products)[number] => Boolean(product))
     : products.filter((product) => product.featured)
   const newArrivals = products.filter((product) => product.newArrival)
 
@@ -49,7 +51,7 @@ export default async function Home() {
 
       <section className="mt-6">
         <SectionHeading title="New Arrivals" />
-        <ProductGrid products={newArrivals.length ? newArrivals : products} categories={categories} />
+        <ProductGrid products={(newArrivals.length ? newArrivals : products).slice(0, 8)} categories={categories} />
       </section>
 
       <section className="mt-6">

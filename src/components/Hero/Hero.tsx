@@ -91,7 +91,7 @@ const benefits = [
 export const Hero = ({
   headline = 'Elegance in\nModesty',
   sub = 'Curated modest fashion and timeless essentials crafted for comfort, confidence and grace.',
-  image = '/products/hero-1.png'
+  image = '/products/hero-1.webp'
 }: HeroProps) => {
   return (
     <section className="pt-4 sm:pt-6 space-y-6">
@@ -104,7 +104,7 @@ export const Hero = ({
         {/* Full Clear Background Image */}
         <div className="absolute inset-0">
           <Image
-            src={image || '/products/hero-1.png'}
+            src={image || '/products/hero-1.webp'}
             alt="Hira's Universe Modest Fashion"
             fill
             priority

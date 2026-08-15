@@ -22,7 +22,6 @@ export async function POST(req: Request) {
   if (!ALLOWED_EXT.includes(ext)) return NextResponse.json({ error: 'invalid_type' }, { status: 400 })
   const buf = Buffer.from(body.data, 'base64')
   if (buf.length > MAX_SIZE) return NextResponse.json({ error: 'too_large' }, { status: 400 })
-  // avoid path traversal
   const filename = path.basename(body.filename.replace(/[^a-z0-9._-]/gi, '_'))
 
   const existing = await findMediaByFilename(filename)
@@ -30,7 +29,6 @@ export async function POST(req: Request) {
     return NextResponse.json(existing)
   }
 
-  // basic mime detection
   const mimeType = ext === '.svg' ? 'image/svg+xml' : ext === '.png' ? 'image/png' : ext === '.webp' ? 'image/webp' : 'image/jpeg'
   const media = await createMediaFromUpload({ filename, buffer: buf, mimeType })
   return NextResponse.json(media)
@@ -50,7 +48,6 @@ export async function DELETE(req: Request) {
   const force = body?.force === true
   if (!id) return NextResponse.json({ error: 'invalid' }, { status: 400 })
 
-  // check usage in products/categories/homepage
   const { getProducts, getCategories, getHomepageSections } = await import('../../../src/lib/repositories/fileRepo')
   const [products, categories, sections] = await Promise.all([getProducts(), getCategories(), getHomepageSections()])
   const usedBy: string[] = []

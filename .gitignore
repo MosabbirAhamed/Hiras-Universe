@@ -4,3 +4,8 @@ node_modules/
 .env.*.local
 dist/
 /.vscode/
+.roo/
+
+# Sensitive runtime data — must never be committed
+data/orders.json
+data/notifications.json

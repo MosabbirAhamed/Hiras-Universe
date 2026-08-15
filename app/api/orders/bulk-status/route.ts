@@ -11,9 +11,19 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json().catch(() => null)
-    if (!body || !Array.isArray(body.orderIds) || body.orderIds.length === 0 || !body.nextStatus) {
+    const validOrderStatuses: OrderStatus[] = ['pending', 'processing', 'shipped', 'delivered', 'cancelled']
+    const validPaymentStatuses: PaymentStatus[] = ['pending', 'paid', 'failed', 'refunded']
+    if (
+      !body ||
+      !Array.isArray(body.orderIds) ||
+      body.orderIds.length === 0 ||
+      !body.orderIds.every((id: unknown) => typeof id === 'string' && id.trim()) ||
+      !validOrderStatuses.includes(body.nextStatus as OrderStatus) ||
+      (body.nextPaymentStatus !== undefined &&
+        !validPaymentStatuses.includes(body.nextPaymentStatus as PaymentStatus))
+    ) {
       return NextResponse.json(
-        { ok: false, error: 'Invalid request. Must provide orderIds array and nextStatus.' },
+        { ok: false, error: 'Invalid order IDs or status value.' },
         { status: 400 }
       )
     }
@@ -60,18 +70,18 @@ export async function POST(req: Request) {
         try {
           if (prevStatus !== updated.orderStatus) {
             if (updated.orderStatus === 'processing') {
-              dispatchOrderNotification('ORDER_PROCESSING', updated, { siteUrl }).catch(() => {})
+              dispatchOrderNotification('ORDER_PROCESSING', updated, { siteUrl }).catch(() => { })
             } else if (updated.orderStatus === 'shipped') {
-              dispatchOrderNotification('ORDER_SHIPPED', updated, { siteUrl }).catch(() => {})
+              dispatchOrderNotification('ORDER_SHIPPED', updated, { siteUrl }).catch(() => { })
             } else if (updated.orderStatus === 'delivered') {
-              dispatchOrderNotification('ORDER_DELIVERED', updated, { siteUrl }).catch(() => {})
+              dispatchOrderNotification('ORDER_DELIVERED', updated, { siteUrl }).catch(() => { })
             } else if (updated.orderStatus === 'cancelled') {
-              dispatchOrderNotification('ORDER_CANCELLED', updated, { siteUrl }).catch(() => {})
+              dispatchOrderNotification('ORDER_CANCELLED', updated, { siteUrl }).catch(() => { })
             }
           }
 
           if (prevPayment !== updated.paymentStatus && updated.paymentStatus === 'paid') {
-            dispatchOrderNotification('PAYMENT_CONFIRMED', updated, { siteUrl }).catch(() => {})
+            dispatchOrderNotification('PAYMENT_CONFIRMED', updated, { siteUrl }).catch(() => { })
           }
         } catch {
           // Detached notification error safety

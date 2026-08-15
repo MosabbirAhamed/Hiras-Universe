@@ -100,21 +100,6 @@ export function CartProvider({
   const [toastMessage, setToastMessage] = useState<string | null>(null)
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // Fetch live product catalog
-  useEffect(() => {
-    fetch('/api/products')
-      .then((res) => res.json())
-      .then((data: Product[]) => {
-        if (Array.isArray(data)) {
-          setProducts(data)
-          setIsCatalogLoaded(true)
-        }
-      })
-      .catch(() => {
-        setIsCatalogLoaded(true)
-      })
-  }, [])
-
   // Load from localStorage on mount (hydration safe)
   useEffect(() => {
     try {
@@ -130,6 +115,27 @@ export function CartProvider({
       setIsHydrated(true)
     }
   }, [])
+
+  const cartProductIds = Array.from(new Set(items.map((item) => item.productId))).sort().join(',')
+
+  // Fetch only products referenced by the cart. The storefront does not need the full catalog here.
+  useEffect(() => {
+    if (!isHydrated) return
+
+    if (!cartProductIds) {
+      setProducts([])
+      setIsCatalogLoaded(true)
+      return
+    }
+
+    fetch(`/api/products?ids=${encodeURIComponent(cartProductIds)}`)
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error('Catalog request failed'))))
+      .then((data: Product[]) => {
+        if (Array.isArray(data)) setProducts(data)
+        setIsCatalogLoaded(true)
+      })
+      .catch(() => setIsCatalogLoaded(true))
+  }, [isHydrated, cartProductIds])
 
   // Save to localStorage whenever items change after hydration
   useEffect(() => {
@@ -211,8 +217,8 @@ export function CartProvider({
         if (typeof product.stock === 'number') return Math.max(0, product.stock)
         return 999
       }
-      if (isCatalogLoaded) return 0
       if (typeof fallbackStock === 'number') return Math.max(0, fallbackStock)
+      if (isCatalogLoaded) return 0
       return 999
     },
     [productsMap, isCatalogLoaded]
@@ -442,8 +448,8 @@ export function CartProvider({
 
         const hasValidSalePrice = Boolean(
           typeof variant.salePrice === 'number' &&
-            variant.salePrice >= 0 &&
-            variant.salePrice < variant.price
+          variant.salePrice >= 0 &&
+          variant.salePrice < variant.price
         )
         const effectivePrice = hasValidSalePrice ? (variant.salePrice as number) : variant.price
         const maxStock = typeof variant.stock === 'number' ? Math.max(0, variant.stock) : 999
@@ -473,14 +479,14 @@ export function CartProvider({
 
       const hasValidSalePrice = Boolean(
         typeof product.salePrice === 'number' &&
-          product.salePrice >= 0 &&
-          (typeof product.price !== 'number' || product.salePrice < product.price)
+        product.salePrice >= 0 &&
+        (typeof product.price !== 'number' || product.salePrice < product.price)
       )
       const effectivePrice = hasValidSalePrice
         ? (product.salePrice as number)
         : typeof product.price === 'number' && product.price >= 0
-        ? product.price
-        : 0
+          ? product.price
+          : 0
       const maxStock = typeof product.stock === 'number' ? Math.max(0, product.stock) : 999
       const isMaxStock = !isOutOfStock && item.quantity >= maxStock
 

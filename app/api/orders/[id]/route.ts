@@ -55,8 +55,13 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 
   try {
     const body = await req.json().catch(() => null)
-    if (!body || !body.orderStatus) {
-      return NextResponse.json({ ok: false, error: 'Missing required orderStatus.' }, { status: 400 })
+    const validOrderStatuses: OrderStatus[] = ['pending', 'processing', 'shipped', 'delivered', 'cancelled']
+    const validPaymentStatuses: PaymentStatus[] = ['pending', 'paid', 'failed', 'refunded']
+    if (!body || typeof body.orderStatus !== 'string' || !validOrderStatuses.includes(body.orderStatus as OrderStatus)) {
+      return NextResponse.json({ ok: false, error: 'Invalid orderStatus.' }, { status: 400 })
+    }
+    if (body.paymentStatus !== undefined && !validPaymentStatuses.includes(body.paymentStatus as PaymentStatus)) {
+      return NextResponse.json({ ok: false, error: 'Invalid paymentStatus.' }, { status: 400 })
     }
 
     const existingOrder = await getOrderById(params.id)

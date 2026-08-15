@@ -6,7 +6,7 @@ import { Footer } from '../src/components/layout/Footer'
 import ThemeInjector from '../src/components/theme/ThemeInjector'
 import { CartProvider } from '../src/context/CartContext'
 import CartDrawer from '../src/components/cart/CartDrawer'
-import { getProducts, getSettings } from '../src/lib/repositories/fileRepo'
+import { getSettings } from '../src/lib/repositories/fileRepo'
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
   ? new URL(process.env.NEXT_PUBLIC_BASE_URL)
@@ -67,10 +67,7 @@ export const metadata: Metadata = {
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const [initialProducts, settings] = await Promise.all([
-    getProducts(),
-    getSettings()
-  ])
+  const settings = await getSettings()
 
   const storeName = settings?.storeName || "Hira's Universe"
   const storeUrl = baseUrl.toString()
@@ -115,7 +112,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className="bg-ivory text-charcoal antialiased flex flex-col min-h-screen">
         <ThemeInjector />
-        <CartProvider initialProducts={initialProducts}>
+        <CartProvider>
           <Header />
           <main className="flex-1 min-h-[calc(100vh-160px)]">{children}</main>
           <Footer />

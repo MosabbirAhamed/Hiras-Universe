@@ -1,11 +1,16 @@
-import { NextResponse } from 'next/server'
-import { getCategories, getProducts, createProduct } from '../../../src/lib/repositories/fileRepo'
+import { NextRequest, NextResponse } from 'next/server'
+import { getCategories, getProducts, getProductsByIds, createProduct } from '../../../src/lib/repositories/fileRepo'
 import { randomUUID } from 'crypto'
 import { requireAdmin } from '../../../src/lib/serverHelpers'
 import { validateProductWrite } from '../../../src/lib/productValidation'
 
-export async function GET() {
-  const products = await getProducts()
+export async function GET(req: NextRequest) {
+  const ids = req.nextUrl.searchParams.get('ids')
+    ?.split(',')
+    .map((id) => id.trim())
+    .filter(Boolean)
+
+  const products = ids?.length ? await getProductsByIds(ids.slice(0, 50)) : await getProducts()
   return NextResponse.json(products)
 }
 

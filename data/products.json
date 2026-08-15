@@ -1,6 +1,54 @@
 [
-  {
+   {
     "id": "p-1",
+    "name": "Classic White Tupi",
+    "slug": "classic-white-tupi",
+    "description": "Soft cotton tupi with classic finish.",
+    "price": 1250,
+    "salePrice": null,
+    "sku": "TUPI-CL-WHT",
+    "stock": 120,
+    "categoryId": "c-1",
+    "images": ["/products/classic-white-tupi.png"],
+    "featured": true,
+    "newArrival": false,
+    "active": true,
+    "sortOrder": 1
+  },
+   {
+    "id": "p-8",
+    "name": "Classic White Tupi",
+    "slug": "classic-white-tupi",
+    "description": "Soft cotton tupi with classic finish.",
+    "price": 1250,
+    "salePrice": null,
+    "sku": "TUPI-CL-WHT",
+    "stock": 120,
+    "categoryId": "c-1",
+    "images": ["/products/classic-white-tupi.png"],
+    "featured": true,
+    "newArrival": false,
+    "active": true,
+    "sortOrder": 1
+  },
+   {
+    "id": "p-7",
+    "name": "Classic White Tupi",
+    "slug": "classic-white-tupi",
+    "description": "Soft cotton tupi with classic finish.",
+    "price": 1250,
+    "salePrice": null,
+    "sku": "TUPI-CL-WHT",
+    "stock": 120,
+    "categoryId": "c-1",
+    "images": ["/products/classic-white-tupi.png"],
+    "featured": true,
+    "newArrival": false,
+    "active": true,
+    "sortOrder": 1
+  },
+  {
+    "id": "p-6",
     "name": "Classic White Tupi",
     "slug": "classic-white-tupi",
     "description": "Soft cotton tupi with classic finish.",
@@ -31,6 +79,142 @@
     "active": true,
     "sortOrder": 2
   },
+  {
+    "id": "p-5",
+    "name": "Signature Handcrafted Tupi",
+    "slug": "signature-handcrafted-tupi",
+    "description": "Artisan modest tupi crafted from fine breathable cotton with subtle geometric stitching. Available in multiple tailored sizes for a comfortable fit.",
+    "shortDescription": "Artisan modest tupi with subtle geometric stitching.",
+    "hasVariants": true,
+    "attributes": [
+      {
+        "id": "attr-size",
+        "name": "Size",
+        "values": ["52", "54", "56"]
+      }
+    ],
+    "variants": [
+      {
+        "id": "v-p3-52",
+        "sku": "TUPI-SIG-52",
+        "attributes": {
+          "Size": "52"
+        },
+        "price": 1650,
+        "salePrice": null,
+        "stock": 25,
+        "lowStockThreshold": 5,
+        "stockStatus": "in_stock",
+        "active": true
+      },
+      {
+        "id": "v-p3-54",
+        "sku": "TUPI-SIG-54",
+        "attributes": {
+          "Size": "54"
+        },
+        "price": 1650,
+        "salePrice": 1450,
+        "stock": 15,
+        "lowStockThreshold": 5,
+        "stockStatus": "in_stock",
+        "active": true
+      },
+      {
+        "id": "v-p3-56",
+        "sku": "TUPI-SIG-56",
+        "attributes": {
+          "Size": "56"
+        },
+        "price": 1750,
+        "salePrice": null,
+        "stock": 4,
+        "lowStockThreshold": 5,
+        "stockStatus": "low_stock",
+        "active": true
+      }
+    ],
+    "price": 1650,
+    "salePrice": null,
+    "sku": "TUPI-SIG",
+    "stock": 44,
+    "categoryId": "c-1",
+    "images": ["/products/classic-white-tupi.png"],
+    "featured": true,
+    "newArrival": true,
+    "bestseller": true,
+    "active": true,
+    "sortOrder": 3
+  }
+  ,
+  {
+    "id": "p-4",
+    "name": "Signature Handcrafted Tupi",
+    "slug": "signature-handcrafted-tupi",
+    "description": "Artisan modest tupi crafted from fine breathable cotton with subtle geometric stitching. Available in multiple tailored sizes for a comfortable fit.",
+    "shortDescription": "Artisan modest tupi with subtle geometric stitching.",
+    "hasVariants": true,
+    "attributes": [
+      {
+        "id": "attr-size",
+        "name": "Size",
+        "values": ["52", "54", "56"]
+      }
+    ],
+    "variants": [
+      {
+        "id": "v-p3-52",
+        "sku": "TUPI-SIG-52",
+        "attributes": {
+          "Size": "52"
+        },
+        "price": 1650,
+        "salePrice": null,
+        "stock": 25,
+        "lowStockThreshold": 5,
+        "stockStatus": "in_stock",
+        "active": true
+      },
+      {
+        "id": "v-p3-54",
+        "sku": "TUPI-SIG-54",
+        "attributes": {
+          "Size": "54"
+        },
+        "price": 1650,
+        "salePrice": 1450,
+        "stock": 15,
+        "lowStockThreshold": 5,
+        "stockStatus": "in_stock",
+        "active": true
+      },
+      {
+        "id": "v-p3-56",
+        "sku": "TUPI-SIG-56",
+        "attributes": {
+          "Size": "56"
+        },
+        "price": 1750,
+        "salePrice": null,
+        "stock": 4,
+        "lowStockThreshold": 5,
+        "stockStatus": "low_stock",
+        "active": true
+      }
+    ],
+    "price": 1650,
+    "salePrice": null,
+    "sku": "TUPI-SIG",
+    "stock": 44,
+    "categoryId": "c-1",
+    "images": ["/products/classic-white-tupi.png"],
+    "featured": true,
+    "newArrival": true,
+    "bestseller": true,
+    "active": true,
+    "sortOrder": 3
+  }
+  ,
   {
     "id": "p-3",
     "name": "Signature Handcrafted Tupi",

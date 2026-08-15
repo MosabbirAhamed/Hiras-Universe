@@ -13,7 +13,7 @@ const EditorialBanner = () => {
           </div>
         </div>
         <div className="relative h-56 md:h-auto">
-          <Image src="/products/hero-1.svg" alt="Timeless Modesty" fill style={{ objectFit: 'cover' }} />
+          <Image src="/products/hero-1.png" alt="Timeless Modesty" fill style={{ objectFit: 'cover' }} />
         </div>
       </div>
     </div>

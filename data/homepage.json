@@ -1,0 +1,4 @@
+[
+  { "id": "s-hero", "type": "hero", "enabled": true, "order": 0, "data": { "headline": "Elegance in Modesty", "sub": "Curated modest fashion and timeless essentials.", "image": "/products/hero-1.svg" } },
+  { "id": "s-featured", "type": "featured_products", "enabled": true, "order": 1, "data": { "productIds": ["p-1","p-2"] } }
+]

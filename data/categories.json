@@ -1,0 +1,20 @@
+[
+  {
+    "id": "c-1",
+    "name": "Tupi",
+    "slug": "tupi",
+    "description": "Handcrafted modest tupi collection.",
+    "image": "/products/placeholder.svg",
+    "active": true,
+    "sortOrder": 1
+  },
+  {
+    "id": "c-2",
+    "name": "Hijab",
+    "slug": "hijab",
+    "description": "Premium quality hijabs and essentials.",
+    "image": "/products/placeholder.svg",
+    "active": true,
+    "sortOrder": 2
+  }
+]

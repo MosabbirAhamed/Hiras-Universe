@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000">
+  <defs>
+    <linearGradient id="g1" x1="0" x2="1">
+      <stop offset="0%" stop-color="#FFF" stop-opacity="1" />
+      <stop offset="100%" stop-color="#F3EDE7" />
+    </linearGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#g1)"/>
+  <g transform="translate(80,130)">
+    <rect width="640" height="560" rx="20" fill="#fff" stroke="#EDE0D5"/>
+    <g transform="translate(40,40)">
+      <ellipse cx="280" cy="220" rx="190" ry="140" fill="#F6F1EB" />
+      <path d="M140 180c40-80 240-80 280 0c-30 40-120 70-160 70c-40 0-100-30-120-70z" fill="#E7D7C8" />
+    </g>
+  </g>
+  <text x="50%" y="920" text-anchor="middle" fill="#6B4F3B" font-family="Georgia, serif" font-size="28">Classic White Tupi</text>
+</svg>

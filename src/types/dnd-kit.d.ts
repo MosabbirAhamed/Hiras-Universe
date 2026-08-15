@@ -1,0 +1,6 @@
+declare module '@dnd-kit/core'
+declare module '@dnd-kit/sortable'
+declare module '@dnd-kit/modifiers'
+declare module '@dnd-kit/sensors'
+declare module '@dnd-kit/accessibility'
+declare module '@dnd-kit/utilities'

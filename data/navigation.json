@@ -1,0 +1,5 @@
+[
+  { "id": "n-1", "label": "Women", "url": "/collections/women", "active": true, "order": 1 },
+  { "id": "n-2", "label": "Men", "url": "/collections/men", "active": true, "order": 2 },
+  { "id": "n-3", "label": "Tupi", "url": "/category/tupi", "active": true, "order": 3 }
+]

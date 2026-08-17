@@ -54,6 +54,8 @@ export default function AdminTheme() {
   }
 
   async function save() {
+    if (saving) return
+
     setSaving(true)
     setError('')
     try {
@@ -65,35 +67,45 @@ export default function AdminTheme() {
       })
       const data = await response.json().catch(() => null)
       if (!response.ok) throw new Error(data?.error || 'Could not save theme settings')
+      if (!data || typeof data !== 'object' || Array.isArray(data)) {
+        throw new Error('The server returned invalid theme settings.')
+      }
+      setTheme(data)
       setDirty(false)
       toast?.show('Theme saved successfully')
     } catch (saveError) {
       const message = saveError instanceof Error ? saveError.message : 'Could not save theme settings'
       setError(message)
-      toast?.show(message)
+      toast?.show(message, 'error')
     } finally {
       setSaving(false)
     }
   }
 
   async function resetUnsaved() {
-    if (!dirty || !confirm('Reset unsaved changes?')) return
+    if (loading || !dirty || !confirm('Reset unsaved changes?')) return
     setLoading(true)
     setError('')
     try {
       const response = await fetch('/api/theme', { cache: 'no-store' })
       const data = await response.json().catch(() => null)
       if (!response.ok) throw new Error(data?.error || 'Could not reload theme settings')
+      if (!data || typeof data !== 'object' || Array.isArray(data)) {
+        throw new Error('The server returned invalid theme settings.')
+      }
       setTheme(data)
       setDirty(false)
     } catch (resetError) {
-      setError(resetError instanceof Error ? resetError.message : 'Could not reload theme settings')
+      const message = resetError instanceof Error ? resetError.message : 'Could not reload theme settings'
+      setError(message)
+      toast?.show(message, 'error')
     } finally {
       setLoading(false)
     }
   }
 
   async function resetToDefault() {
+    if (saving) return
     if (dirty && !confirm('You have unsaved changes. Reset to default anyway?')) return
     if (!confirm('Reset theme to default? This will overwrite saved settings.')) return
     setSaving(true)
@@ -102,6 +114,9 @@ export default function AdminTheme() {
       const defaultResponse = await fetch('/api/theme/default', { cache: 'no-store' })
       const defaultTheme = await defaultResponse.json().catch(() => null)
       if (!defaultResponse.ok) throw new Error(defaultTheme?.error || 'Could not load default theme')
+      if (!defaultTheme || typeof defaultTheme !== 'object' || Array.isArray(defaultTheme)) {
+        throw new Error('The server returned invalid default theme settings.')
+      }
 
       const saveResponse = await fetch('/api/theme', {
         method: 'PUT',
@@ -110,13 +125,16 @@ export default function AdminTheme() {
       })
       const saveData = await saveResponse.json().catch(() => null)
       if (!saveResponse.ok) throw new Error(saveData?.error || 'Could not reset theme')
-      setTheme(defaultTheme)
+      if (!saveData || typeof saveData !== 'object' || Array.isArray(saveData)) {
+        throw new Error('The server returned invalid theme settings.')
+      }
+      setTheme(saveData)
       setDirty(false)
       toast?.show('Theme reset to default')
     } catch (resetError) {
       const message = resetError instanceof Error ? resetError.message : 'Could not reset theme'
       setError(message)
-      toast?.show(message)
+      toast?.show(message, 'error')
     } finally {
       setSaving(false)
     }

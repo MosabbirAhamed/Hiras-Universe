@@ -38,6 +38,8 @@ export default function AdminSettings() {
   }, [])
 
   async function save() {
+    if (saving) return
+
     setSaving(true)
     setError('')
     try {
@@ -48,11 +50,15 @@ export default function AdminSettings() {
       })
       const data = await response.json().catch(() => null)
       if (!response.ok) throw new Error(data?.error || 'Could not save store settings')
+      if (!data || typeof data !== 'object' || Array.isArray(data)) {
+        throw new Error('The server returned invalid store settings.')
+      }
+      setSettings(data as Settings)
       toast?.show('Settings saved successfully')
     } catch (saveError) {
       const message = saveError instanceof Error ? saveError.message : 'Could not save store settings'
       setError(message)
-      toast?.show(message)
+      toast?.show(message, 'error')
     } finally {
       setSaving(false)
     }

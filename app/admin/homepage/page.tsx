@@ -32,17 +32,23 @@ export default function AdminHomepage() {
   }
 
   async function save() {
+    if (saving) return
+
     setSaving(true)
     setError('')
     try {
       const response = await fetch('/api/homepage', { method: 'PUT', body: JSON.stringify(sections), headers: { 'content-type': 'application/json' } })
       const data = await response.json().catch(() => null)
       if (!response.ok) throw new Error(data?.error || 'Could not save homepage sections')
+      if (!Array.isArray(data)) {
+        throw new Error('The server returned invalid homepage sections.')
+      }
+      setSections(data as HomepageSection[])
       toast?.show('Homepage saved successfully')
     } catch (saveError) {
       const message = saveError instanceof Error ? saveError.message : 'Could not save homepage sections'
       setError(message)
-      toast?.show(message)
+      toast?.show(message, 'error')
     } finally {
       setSaving(false)
     }

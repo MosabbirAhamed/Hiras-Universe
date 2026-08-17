@@ -55,9 +55,7 @@ export async function createMediaFromUpload(opts: {
       contentType: opts.mimeType,
       upsert: false,
     })
-  if (uploadError && uploadError.message !== 'The resource already exists') {
-    throw new Error(uploadError.message)
-  }
+  if (uploadError) throw new Error(uploadError.message)
 
   // Get the public URL
   const { data: urlData } = db.storage.from(BUCKET).getPublicUrl(opts.filename)
@@ -99,7 +97,16 @@ export async function createMediaFromUpload(opts: {
     .select()
     .single()
 
-  if (error) throw new Error(error.message)
+  if (error) {
+    const { error: cleanupError } = await db.storage.from(BUCKET).remove([opts.filename])
+    if (cleanupError) {
+      console.error('[media.upload] failed to clean up storage object after metadata failure', {
+        filename: opts.filename,
+        cleanupError,
+      })
+    }
+    throw new Error(error.message)
+  }
   return rowToMedia(data)
 }
 
@@ -109,24 +116,30 @@ export async function deleteMediaById(id: string): Promise<boolean> {
     .from('media')
     .select('*')
     .eq('id', id)
-    .single()
-  if (findErr || !item) return false
+    .maybeSingle()
+  if (findErr) throw new Error(findErr.message)
+  if (!item) return false
 
   // Remove from storage before deleting its database metadata.
   const { error: storageError } = await db.storage.from(BUCKET).remove([item.filename])
   if (storageError) throw new Error(storageError.message)
 
   // Remove from DB
-  const { error } = await db.from('media').delete().eq('id', id)
+  const { data: deleted, error } = await db
+    .from('media')
+    .delete()
+    .eq('id', id)
+    .select('id')
+    .maybeSingle()
   if (error) throw new Error(error.message)
-  return true
+  return deleted?.id === id
 }
 
 export async function findMediaById(id: string): Promise<Media | undefined> {
   const db = getAdminClient()
-  const { data, error } = await db.from('media').select('*').eq('id', id).single()
-  if (error) return undefined
-  return rowToMedia(data)
+  const { data, error } = await db.from('media').select('*').eq('id', id).maybeSingle()
+  if (error) throw new Error(error.message)
+  return data ? rowToMedia(data) : undefined
 }
 
 export async function findMediaByFilename(filename: string): Promise<Media | undefined> {
@@ -135,9 +148,9 @@ export async function findMediaByFilename(filename: string): Promise<Media | und
     .from('media')
     .select('*')
     .eq('filename', filename)
-    .single()
-  if (error) return undefined
-  return rowToMedia(data)
+    .maybeSingle()
+  if (error) throw new Error(error.message)
+  return data ? rowToMedia(data) : undefined
 }
 
 export { }

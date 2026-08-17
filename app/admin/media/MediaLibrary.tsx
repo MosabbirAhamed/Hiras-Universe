@@ -7,7 +7,7 @@ export default function MediaLibrary({ initialItems }: { initialItems: any[] }) 
   const [items, setItems] = useState<any[]>(initialItems || [])
   const [query, setQuery] = useState('')
   const [uploading, setUploading] = useState(false)
-  const [progress, setProgress] = useState(0)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
   const [error, setError] = useState('')
   const toast = useToast()
 
@@ -22,40 +22,31 @@ export default function MediaLibrary({ initialItems }: { initialItems: any[] }) 
     const file = e.target.files?.[0]
     e.target.value = ''
     if (!file) return
+    if (uploading) return
     setError('')
     setUploading(true)
-    setProgress(10)
     try {
-      const b64 = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader()
-        reader.onload = () => resolve(((reader.result as string) || '').split(',')[1] || '')
-        reader.onerror = () => reject(new Error('Could not read file'))
-        reader.readAsDataURL(file)
-      })
-      setProgress(60)
-      const filename = `${Date.now()}-${file.name.replace(/[^a-z0-9._-]/gi, '_')}`
-      const res = await fetch('/api/uploads', {
-        method: 'POST',
-        body: JSON.stringify({ filename, data: b64 }),
-        headers: { 'content-type': 'application/json' }
-      })
+      const formData = new FormData()
+      formData.append('file', file)
+      const res = await fetch('/api/uploads', { method: 'POST', body: formData })
       const json = await res.json().catch(() => ({}))
       if (!res.ok) throw new Error(json.error || 'Upload failed')
-      setItems((prev) => [json, ...prev])
+      if (!json?.id || !json?.url) throw new Error('The server returned an invalid media record.')
+      setItems((prev) => [json, ...prev.filter((item) => item.id !== json.id)])
       toast?.show('Media uploaded successfully')
     } catch (uploadError) {
       const message = uploadError instanceof Error ? uploadError.message : 'Upload failed'
       setError(message)
-      toast?.show(message)
+      toast?.show(message, 'error')
     } finally {
-      setProgress(100)
       setUploading(false)
     }
   }
 
   async function handleDelete(id: string) {
-    if (!confirm('Delete this media item?')) return
+    if (deletingId || !confirm('Delete this media item?')) return
     setError('')
+    setDeletingId(id)
     try {
       const res = await fetch('/api/uploads', { method: 'DELETE', body: JSON.stringify({ id }), headers: { 'content-type': 'application/json' } })
       const json = await res.json().catch(() => ({}))
@@ -72,7 +63,9 @@ export default function MediaLibrary({ initialItems }: { initialItems: any[] }) 
     } catch (deleteError) {
       const message = deleteError instanceof Error ? deleteError.message : 'Delete failed'
       setError(message)
-      toast?.show(message)
+      toast?.show(message, 'error')
+    } finally {
+      setDeletingId(null)
     }
   }
 
@@ -80,8 +73,8 @@ export default function MediaLibrary({ initialItems }: { initialItems: any[] }) 
     <div className="space-y-4">
       <div className="flex flex-col gap-3 rounded-lg border border-cream bg-white p-4 sm:flex-row sm:items-center">
         <input aria-label="Search filename" placeholder="Search filename" value={query} onChange={(e) => setQuery(e.target.value)} className="min-h-10 flex-1 rounded border border-gray-200 px-3 py-2 text-sm" />
-        <label className="inline-flex min-h-10 cursor-pointer items-center justify-center rounded bg-mocha px-4 py-2 text-sm font-medium text-ivory transition hover:opacity-90">
-          {uploading ? `Uploading ${progress}%` : 'Upload media'}
+        <label className={`inline-flex min-h-10 items-center justify-center rounded bg-mocha px-4 py-2 text-sm font-medium text-ivory transition ${uploading ? 'cursor-not-allowed opacity-60' : 'cursor-pointer hover:opacity-90'}`}>
+          {uploading ? 'Uploading...' : 'Upload media'}
           <input type="file" accept="image/*" onChange={handleFile} disabled={uploading} className="hidden" />
         </label>
       </div>
@@ -99,7 +92,7 @@ export default function MediaLibrary({ initialItems }: { initialItems: any[] }) 
               <div className="mt-1 text-xs text-taupe">{Math.round((item.size || 0) / 1024)} KB</div>
               <div className="mt-3 flex gap-2">
                 <a href={item.url} target="_blank" rel="noreferrer" className="inline-flex min-h-9 items-center text-sm text-mocha underline">Open</a>
-                <button type="button" onClick={() => handleDelete(item.id)} className="min-h-9 rounded border border-gray-200 px-2 text-sm text-gray-700">Delete</button>
+                <button type="button" onClick={() => handleDelete(item.id)} disabled={uploading || deletingId !== null} className="min-h-9 rounded border border-gray-200 px-2 text-sm text-gray-700 disabled:cursor-not-allowed disabled:opacity-50">{deletingId === item.id ? 'Deleting...' : 'Delete'}</button>
               </div>
             </div>
           </article>

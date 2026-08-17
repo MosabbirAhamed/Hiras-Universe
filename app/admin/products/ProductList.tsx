@@ -2,6 +2,7 @@
 import React, { useMemo, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useToast } from '../../../src/components/admin/Toast'
 import type { Category, Product } from '../../../src/types/models'
 
 function formatPrice(product: Product) {
@@ -16,6 +17,8 @@ function stockLabel(product: Product) {
 }
 
 export default function ProductList({ items, categories }: { items: Product[]; categories: Category[] }) {
+  const toast = useToast()
+  const [products, setProducts] = useState(items)
   const [query, setQuery] = useState('')
   const [categoryId, setCategoryId] = useState('')
   const [status, setStatus] = useState('')
@@ -25,7 +28,7 @@ export default function ProductList({ items, categories }: { items: Product[]; c
   const categoryNames = useMemo(() => new Map(categories.map((category) => [category.id, category.name])), [categories])
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
-    return items.filter((product) => {
+    return products.filter((product) => {
       const matchesQuery = !q || [product.name, product.sku, product.slug, product.brand].some((item) => item?.toLowerCase().includes(q))
       const matchesCategory = !categoryId || product.categoryId === categoryId
       const matchesStatus = !status ||
@@ -37,20 +40,26 @@ export default function ProductList({ items, categories }: { items: Product[]; c
         product.stockStatus === status
       return matchesQuery && matchesCategory && matchesStatus
     })
-  }, [categoryId, items, query, status])
+  }, [categoryId, products, query, status])
 
   async function handleDelete(id: string) {
     if (!confirm('Delete product? This will not delete media files.')) return
     setDeletingId(id)
     setError('')
-    const res = await fetch(`/api/products/${id}`, { method: 'DELETE' })
-    if (!res.ok) {
-      const body = await res.json().catch(() => ({}))
-      setError(body.error || 'Failed to delete product.')
+
+    try {
+      const response = await fetch(`/api/products/${id}`, { method: 'DELETE' })
+      const data = await response.json().catch(() => null)
+      if (!response.ok) throw new Error(data?.error || 'Could not delete product.')
+      setProducts((current) => current.filter((product) => product.id !== id))
+      toast?.show('Product deleted successfully.')
+    } catch (deleteError) {
+      const message = deleteError instanceof Error ? deleteError.message : 'Could not delete product.'
+      setError(message)
+      toast?.show(message, 'error')
+    } finally {
       setDeletingId('')
-      return
     }
-    window.location.reload()
   }
 
   return (
@@ -87,14 +96,14 @@ export default function ProductList({ items, categories }: { items: Product[]; c
 
       {error && <div className="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</div>}
 
-      {!items.length && (
+      {!products.length && (
         <div className="rounded border border-cream bg-ivory p-6 text-sm text-taupe">No products have been created yet.</div>
       )}
-      {items.length > 0 && !filtered.length && (
+      {products.length > 0 && !filtered.length && (
         <div className="rounded border border-cream bg-ivory p-6 text-sm text-taupe">No products match the current filters.</div>
       )}
 
-      {filtered.map((p)=> (
+      {filtered.map((p) => (
         <div key={p.id} className="p-3 bg-ivory border border-cream rounded flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div className="flex items-center gap-3">
             <Image src={p.primaryImage || p.images?.[0] || '/products/placeholder.svg'} width={64} height={64} className="w-16 h-16 object-cover rounded" alt={p.name} />
@@ -122,7 +131,7 @@ export default function ProductList({ items, categories }: { items: Product[]; c
           </div>
           <div className="flex gap-2">
             <Link href={`/admin/products/${p.id}`} className="px-3 py-1 border rounded">Edit</Link>
-            <button onClick={() => handleDelete(p.id)} disabled={deletingId === p.id} className="px-3 py-1 border rounded disabled:opacity-60">{deletingId === p.id ? 'Deleting...' : 'Delete'}</button>
+            <button onClick={() => handleDelete(p.id)} disabled={Boolean(deletingId)} className="px-3 py-1 border rounded disabled:cursor-not-allowed disabled:opacity-60">{deletingId === p.id ? 'Deleting...' : 'Delete'}</button>
           </div>
         </div>
       ))}

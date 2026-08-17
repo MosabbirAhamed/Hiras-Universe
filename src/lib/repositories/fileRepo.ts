@@ -16,6 +16,8 @@ export {
   // Categories
   getCategories,
   getCategoryById,
+  createCategory,
+  updateCategory,
   saveCategories,
   deleteCategory,
   // Homepage & Navigation

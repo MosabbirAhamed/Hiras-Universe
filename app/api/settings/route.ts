@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getSettings, saveSettings } from '../../../src/lib/repositories/fileRepo'
+import { mutationErrorResponse } from '../../../src/lib/apiResponse'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -31,9 +32,9 @@ export async function PUT(req: Request) {
     allowed.social = typeof body.social === 'object' ? body.social : undefined
     allowed.defaultSeo = typeof body.defaultSeo === 'object' ? body.defaultSeo : undefined
 
-    await saveSettings(allowed)
-    return NextResponse.json({ ok: true })
-  } catch (e: any) {
-    return NextResponse.json({ error: String(e) }, { status: 400 })
+    const savedSettings = await saveSettings(allowed)
+    return NextResponse.json(savedSettings, { headers: { 'Cache-Control': 'no-store' } })
+  } catch (error) {
+    return mutationErrorResponse('settings.save', error, 'Could not save store settings. Please try again.')
   }
 }

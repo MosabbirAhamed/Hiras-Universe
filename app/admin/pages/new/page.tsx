@@ -20,6 +20,7 @@ export default function NewPage() {
 
   async function submit(event: React.FormEvent) {
     event.preventDefault()
+    if (saving) return
     setSaving(true)
     setError('')
 
@@ -36,12 +37,21 @@ export default function NewPage() {
         headers: { 'content-type': 'application/json' }
       })
       const data = await response.json().catch(() => null)
-      if (!response.ok) throw new Error(data?.error || 'Could not create page')
-      toast?.show('Page created successfully')
+      if (!response.ok) throw new Error(data?.error || 'Could not create page.')
+      if (!data?.id) throw new Error('The server returned an invalid page response.')
+
+      setTitle(data.title || '')
+      setSlug(data.slug || '')
+      setContent(data.content || '')
+      setStatus(data.status || 'draft')
+      setSeoTitle(data.seo?.title || '')
+      setSeoDesc(data.seo?.description || '')
+      toast?.show('Page created successfully.')
       router.push('/admin/pages')
-      router.refresh()
     } catch (saveError) {
-      setError(saveError instanceof Error ? saveError.message : 'Could not create page')
+      const message = saveError instanceof Error ? saveError.message : 'Could not create page.'
+      setError(message)
+      toast?.show(message, 'error')
     } finally {
       setSaving(false)
     }

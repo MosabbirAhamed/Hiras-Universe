@@ -3,9 +3,11 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useToast } from '../../../src/components/admin/Toast'
 import type { Category } from '../../../src/types/models'
 
 export default function CategoryList({ items }: { items: Category[] }) {
+  const toast = useToast()
   const [categories, setCategories] = useState(items)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [error, setError] = useState('')
@@ -18,10 +20,13 @@ export default function CategoryList({ items }: { items: Category[] }) {
     try {
       const response = await fetch(`/api/categories/${id}`, { method: 'DELETE' })
       const data = await response.json().catch(() => null)
-      if (!response.ok) throw new Error(data?.error || 'Could not delete category')
+      if (!response.ok) throw new Error(data?.error || 'Could not delete category.')
       setCategories((current) => current.filter((category) => category.id !== id))
+      toast?.show('Category deleted successfully.')
     } catch (deleteError) {
-      setError(deleteError instanceof Error ? deleteError.message : 'Could not delete category')
+      const message = deleteError instanceof Error ? deleteError.message : 'Could not delete category.'
+      setError(message)
+      toast?.show(message, 'error')
     } finally {
       setDeletingId(null)
     }

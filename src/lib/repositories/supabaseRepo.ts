@@ -178,10 +178,9 @@ export async function getProductById(id: string): Promise<Product | undefined> {
     .from('products')
     .select('*')
     .eq('id', id)
-    .single()
-  if (error) return undefined
-  const all = await getProducts()
-  return normalizeProduct(rowToProduct(data), all)
+    .maybeSingle()
+  if (error) throw new Error(error.message)
+  return data ? normalizeProduct(rowToProduct(data), [rowToProduct(data)]) : undefined
 }
 
 export async function createProduct(p: Product): Promise<Product> {
@@ -196,28 +195,29 @@ export async function createProduct(p: Product): Promise<Product> {
   return rowToProduct(data)
 }
 
-export async function updateProduct(id: string, patch: Partial<Product>): Promise<Product | null> {
+export async function updateProduct(id: string, product: Product): Promise<Product | null> {
   const db = getAdminClient()
-  // Build a partial row from only the patched fields
-  const full = await getProductById(id)
-  if (!full) return null
-  const merged = { ...full, ...patch }
-  const row = productToRow(merged)
+  const row = productToRow({ ...product, id })
   const { data, error } = await db
     .from('products')
     .update(row)
     .eq('id', id)
     .select()
-    .single()
+    .maybeSingle()
   if (error) throw new Error(error.message)
-  return rowToProduct(data)
+  return data ? rowToProduct(data) : null
 }
 
 export async function deleteProduct(id: string): Promise<boolean> {
   const db = getAdminClient()
-  const { error } = await db.from('products').delete().eq('id', id)
+  const { data, error } = await db
+    .from('products')
+    .delete()
+    .eq('id', id)
+    .select('id')
+    .maybeSingle()
   if (error) throw new Error(error.message)
-  return true
+  return data !== null
 }
 
 // saveProducts is used internally in the old file-based lock — no longer needed
@@ -253,9 +253,51 @@ export async function getCategoryById(id: string): Promise<Category | undefined>
     .from('categories')
     .select('*')
     .eq('id', id)
+    .maybeSingle()
+  if (error) throw new Error(error.message)
+  return data
+    ? { id: data.id, name: data.name, slug: data.slug, description: data.description, image: data.image, active: data.active, sortOrder: data.sort_order }
+    : undefined
+}
+
+export async function createCategory(category: Category): Promise<Category> {
+  const db = getAdminClient()
+  const { data, error } = await db
+    .from('categories')
+    .insert({
+      id: category.id,
+      name: category.name,
+      slug: category.slug ?? null,
+      description: category.description ?? null,
+      image: category.image ?? null,
+      active: category.active ?? true,
+      sort_order: category.sortOrder ?? 0,
+    })
+    .select()
     .single()
-  if (error) return undefined
+  if (error) throw new Error(error.message)
   return { id: data.id, name: data.name, slug: data.slug, description: data.description, image: data.image, active: data.active, sortOrder: data.sort_order }
+}
+
+export async function updateCategory(id: string, category: Category): Promise<Category | null> {
+  const db = getAdminClient()
+  const { data, error } = await db
+    .from('categories')
+    .update({
+      name: category.name,
+      slug: category.slug ?? null,
+      description: category.description ?? null,
+      image: category.image ?? null,
+      active: category.active ?? true,
+      sort_order: category.sortOrder ?? 0,
+    })
+    .eq('id', id)
+    .select()
+    .maybeSingle()
+  if (error) throw new Error(error.message)
+  return data
+    ? { id: data.id, name: data.name, slug: data.slug, description: data.description, image: data.image, active: data.active, sortOrder: data.sort_order }
+    : null
 }
 
 export async function saveCategories(categories: Category[]) {
@@ -298,12 +340,15 @@ async function getSetting<T>(key: string, fallback: T): Promise<T> {
   return data.value as T
 }
 
-async function saveSetting(key: string, value: unknown) {
+async function saveSetting<T>(key: string, value: T): Promise<T> {
   const db = getAdminClient()
-  const { error } = await db
+  const { data, error } = await db
     .from('settings')
     .upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: 'key' })
+    .select('value')
+    .single()
   if (error) throw new Error(error.message)
+  return data.value as T
 }
 
 export async function getHomepageSections(): Promise<HomepageSection[]> {
@@ -352,9 +397,9 @@ export async function getPages(): Promise<PageRecord[]> {
 
 export async function getPageById(id: string): Promise<PageRecord | undefined> {
   const db = getAdminClient()
-  const { data, error } = await db.from('pages').select('*').eq('id', id).single()
-  if (error) return undefined
-  return rowToPage(data)
+  const { data, error } = await db.from('pages').select('*').eq('id', id).maybeSingle()
+  if (error) throw new Error(error.message)
+  return data ? rowToPage(data) : undefined
 }
 
 export async function getPageBySlug(slug: string): Promise<PageRecord | undefined> {
@@ -392,16 +437,16 @@ export async function updatePage(id: string, patch: Partial<PageRecord>): Promis
   if (patch.content !== undefined) updateData.content = patch.content
   if (patch.status !== undefined) updateData.status = patch.status
   if (patch.seo !== undefined) updateData.seo = patch.seo
-  const { data, error } = await db.from('pages').update(updateData).eq('id', id).select().single()
-  if (error) return null
-  return rowToPage(data)
+  const { data, error } = await db.from('pages').update(updateData).eq('id', id).select().maybeSingle()
+  if (error) throw new Error(error.message)
+  return data ? rowToPage(data) : null
 }
 
 export async function deletePage(id: string): Promise<boolean> {
   const db = getAdminClient()
-  const { error } = await db.from('pages').delete().eq('id', id)
+  const { data, error } = await db.from('pages').delete().eq('id', id).select('id').maybeSingle()
   if (error) throw new Error(error.message)
-  return true
+  return data !== null
 }
 
 // ─── ORDERS ───────────────────────────────────────────────────────────────────

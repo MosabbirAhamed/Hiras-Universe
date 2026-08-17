@@ -4,6 +4,7 @@ import React, { useMemo, useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import MediaPicker from '../../../src/components/admin/MediaPicker'
+import { useToast } from '../../../src/components/admin/Toast'
 import type { Category, Product, ProductAttribute, ProductVariant } from '../../../src/types/models'
 import { slugify, generateVariantSku, canonicalAttributeKey } from '../../../src/lib/productValidation'
 
@@ -78,25 +79,25 @@ function initialState(product?: Product): FormState {
 
   const attributes: AttributeFormState[] = Array.isArray(product?.attributes)
     ? product.attributes.map((a, i) => ({
-        id: a.id || `attr-${i + 1}`,
-        name: a.name || '',
-        valuesText: (a.values || []).join(', ')
-      }))
+      id: a.id || `attr-${i + 1}`,
+      name: a.name || '',
+      valuesText: (a.values || []).join(', ')
+    }))
     : []
 
   const variants: VariantFormState[] = Array.isArray(product?.variants)
     ? product.variants.map((v, i) => ({
-        id: v.id || `var-${i + 1}`,
-        sku: v.sku || '',
-        attributes: v.attributes || {},
-        price: value(v.price),
-        salePrice: value(v.salePrice),
-        costPrice: value(v.costPrice),
-        stock: value(v.stock ?? 0),
-        lowStockThreshold: value(v.lowStockThreshold ?? 0),
-        image: v.image || '',
-        active: v.active !== false
-      }))
+      id: v.id || `var-${i + 1}`,
+      sku: v.sku || '',
+      attributes: v.attributes || {},
+      price: value(v.price),
+      salePrice: value(v.salePrice),
+      costPrice: value(v.costPrice),
+      stock: value(v.stock ?? 0),
+      lowStockThreshold: value(v.lowStockThreshold ?? 0),
+      image: v.image || '',
+      active: v.active !== false
+    }))
     : []
 
   return {
@@ -168,6 +169,7 @@ function computeCartesianProduct(attrs: Array<{ name: string; values: string[] }
 
 export default function ProductForm({ initialProduct, categories, mode }: ProductFormProps) {
   const router = useRouter()
+  const toast = useToast()
   const [form, setForm] = useState<FormState>(() => initialState(initialProduct))
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState('')
@@ -297,6 +299,7 @@ export default function ProductForm({ initialProduct, categories, mode }: Produc
 
   async function submit(e: React.FormEvent) {
     e.preventDefault()
+    if (saving) return
     setSaving(true)
     setMessage('')
     setErrors({})
@@ -374,33 +377,38 @@ export default function ProductForm({ initialProduct, categories, mode }: Produc
 
     const url = mode === 'create' ? '/api/products' : `/api/products/${initialProduct?.id}`
     const method = mode === 'create' ? 'POST' : 'PUT'
-    const res = await fetch(url, {
-      method,
-      body: JSON.stringify(payload),
-      headers: { 'content-type': 'application/json' }
-    })
 
-    if (!res.ok) {
-      const body = await res.json().catch(() => ({}))
-      setErrors(body.errors || {})
-      setMessage(body.error || 'Failed to save product.')
+    try {
+      const response = await fetch(url, {
+        method,
+        body: JSON.stringify(payload),
+        headers: { 'content-type': 'application/json' }
+      })
+      const data = await response.json().catch(() => null)
+      if (!response.ok) {
+        setErrors(data?.errors || {})
+        throw new Error(data?.error || 'Could not save product.')
+      }
+      if (!data?.id) throw new Error('The server returned an invalid product response.')
+
+      setForm(initialState(data as Product))
+      toast?.show(mode === 'create' ? 'Product created successfully.' : 'Product saved successfully.')
+      router.push('/admin/products')
+    } catch (saveError) {
+      const message = saveError instanceof Error ? saveError.message : 'Could not save product.'
+      setMessage(message)
+      toast?.show(message, 'error')
+    } finally {
       setSaving(false)
-      return
     }
-
-    setMessage('Product saved successfully.')
-    setSaving(false)
-    router.push('/admin/products')
-    router.refresh()
   }
 
   return (
     <form onSubmit={submit} className="grid gap-5 max-w-5xl">
       {message && (
         <div
-          className={`rounded border p-3 text-sm ${
-            Object.keys(errors).length ? 'border-red-200 bg-red-50 text-red-700' : 'border-green-200 bg-green-50 text-green-700'
-          }`}
+          className={`rounded border p-3 text-sm ${Object.keys(errors).length ? 'border-red-200 bg-red-50 text-red-700' : 'border-green-200 bg-green-50 text-green-700'
+            }`}
         >
           {message}
         </div>
@@ -563,9 +571,8 @@ export default function ProductForm({ initialProduct, categories, mode }: Produc
                     return (
                       <div
                         key={variant.id}
-                        className={`p-3 rounded border text-xs grid gap-3 ${
-                          variant.active ? 'bg-white border-cream' : 'bg-gray-50 border-gray-200 opacity-60'
-                        }`}
+                        className={`p-3 rounded border text-xs grid gap-3 ${variant.active ? 'bg-white border-cream' : 'bg-gray-50 border-gray-200 opacity-60'
+                          }`}
                       >
                         <div className="flex flex-wrap items-center justify-between gap-2 border-b pb-2 border-cream">
                           <div className="flex items-center gap-2">

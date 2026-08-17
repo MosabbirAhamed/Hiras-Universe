@@ -33,7 +33,7 @@ export default function EditPage({ params }: { params: { id: string } }) {
   }, [params.id])
 
   async function save() {
-    if (!page) return
+    if (!page || saving) return
     setSaving(true)
     setError('')
 
@@ -44,12 +44,16 @@ export default function EditPage({ params }: { params: { id: string } }) {
         headers: { 'content-type': 'application/json' }
       })
       const data = await response.json().catch(() => null)
-      if (!response.ok) throw new Error(data?.error || 'Could not save page')
-      toast?.show('Page saved successfully')
+      if (!response.ok) throw new Error(data?.error || 'Could not save page.')
+      if (!data?.id) throw new Error('The server returned an invalid page response.')
+
+      setPage(data)
+      toast?.show('Page saved successfully.')
       router.push('/admin/pages')
-      router.refresh()
     } catch (saveError) {
-      setError(saveError instanceof Error ? saveError.message : 'Could not save page')
+      const message = saveError instanceof Error ? saveError.message : 'Could not save page.'
+      setError(message)
+      toast?.show(message, 'error')
     } finally {
       setSaving(false)
     }

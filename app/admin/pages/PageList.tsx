@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import { useToast } from '../../../src/components/admin/Toast'
 
 type AdminPageItem = {
     id: string
@@ -11,6 +12,7 @@ type AdminPageItem = {
 }
 
 export default function PageList({ initialPages }: { initialPages: AdminPageItem[] }) {
+    const toast = useToast()
     const [pages, setPages] = useState(initialPages)
     const [deletingId, setDeletingId] = useState<string | null>(null)
     const [error, setError] = useState('')
@@ -23,10 +25,13 @@ export default function PageList({ initialPages }: { initialPages: AdminPageItem
         try {
             const response = await fetch(`/api/pages/${id}`, { method: 'DELETE' })
             const data = await response.json().catch(() => null)
-            if (!response.ok) throw new Error(data?.error || 'Could not delete page')
+            if (!response.ok) throw new Error(data?.error || 'Could not delete page.')
             setPages((current) => current.filter((page) => page.id !== id))
+            toast?.show('Page deleted successfully.')
         } catch (deleteError) {
-            setError(deleteError instanceof Error ? deleteError.message : 'Could not delete page')
+            const message = deleteError instanceof Error ? deleteError.message : 'Could not delete page.'
+            setError(message)
+            toast?.show(message, 'error')
         } finally {
             setDeletingId(null)
         }

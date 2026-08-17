@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import MediaPicker from '../../../src/components/admin/MediaPicker'
+import { useToast } from '../../../src/components/admin/Toast'
 import type { Category } from '../../../src/types/models'
 import { slugify } from '../../../src/lib/productValidation'
 
@@ -14,6 +15,7 @@ type CategoryFormProps = {
 
 export default function CategoryForm({ initialCategory, mode }: CategoryFormProps) {
   const router = useRouter()
+  const toast = useToast()
   const [name, setName] = useState(initialCategory?.name || '')
   const [slug, setSlug] = useState(initialCategory?.slug || '')
   const [description, setDescription] = useState(initialCategory?.description || '')
@@ -33,6 +35,7 @@ export default function CategoryForm({ initialCategory, mode }: CategoryFormProp
 
   async function submit(e: React.FormEvent) {
     e.preventDefault()
+    if (saving) return
     if (!name.trim()) {
       setError('Name is required.')
       return
@@ -52,22 +55,31 @@ export default function CategoryForm({ initialCategory, mode }: CategoryFormProp
     const url = mode === 'create' ? '/api/categories' : `/api/categories/${initialCategory?.id}`
     const method = mode === 'create' ? 'POST' : 'PUT'
 
-    const res = await fetch(url, {
-      method,
-      body: JSON.stringify(payload),
-      headers: { 'content-type': 'application/json' }
-    })
+    try {
+      const response = await fetch(url, {
+        method,
+        body: JSON.stringify(payload),
+        headers: { 'content-type': 'application/json' }
+      })
+      const data = await response.json().catch(() => null)
+      if (!response.ok) throw new Error(data?.error || 'Could not save category.')
+      if (!data?.id) throw new Error('The server returned an invalid category response.')
 
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}))
-      setError(data.error || 'Failed to save category.')
+      setName(data.name || '')
+      setSlug(data.slug || '')
+      setDescription(data.description || '')
+      setImage(data.image || '')
+      setActive(data.active !== false)
+      setSortOrder(String(data.sortOrder ?? 0))
+      toast?.show(mode === 'create' ? 'Category created successfully.' : 'Category saved successfully.')
+      router.push('/admin/categories')
+    } catch (saveError) {
+      const message = saveError instanceof Error ? saveError.message : 'Could not save category.'
+      setError(message)
+      toast?.show(message, 'error')
+    } finally {
       setSaving(false)
-      return
     }
-
-    setSaving(false)
-    router.push('/admin/categories')
-    router.refresh()
   }
 
   return (

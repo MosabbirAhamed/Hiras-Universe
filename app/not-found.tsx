@@ -7,36 +7,37 @@ export const metadata = {
 
 export default function NotFound() {
   return (
-    <div className="site-container py-20 md:py-32 text-center max-w-lg mx-auto space-y-6">
-      <span className="text-xs font-semibold uppercase tracking-widest text-mocha bg-cream px-3 py-1 rounded-full">
-        404 — Not Found
-      </span>
-      <h1 className="text-3xl sm:text-4xl font-serif font-bold text-charcoal">
-        Page Not Found
-      </h1>
-      <p className="text-sm text-taupe leading-relaxed">
-        The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
-      </p>
-      <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-        <Link
-          href="/"
-          className="px-5 py-2.5 bg-mocha text-ivory rounded-md text-xs font-medium hover:opacity-90 transition shadow-xs"
-        >
-          Return to Home
-        </Link>
-        <Link
-          href="/products"
-          className="px-5 py-2.5 border border-cream bg-ivory rounded-md text-xs font-medium text-charcoal hover:bg-cream transition"
-        >
-          Browse Products
-        </Link>
-        <Link
-          href="/track-order"
-          className="px-5 py-2.5 border border-cream bg-ivory rounded-md text-xs font-medium text-charcoal hover:bg-cream transition"
-        >
-          Track Order
-        </Link>
+    <main className="storefront-shell">
+      <div className="site-container flex min-h-[60vh] items-center justify-center py-16 sm:py-20">
+        <div className="storefront-card mx-auto max-w-xl space-y-6 bg-white/60 p-7 text-center sm:p-10">
+          <span className="inline-flex rounded-full border border-black/10 bg-cream/70 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-mocha">
+            404 - Not Found
+          </span>
+          <h1 className="font-serif text-3xl font-semibold text-charcoal sm:text-4xl">
+            Page Not Found
+          </h1>
+          <p className="text-sm leading-6 text-charcoal/60">
+            The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <Link href="/" className="storefront-button">
+              Return to Home
+            </Link>
+            <Link
+              href="/products"
+              className="inline-flex min-h-11 items-center justify-center rounded-full border border-black/15 px-5 py-2.5 text-xs font-semibold text-charcoal transition hover:bg-cream focus:outline-none focus:ring-2 focus:ring-gold"
+            >
+              Browse Products
+            </Link>
+            <Link
+              href="/track-order"
+              className="inline-flex min-h-11 items-center justify-center rounded-full border border-black/15 px-5 py-2.5 text-xs font-semibold text-charcoal transition hover:bg-cream focus:outline-none focus:ring-2 focus:ring-gold"
+            >
+              Track Order
+            </Link>
+          </div>
+        </div>
       </div>
-    </div>
+    </main>
   )
 }

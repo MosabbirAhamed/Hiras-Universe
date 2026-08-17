@@ -1,17 +1,30 @@
 import React from 'react'
+import Link from 'next/link'
+import { FiArrowRight } from 'react-icons/fi'
 
 type Props = {
   title: string
   subtitle?: string
+  eyebrow?: string
+  href?: string
+  linkLabel?: string
 }
 
-const SectionHeading = ({ title, subtitle }: Props) => (
-  <div className="flex items-end justify-between gap-6 border-b border-black/10 pb-3 sm:pb-4">
+const SectionHeading = ({ title, subtitle, eyebrow = 'The edit', href, linkLabel = 'View all' }: Props) => (
+  <div className="flex items-end justify-between gap-5 border-b border-black/10 pb-4 sm:pb-5">
     <div className="max-w-2xl">
-      <h2 className="text-xl font-semibold text-charcoal sm:text-2xl md:text-[28px]">{title}</h2>
-      {subtitle && <p className="mt-1.5 text-sm leading-relaxed text-taupe">{subtitle}</p>}
+      <p className="storefront-eyebrow">{eyebrow}</p>
+      <h2 className="mt-2 font-serif text-[28px] font-semibold leading-tight text-charcoal sm:text-4xl">{title}</h2>
+      {subtitle ? <p className="mt-2 max-w-xl text-sm leading-6 text-charcoal/58">{subtitle}</p> : null}
     </div>
-    <span className="hidden h-px w-12 bg-mocha/50 sm:block" aria-hidden="true" />
+    {href ? (
+      <Link href={href} className="storefront-link mb-1 hidden items-center gap-2 sm:inline-flex">
+        {linkLabel}
+        <FiArrowRight aria-hidden="true" />
+      </Link>
+    ) : (
+      <span className="mb-2 hidden h-px w-14 bg-mocha/45 sm:block" aria-hidden="true" />
+    )}
   </div>
 )
 

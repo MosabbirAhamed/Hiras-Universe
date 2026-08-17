@@ -21,17 +21,14 @@ export const Header = async () => {
 
   return (
     <div className="sticky top-0 z-40 bg-ivory shadow-[0_1px_12px_rgba(34,34,34,0.05)]">
-      {/* Top Announcement Bar */}
-      <div className="bg-[#292724] text-[#f6f1eb] text-[11px] sm:text-xs py-2 border-b border-black/10">
+      <div className="bg-[#292724] py-2.5 text-[10px] text-[#f6f1eb] sm:text-[11px]">
         <div className="site-container flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4 overflow-hidden whitespace-nowrap">
-            <span className="flex items-center gap-2 font-medium">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#c5a059]" aria-hidden="true" />
-              Free delivery over Tk 2,000
-            </span>
-            <span className="hidden md:inline text-white/65">Premium quality, thoughtfully selected</span>
+          <div className="flex items-center gap-3 overflow-hidden whitespace-nowrap">
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#c5a059]" aria-hidden="true" />
+            <span className="font-semibold uppercase tracking-[0.14em]">Free delivery over Tk 2,000</span>
+            <span className="hidden text-white/55 md:inline">Thoughtful essentials, refined for everyday life</span>
           </div>
-          <div className="flex items-center gap-3 text-white/80 flex-shrink-0">
+          <div className="flex shrink-0 items-center gap-3 text-white/80">
             <Link
               href="/track-order"
               className="hover:text-white transition-colors flex items-center gap-1.5 font-medium"
@@ -47,23 +44,23 @@ export const Header = async () => {
       </div>
 
       {/* Main Navigation Header */}
-      <header className="border-b border-black/5 bg-ivory/95 backdrop-blur-md">
-        <div className="site-container flex min-h-[68px] items-center justify-between py-2.5 md:min-h-[76px] md:py-3">
+      <header className="border-b border-black/8 bg-ivory/95 backdrop-blur-md">
+        <div className="site-container flex min-h-[72px] items-center justify-between py-3 md:min-h-[82px] md:py-4">
           {/* Left: Brand / Logo */}
           <div className="flex items-center gap-3 sm:gap-4">
             <MobileMenuDrawer navItems={nav || []} />
             <Link href="/" className="group flex flex-col">
-              <span className="font-serif text-xl sm:text-2xl font-semibold tracking-tight text-charcoal group-hover:text-mocha transition-colors">
+              <span className="font-serif text-[21px] font-semibold tracking-[-0.02em] text-charcoal transition-colors group-hover:text-mocha sm:text-[25px]">
                 Hira&apos;s Universe
               </span>
-              <span className="mt-0.5 text-[9px] font-medium uppercase tracking-[0.2em] text-taupe">
-                Tradition. Refined.
+              <span className="mt-1 hidden text-[8px] font-semibold uppercase tracking-[0.28em] text-taupe sm:block">
+                Modest essentials, thoughtfully chosen
               </span>
             </Link>
           </div>
 
           {/* Center: Desktop Navigation */}
-          <nav className="hidden items-center gap-5 text-[13px] font-medium text-charcoal/75 md:flex lg:gap-7" aria-label="Primary navigation">
+          <nav className="hidden items-center gap-5 text-[11px] font-semibold uppercase tracking-[0.13em] text-charcoal/70 md:flex lg:gap-7" aria-label="Primary navigation">
             {primaryLinks.map((item, index) => (
               <Link
                 key={item.url}
@@ -80,7 +77,7 @@ export const Header = async () => {
             <Link
               href="/products"
               aria-label="Search products"
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full text-charcoal hover:bg-cream hover:text-mocha transition-colors"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full text-charcoal transition-colors hover:bg-cream hover:text-mocha"
               title="Search Products"
             >
               <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -92,7 +89,7 @@ export const Header = async () => {
             <Link
               href="/admin/login"
               aria-label="Account Login"
-              className="hidden h-11 w-11 items-center justify-center rounded-full text-charcoal hover:bg-cream hover:text-mocha transition-colors sm:inline-flex"
+              className="hidden h-11 w-11 items-center justify-center rounded-full text-charcoal transition-colors hover:bg-cream hover:text-mocha sm:inline-flex"
               title="Account"
             >
               <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">

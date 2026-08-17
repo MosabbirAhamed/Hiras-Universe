@@ -35,10 +35,10 @@ export const ProductCard = ({
   const productHref = slug ? `/products/${slug}` : undefined
 
   return (
-    <article className="group flex h-full w-full flex-col overflow-hidden rounded-lg border border-black/10 bg-white/55 transition duration-300 hover:-translate-y-0.5 hover:border-mocha/25 hover:shadow-[0_14px_32px_rgba(34,34,34,0.08)]">
+    <article className="group flex h-full w-full flex-col overflow-hidden rounded-[18px] border border-black/10 bg-white/70 transition duration-300 hover:-translate-y-0.5 hover:border-mocha/25 hover:shadow-[0_18px_40px_rgba(65,49,37,0.09)]">
 
       {/* Product Image */}
-      <div className="relative w-full aspect-[4/5] overflow-hidden bg-cream">
+      <div className="relative aspect-[4/5.4] w-full overflow-hidden bg-cream">
 
         {productHref ? (
           <Link
@@ -64,49 +64,27 @@ export const ProductCard = ({
           />
         )}
 
-        {/* Wishlist */}
-        <button
-          type="button"
-          aria-label={`Save ${title} to wishlist`}
-          className="absolute right-2.5 top-2.5 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white/90 text-mocha shadow-sm transition-colors hover:bg-white"
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M20.84 4.61c-1.54-1.34-3.77-1.46-5.4-.28L12 7.08 8.56 4.33C6.93 3.15 4.7 3.27 3.16 4.61 1.34 6.15 1.34 8.56 3.16 10.1L12 18.94l8.84-8.84c1.82-1.54 1.82-3.95 0-5.49z"
-              stroke="currentColor"
-              strokeWidth="1"
-              fill="none"
-            />
-          </svg>
-        </button>
-
         {/* Sale Badge */}
         {onSale && (
-          <div className="absolute left-2.5 top-2.5 z-10 rounded bg-mocha px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-ivory">
+          <div className="absolute left-3 top-3 z-10 rounded-full bg-[#7d4038] px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.14em] text-white">
             Sale
           </div>
         )}
       </div>
 
       {/* Product Information */}
-      <div className="flex flex-1 flex-col p-3.5 sm:p-4">
+      <div className="flex flex-1 flex-col p-4 sm:p-5">
 
         <div>
           {/* Category */}
           {category && (
-            <div className="mb-1.5 text-[10px] font-medium uppercase tracking-[0.12em] text-taupe">
+            <div className="mb-2 text-[9px] font-bold uppercase tracking-[0.16em] text-[#626753]">
               {category}
             </div>
           )}
 
           {/* Product Name */}
-          <h3 className="min-h-[40px] text-sm font-semibold leading-5 text-charcoal">
+          <h3 className="min-h-[44px] font-serif text-[17px] font-semibold leading-[1.35] text-charcoal">
             {productHref ? (
               <Link
                 href={productHref}
@@ -120,10 +98,10 @@ export const ProductCard = ({
           </h3>
 
           {/* Price */}
-          <div className="mt-2.5 min-h-[21px]">
+          <div className="mt-3 min-h-[22px]">
             {salePrice ? (
               <div className="flex items-baseline gap-3">
-                <span className="text-sm text-sale font-semibold">
+                <span className="text-sm font-bold text-[#7d4038]">
                   {pricePrefix ? `${pricePrefix} ` : ''}
                   {salePrice}
                 </span>
@@ -133,7 +111,7 @@ export const ProductCard = ({
                 </span>
               </div>
             ) : (
-              <div className="text-sm font-semibold text-mocha">
+              <div className="text-sm font-bold text-mocha">
                 {pricePrefix ? `${pricePrefix} ` : ''}
                 {price}
               </div>

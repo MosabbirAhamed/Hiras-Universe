@@ -55,22 +55,25 @@ export default function CartDrawer() {
     <div className="fixed inset-0 z-50 flex justify-end" role="dialog" aria-modal="true" aria-label="Shopping Bag">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity animate-fade-in"
+        className="fixed inset-0 bg-charcoal/55 backdrop-blur-xs transition-opacity animate-fade-in"
         onClick={closeDrawer}
         aria-hidden="true"
       />
 
       {/* Drawer Panel */}
-      <div className="relative z-10 flex h-full w-full max-w-md flex-col border-l border-black/10 bg-ivory shadow-2xl animate-slide-left">
+      <div className="relative z-10 flex h-full w-full max-w-[440px] flex-col border-l border-black/10 bg-[#fbfaf7] shadow-2xl animate-slide-left">
         {/* Drawer Header */}
-        <div className="flex items-center justify-between border-b border-black/10 bg-ivory p-4 md:p-5">
-          <div className="flex items-center gap-2">
-            <h2 className="font-serif text-lg md:text-xl font-medium text-charcoal">Shopping Bag</h2>
-            {isHydrated && itemCount > 0 && (
-              <span className="text-xs bg-cream px-2 py-0.5 rounded-full text-taupe font-medium">
-                {itemCount} {itemCount === 1 ? 'item' : 'items'}
-              </span>
-            )}
+        <div className="flex items-center justify-between border-b border-black/10 bg-[#fbfaf7] px-5 py-4 md:px-6 md:py-5">
+          <div>
+            <p className="storefront-eyebrow mb-1">Your edit</p>
+            <div className="flex items-center gap-2">
+              <h2 className="font-serif text-xl font-semibold text-charcoal md:text-2xl">Shopping Bag</h2>
+              {isHydrated && itemCount > 0 && (
+                <span className="text-xs bg-cream px-2 py-0.5 rounded-full text-taupe font-medium">
+                  {itemCount} {itemCount === 1 ? 'item' : 'items'}
+                </span>
+              )}
+            </div>
           </div>
           <button
             onClick={closeDrawer}
@@ -84,24 +87,25 @@ export default function CartDrawer() {
         </div>
 
         {/* Drawer Content */}
-        <div className="flex-1 overflow-y-auto p-4 md:p-5 space-y-4">
+        <div className="flex-1 space-y-4 overflow-y-auto p-5 md:p-6">
           {!isHydrated || items.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-center py-12">
-              <div className="w-16 h-16 rounded-full bg-cream flex items-center justify-center text-taupe mb-4">
+              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-black/10 bg-cream text-taupe">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M6 6h15l-1.5 9h-12z" strokeLinecap="round" strokeLinejoin="round" />
                   <circle cx="9" cy="20" r="1" />
                   <circle cx="19" cy="20" r="1" />
                 </svg>
               </div>
-              <h3 className="font-serif text-lg font-medium text-charcoal mb-1">Your bag is empty</h3>
-              <p className="text-sm text-taupe max-w-xs mb-6">
+              <p className="storefront-eyebrow mb-2">Your edit awaits</p>
+              <h3 className="mb-1 font-serif text-xl font-semibold text-charcoal">Your bag is empty</h3>
+              <p className="mb-6 max-w-xs text-sm leading-6 text-charcoal/60">
                 Discover our curated collection of premium modest wear and essentials.
               </p>
               <Link
                 href="/products"
                 onClick={closeDrawer}
-                className="px-6 py-2.5 bg-mocha text-ivory text-sm font-medium rounded-md hover:opacity-90 transition shadow-sm"
+                className="storefront-button"
               >
                 Explore Collection
               </Link>
@@ -117,9 +121,9 @@ export default function CartDrawer() {
                 const itemKey = getCartItemKey(item.productId, item.variantId)
 
                 return (
-                  <div key={itemKey} className="py-4 first:pt-0 last:pb-0 flex gap-3 sm:gap-4">
+                  <div key={itemKey} className="flex gap-3 py-5 first:pt-0 last:pb-0 sm:gap-4">
                     {/* Thumbnail */}
-                    <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg border border-black/10 bg-cream sm:h-24 sm:w-24">
+                    <div className="relative h-24 w-20 flex-shrink-0 overflow-hidden rounded-xl border border-black/10 bg-cream sm:h-28 sm:w-24">
                       {productHref ? (
                         <Link href={productHref} onClick={closeDrawer}>
                           <Image
@@ -194,11 +198,11 @@ export default function CartDrawer() {
 
                       {/* Quantity Controls & Line Total */}
                       <div className="flex items-center justify-between mt-3 pt-1">
-                        <div className="flex h-9 items-center overflow-hidden rounded-md border border-black/15 bg-white">
+                        <div className="flex h-9 items-center overflow-hidden rounded-full border border-black/15 bg-white">
                           <button
                             onClick={() => decrementQuantity(item.productId, item.variantId)}
                             aria-label={`Decrease quantity of ${product?.name || 'item'}`}
-                            className="px-2.5 py-1 text-xs text-charcoal hover:bg-cream transition disabled:opacity-30"
+                            className="inline-flex h-9 w-9 items-center justify-center text-xs text-charcoal transition hover:bg-cream disabled:opacity-30"
                           >
                             -
                           </button>
@@ -209,7 +213,7 @@ export default function CartDrawer() {
                             onClick={() => incrementQuantity(item.productId, item.variantId, variant?.stock ?? product?.stock)}
                             disabled={item.isMaxStock || item.isOutOfStock || isUnavailable}
                             aria-label={`Increase quantity of ${product?.name || 'item'}`}
-                            className="px-2.5 py-1 text-xs text-charcoal hover:bg-cream disabled:opacity-30 disabled:hover:bg-transparent transition"
+                            className="inline-flex h-9 w-9 items-center justify-center text-xs text-charcoal transition hover:bg-cream disabled:opacity-30 disabled:hover:bg-transparent"
                           >
                             +
                           </button>
@@ -229,7 +233,7 @@ export default function CartDrawer() {
 
         {/* Drawer Footer */}
         {isHydrated && items.length > 0 && (
-          <div className="space-y-3 border-t border-black/10 bg-white/55 p-4 md:p-5">
+          <div className="space-y-3 border-t border-black/10 bg-cream/35 p-5 md:p-6">
             <div className="flex items-center justify-between text-base">
               <span className="text-taupe">Subtotal</span>
               <span className="font-semibold text-charcoal text-lg">{formatPrice(subtotal)}</span>
@@ -240,14 +244,14 @@ export default function CartDrawer() {
               <Link
                 href="/cart"
                 onClick={closeDrawer}
-                className="btn-ghost flex min-h-[48px] w-full items-center justify-center px-4 py-2.5 text-center text-sm font-medium"
+                className="flex min-h-[48px] w-full items-center justify-center rounded-full border border-charcoal/20 px-4 py-2.5 text-center text-sm font-semibold text-charcoal transition hover:border-charcoal/40 hover:bg-white focus:outline-none focus:ring-2 focus:ring-gold"
               >
                 View Bag
               </Link>
               <Link
                 href="/checkout"
                 onClick={closeDrawer}
-                className="btn-primary flex min-h-[48px] w-full items-center justify-center px-4 py-2.5 text-center text-sm font-medium"
+                className="storefront-button flex min-h-[48px] w-full items-center justify-center px-4 py-2.5 text-center text-sm font-medium"
               >
                 Checkout
               </Link>

@@ -45,14 +45,19 @@ export default async function CmsPage({ params }: { params: { slug?: string[] } 
   }
 
   return (
-    <div className="site-container py-10 md:py-16 max-w-3xl">
-      <h1 className="text-3xl sm:text-4xl font-serif font-bold text-charcoal mb-6 border-b border-cream pb-4">
-        {page.title}
-      </h1>
-      <div
-        className="prose prose-stone max-w-none text-charcoal leading-relaxed space-y-4"
-        dangerouslySetInnerHTML={{ __html: sanitizeHtml(page.content || '') }}
-      />
-    </div>
+    <main className="storefront-shell">
+      <article className="site-container max-w-3xl py-10 sm:py-14 lg:py-20">
+        <header className="mb-8 border-b border-black/10 pb-8 sm:mb-10 sm:pb-10">
+          <p className="storefront-eyebrow mb-3">{"Hira's Universe"}</p>
+          <h1 className="font-serif text-3xl font-semibold leading-tight text-charcoal sm:text-4xl">
+            {page.title}
+          </h1>
+        </header>
+        <div
+          className="prose prose-stone max-w-none space-y-4 leading-relaxed text-charcoal prose-headings:font-serif prose-headings:font-semibold prose-a:text-mocha prose-a:underline prose-a:decoration-mocha/30 prose-a:underline-offset-4"
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(page.content || '') }}
+        />
+      </article>
+    </main>
   )
 }

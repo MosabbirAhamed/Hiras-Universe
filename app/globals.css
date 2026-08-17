@@ -3,13 +3,19 @@
 @tailwind utilities;
 
 :root {
-  --color-ivory: #F6F1EB;
-  --color-cream: #F3EDE7;
-  --color-beige: #DCCCBF;
-  --color-taupe: #B8A99A;
-  --color-mocha: #6B4F3B;
-  --color-charcoal: #222222;
-  --color-gold: #B89A6A;
+  --color-ivory: #f8f5ef;
+  --color-cream: #eee7dc;
+  --color-beige: #d8c7b3;
+  --color-taupe: #9b8d7d;
+  --color-mocha: #6a4939;
+  --color-charcoal: #242321;
+  --color-gold: #b28b54;
+  --storefront-ink: #242321;
+  --storefront-olive: #626753;
+  --storefront-oxblood: #7d4038;
+  --storefront-paper: #fbfaf7;
+  --storefront-line: rgba(36, 35, 33, 0.13);
+  --storefront-radius: 18px;
 }
 
 html,
@@ -35,7 +41,7 @@ body {
 /* Responsive container tuned for premium desktop width */
 .site-container {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1320px;
   margin: 0 auto;
   padding-left: 1rem;
   padding-right: 1rem;
@@ -294,6 +300,78 @@ button {
 :focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 3px;
+}
+
+/* Storefront-only primitives. These stay independent from the admin theme controls. */
+.storefront-shell {
+  background: var(--storefront-paper);
+}
+
+.storefront-card {
+  border: 1px solid var(--storefront-line);
+  border-radius: var(--storefront-radius);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 18px 48px rgba(65, 49, 37, 0.07);
+}
+
+.storefront-eyebrow {
+  color: var(--storefront-olive);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.storefront-link {
+  color: var(--storefront-ink);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: color 180ms ease, border-color 180ms ease;
+}
+
+.storefront-link:hover {
+  color: var(--storefront-oxblood);
+}
+
+.storefront-button {
+  align-items: center;
+  background: var(--storefront-ink);
+  border-radius: 999px;
+  color: var(--color-ivory);
+  display: inline-flex;
+  font-size: 0.72rem;
+  font-weight: 700;
+  justify-content: center;
+  letter-spacing: 0.12em;
+  min-height: 48px;
+  padding: 0.75rem 1.5rem;
+  text-transform: uppercase;
+  transition: transform 180ms ease, background-color 180ms ease, box-shadow 180ms ease;
+}
+
+.storefront-button:hover {
+  background: var(--storefront-oxblood);
+  box-shadow: 0 10px 22px rgba(125, 64, 56, 0.18);
+  transform: translateY(-1px);
+}
+
+.storefront-button--light {
+  background: var(--storefront-paper);
+  color: var(--storefront-ink);
+}
+
+.storefront-button--light:hover {
+  background: var(--color-cream);
+  color: var(--storefront-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .storefront-button:hover {
+    transform: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

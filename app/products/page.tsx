@@ -26,23 +26,35 @@ export default async function ProductsPage() {
   const visibleProducts = products.filter((p) => p.active !== false && p.visibility !== 'hidden')
 
   return (
-    <div className="site-container py-10 sm:py-12 md:py-16">
-      <div className="mb-10 max-w-2xl sm:mb-12">
-        <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-mocha">The full edit</p>
-        <h1 className="text-3xl font-serif font-bold text-charcoal sm:text-4xl">All Products</h1>
-        <p className="mt-3 max-w-xl text-sm leading-6 text-taupe">
-          Browse our curated catalog of handcrafted essentials and timeless modest styles.
-        </p>
-      </div>
+    <main className="storefront-shell">
+      <div className="site-container pb-16 pt-10 sm:pb-20 sm:pt-14 lg:pb-24 lg:pt-16">
+        <header className="mb-10 border-b border-black/10 pb-8 sm:mb-12 sm:flex sm:items-end sm:justify-between sm:gap-10 sm:pb-10">
+          <div className="max-w-3xl">
+            <p className="storefront-eyebrow mb-4">The full edit</p>
+            <h1 className="font-serif text-4xl font-semibold leading-[1.05] text-charcoal sm:text-5xl lg:text-6xl">
+              All products
+            </h1>
+            <p className="mt-4 max-w-xl text-sm leading-7 text-charcoal/65 sm:text-base">
+              Browse our current catalog of considered essentials and timeless modest styles.
+            </p>
+          </div>
+          <p className="mt-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-taupe sm:mb-1 sm:mt-0">
+            {visibleProducts.length} {visibleProducts.length === 1 ? 'piece' : 'pieces'}
+          </p>
+        </header>
 
-      {visibleProducts.length > 0 ? (
-        <ProductGrid products={visibleProducts} categories={categories} />
-      ) : (
-        <div className="border border-cream bg-ivory px-6 py-16 text-center text-taupe sm:px-12">
-          <p className="mb-2 font-serif text-lg text-charcoal">No Products Found</p>
-          <p className="text-xs">Check back soon for new arrivals and upcoming drops.</p>
-        </div>
-      )}
-    </div>
+        {visibleProducts.length > 0 ? (
+          <ProductGrid products={visibleProducts} categories={categories} />
+        ) : (
+          <div className="storefront-card flex min-h-[300px] flex-col items-center justify-center px-6 py-16 text-center sm:px-12">
+            <p className="storefront-eyebrow mb-4">Catalog update</p>
+            <h2 className="font-serif text-2xl font-semibold text-charcoal">The next edit is being prepared</h2>
+            <p className="mt-3 max-w-md text-sm leading-6 text-charcoal/60">
+              There are no available products at the moment. Please check back for the next collection.
+            </p>
+          </div>
+        )}
+      </div>
+    </main>
   )
 }

@@ -2,11 +2,15 @@ import React from 'react'
 
 export default function Loading() {
   return (
-    <div className="site-container py-16 flex flex-col items-center justify-center min-h-[50vh] space-y-4">
-      <div className="w-8 h-8 rounded-full border-2 border-mocha/20 border-t-mocha animate-spin" />
-      <p className="text-xs font-serif text-taupe uppercase tracking-widest animate-pulse">
-        Hira&apos;s Universe
-      </p>
+    <div className="storefront-shell site-container flex min-h-[55vh] flex-col items-center justify-center space-y-5 py-16">
+      <div className="h-10 w-10 animate-spin rounded-full border-2 border-mocha/20 border-t-mocha" aria-hidden="true" />
+      <div className="text-center">
+        <p className="storefront-eyebrow animate-pulse">
+          Hira&apos;s Universe
+        </p>
+        <p className="mt-2 font-serif text-lg text-charcoal">Preparing the edit</p>
+      </div>
+      <span className="sr-only">Loading</span>
     </div>
   )
 }

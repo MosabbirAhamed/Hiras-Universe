@@ -1,21 +1,27 @@
 import React from 'react'
+import { FiCreditCard, FiMapPin, FiPackage, FiSearch } from 'react-icons/fi'
 
 const items = [
-  { title: 'Premium quality', desc: 'Thoughtfully selected essentials', icon: '✦' },
-  { title: 'Fast delivery', desc: 'Across all 64 districts', icon: '→' },
-  { title: 'Secure payment', desc: 'COD and mobile banking', icon: '○' },
-  { title: 'Easy returns', desc: 'Simple 7-day exchange', icon: '↻' }
+  { title: 'Considered selection', desc: 'A focused edit of modest essentials', Icon: FiSearch },
+  { title: 'Nationwide delivery', desc: 'Service across all 64 districts', Icon: FiMapPin },
+  { title: 'Flexible payment', desc: 'Cash on delivery and mobile banking', Icon: FiCreditCard },
+  { title: 'Order tracking', desc: 'Check progress with your order details', Icon: FiPackage }
 ]
 
 const TrustSection = () => {
   return (
-    <div className="grid grid-cols-2 gap-3 border-y border-black/10 py-5 sm:gap-4 sm:py-6 md:grid-cols-4">
-      {items.map((it) => (
-        <div key={it.title} className="flex gap-3 px-1 sm:px-2">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-cream text-sm font-semibold text-mocha" aria-hidden="true">{it.icon}</span>
+    <div className="grid overflow-hidden rounded-[18px] border border-black/10 bg-white/65 sm:grid-cols-2 lg:grid-cols-4">
+      {items.map(({ title, desc, Icon }, index) => (
+        <div
+          key={title}
+          className={`flex min-h-[128px] gap-4 p-5 sm:p-6 ${index ? 'border-t border-black/10 sm:[&:nth-child(2)]:border-l sm:[&:nth-child(2)]:border-t-0 lg:border-l lg:border-t-0' : ''} ${index === 2 ? 'sm:border-t lg:border-t-0' : ''}`}
+        >
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#e9e1d5] text-mocha" aria-hidden="true">
+            <Icon size={17} />
+          </span>
           <div>
-            <div className="text-xs font-semibold capitalize text-charcoal sm:text-sm">{it.title}</div>
-            <div className="mt-1 text-[11px] leading-4 text-taupe">{it.desc}</div>
+            <h3 className="font-serif text-lg font-semibold text-charcoal">{title}</h3>
+            <p className="mt-1.5 text-xs leading-5 text-charcoal/58">{desc}</p>
           </div>
         </div>
       ))}

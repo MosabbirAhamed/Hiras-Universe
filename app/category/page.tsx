@@ -1,6 +1,7 @@
 import React from 'react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import { getCategories } from '../../src/lib/repositories/fileRepo'
 
 export const metadata: Metadata = {
@@ -21,34 +22,52 @@ export default async function CategoryListPage() {
   const categories = (await getCategories()).filter((c) => c.active !== false)
 
   return (
-    <div className="site-container py-10 sm:py-12 md:py-16">
-      <div className="mb-10 max-w-2xl sm:mb-12">
-        <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-mocha">Find your essentials</p>
-        <h1 className="text-3xl font-serif font-bold text-charcoal sm:text-4xl">Categories</h1>
-        <p className="mt-3 text-sm leading-6 text-taupe">
-          Select a category to browse tailored styles and specialized collections.
-        </p>
-      </div>
+    <main className="storefront-shell">
+      <div className="site-container pb-16 pt-10 sm:pb-20 sm:pt-14 lg:pb-24 lg:pt-16">
+        <header className="mb-10 max-w-3xl border-b border-black/10 pb-8 sm:mb-12 sm:pb-10">
+          <p className="storefront-eyebrow mb-4">Find your essentials</p>
+          <h1 className="font-serif text-4xl font-semibold leading-[1.05] text-charcoal sm:text-5xl lg:text-6xl">Categories</h1>
+          <p className="mt-4 max-w-xl text-sm leading-7 text-charcoal/65 sm:text-base">
+            Explore focused edits shaped around the pieces you reach for most.
+          </p>
+        </header>
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
-        {categories.map((cat) => (
-          <Link
-            key={cat.id}
-            href={`/category/${cat.slug || cat.id}`}
-            className="group flex min-h-[156px] flex-col justify-between border border-cream bg-ivory p-5 transition hover:border-mocha hover:shadow-[0_12px_28px_rgba(34,34,34,0.06)] sm:p-6"
-          >
-            <div className="font-serif font-semibold text-charcoal group-hover:text-mocha transition">
-              {cat.name}
-            </div>
-            {cat.description && (
-              <div className="text-xs text-taupe mt-1 line-clamp-2">{cat.description}</div>
-            )}
-            <span className="mt-5 inline-flex items-center gap-2 text-2xs font-semibold uppercase tracking-wider text-mocha">
-              View Collection <span aria-hidden="true">→</span>
-            </span>
-          </Link>
-        ))}
+        {categories.length ? (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {categories.map((cat) => (
+              <Link
+                key={cat.id}
+                href={`/category/${cat.slug || cat.id}`}
+                className="group storefront-card overflow-hidden"
+              >
+                <div className="relative aspect-[4/3] overflow-hidden bg-cream">
+                  <Image
+                    src={cat.image || '/products/placeholder.svg'}
+                    alt=""
+                    fill
+                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                    className="object-cover transition duration-500 group-hover:scale-[1.03]"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-charcoal/70 to-transparent px-5 pb-5 pt-12 text-white sm:px-6">
+                    <h2 className="font-serif text-2xl font-semibold">{cat.name}</h2>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between gap-4 px-5 py-5 sm:px-6">
+                  <p className="line-clamp-2 text-sm leading-6 text-charcoal/60">
+                    {cat.description || 'Explore the considered collection.'}
+                  </p>
+                  <span className="shrink-0 text-xl text-mocha transition-transform group-hover:translate-x-1" aria-hidden="true">↗</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="storefront-card px-6 py-16 text-center">
+            <h2 className="font-serif text-2xl font-semibold text-charcoal">Collections are being prepared</h2>
+            <p className="mt-3 text-sm text-charcoal/60">Please check back soon for the next category edit.</p>
+          </div>
+        )}
       </div>
-    </div>
+    </main>
   )
 }

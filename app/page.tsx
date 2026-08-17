@@ -34,47 +34,54 @@ export default async function Home() {
     : products.filter((product) => product.featured)
   const newArrivals = products.filter((product) => product.newArrival)
 
+  const primaryProducts = featuredProducts.length ? featuredProducts : products.slice(0, 6)
+  const arrivalProducts = newArrivals.slice(0, 8)
+
   return (
-    <div className="site-container pb-16 sm:pb-24">
-      <Hero headline={hero.headline} sub={hero.sub} image={hero.image} />
+    <main className="storefront-shell">
+      <div className="site-container pb-16 sm:pb-24">
+        <Hero headline={hero.headline} sub={hero.sub} image={hero.image} />
 
-      <section className="mt-12 sm:mt-16">
-        <SectionHeading title="Shop by Category" />
-        <CategoryScroller categories={categories} />
-      </section>
+        {categories.length ? (
+          <section className="mt-16 sm:mt-24">
+            <SectionHeading title="Shop by category" eyebrow="Find your edit" href="/category" />
+            <CategoryScroller categories={categories} />
+          </section>
+        ) : null}
 
-      <section className="mt-14 sm:mt-20">
-        <SectionHeading title="Premium Tupi Collection" subtitle="Tradition, refined." />
-        <ProductCarousel products={featuredProducts.length ? featuredProducts : products.slice(0, 5)} categories={categories} />
-      </section>
+        {primaryProducts.length ? (
+          <section className="mt-16 sm:mt-24">
+            <SectionHeading title="Featured pieces" subtitle="A focused selection from the current collection." eyebrow="Curated now" href="/products" />
+            <ProductCarousel products={primaryProducts} categories={categories} />
+          </section>
+        ) : null}
 
-      <section className="mt-14 sm:mt-20">
-        <SectionHeading title="New Arrivals" />
-        <ProductGrid products={(newArrivals.length ? newArrivals : products).slice(0, 8)} categories={categories} />
-      </section>
+        {arrivalProducts.length ? (
+          <section className="mt-16 sm:mt-24">
+            <SectionHeading title="New arrivals" subtitle="The latest additions to Hira's Universe." eyebrow="Just in" href="/products" />
+            <ProductGrid products={arrivalProducts} categories={categories} />
+          </section>
+        ) : null}
 
-      <section className="mt-14 sm:mt-20">
-        <SectionHeading title="Women's Collection" />
-        <EditorialBanner />
-      </section>
+        <section className="mt-16 sm:mt-24">
+          <EditorialBanner />
+        </section>
 
-      <section className="mt-14 sm:mt-20">
-        <SectionHeading title="Islamic Gift Sets" subtitle="Thoughtful gifts. Timeless blessings." />
-        <ProductGrid products={products.slice(0, 4)} categories={categories} />
-      </section>
+        {products.length ? (
+          <section className="mt-16 sm:mt-24">
+            <SectionHeading title="The current selection" subtitle="Every active piece, brought together for considered browsing." eyebrow="Explore more" href="/products" />
+            <ProductCarousel products={products.slice(0, 8)} categories={categories} />
+          </section>
+        ) : null}
 
-      <section className="mt-14 sm:mt-20">
-        <SectionHeading title="Best Sellers" />
-        <ProductCarousel products={products.slice(0, 6)} categories={categories} />
-      </section>
+        <section className="mt-16 sm:mt-24">
+          <TrustSection />
+        </section>
 
-      <section className="mt-16 sm:mt-24">
-        <TrustSection />
-      </section>
-
-      <section className="mt-10 sm:mt-12">
-        <Newsletter />
-      </section>
-    </div>
+        <section className="mt-8 sm:mt-10">
+          <Newsletter />
+        </section>
+      </div>
+    </main>
   )
 }

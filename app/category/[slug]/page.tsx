@@ -53,23 +53,29 @@ export default async function CategoryPage({ params }: { params: { slug: string 
   )
 
   return (
-    <div className="site-container py-10 sm:py-12 md:py-16">
-      <div className="mb-10 max-w-2xl sm:mb-12">
-        <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-mocha">Curated collection</p>
-        <h1 className="text-3xl font-serif font-bold text-charcoal sm:text-4xl">{category.name}</h1>
-        {category.description && (
-          <p className="mt-2 text-sm text-taupe leading-relaxed">{category.description}</p>
+    <main className="storefront-shell">
+      <div className="site-container pb-16 pt-10 sm:pb-20 sm:pt-14 lg:pb-24 lg:pt-16">
+        <header className="mb-10 border-b border-black/10 pb-8 sm:mb-12 sm:pb-10">
+          <p className="storefront-eyebrow mb-4">Curated collection</p>
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
+            <div className="max-w-3xl">
+              <h1 className="font-serif text-4xl font-semibold leading-[1.05] text-charcoal sm:text-5xl lg:text-6xl">{category.name}</h1>
+              {category.description && <p className="mt-4 max-w-xl text-sm leading-7 text-charcoal/65 sm:text-base">{category.description}</p>}
+            </div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-taupe">{filtered.length} {filtered.length === 1 ? 'piece' : 'pieces'}</p>
+          </div>
+        </header>
+
+        {filtered.length > 0 ? (
+          <ProductGrid products={filtered} categories={categories} />
+        ) : (
+          <div className="storefront-card flex min-h-[300px] flex-col items-center justify-center px-6 py-16 text-center sm:px-12">
+            <p className="storefront-eyebrow mb-4">A quiet interval</p>
+            <h2 className="font-serif text-2xl font-semibold text-charcoal">This collection is being refreshed</h2>
+            <p className="mt-3 max-w-md text-sm leading-6 text-charcoal/60">There are no available pieces in this category right now.</p>
+          </div>
         )}
       </div>
-
-      {filtered.length > 0 ? (
-        <ProductGrid products={filtered} categories={categories} />
-      ) : (
-        <div className="border border-cream bg-ivory px-6 py-16 text-center text-taupe sm:px-12">
-          <p className="mb-2 font-serif text-lg text-charcoal">No Products Available</p>
-          <p className="text-xs">There are currently no active products in this collection.</p>
-        </div>
-      )}
-    </div>
+    </main>
   )
 }

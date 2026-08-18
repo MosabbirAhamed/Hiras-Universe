@@ -48,19 +48,17 @@ export default function MobileMenuDrawer({ navItems }: MobileNavProps) {
         aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
         aria-expanded={isOpen}
         aria-controls="mobile-nav-drawer"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setIsOpen((open) => !open)}
         className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg text-[var(--color-header-text)] transition hover:bg-[var(--color-section-background)] focus:outline-none focus:ring-2 focus:ring-[var(--color-input-focus)] md:hidden"
       >
         <span className="sr-only">{isOpen ? 'Close menu' : 'Open menu'}</span>
-        {isOpen ? (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          {isOpen ? (
             <path d="M18 6L6 18M6 6l12 12" />
-          </svg>
-        ) : (
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          ) : (
             <path d="M4 6h16M4 12h16M4 18h10" />
-          </svg>
-        )}
+          )}
+        </svg>
       </button>
 
       {/* Backdrop — sits above page content, below drawer */}

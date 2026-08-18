@@ -87,7 +87,7 @@ export default function NavigationAdmin() {
       setMenu(persistedMenu)
       setOrigMenu(persistedMenu)
       setUnsaved(false)
-      toast?.show('Navigation saved successfully.')
+      toast?.show('Navigation updated successfully.')
     } catch (saveError) {
       const message = saveError instanceof Error ? saveError.message : 'Could not save navigation'
       setError(message)

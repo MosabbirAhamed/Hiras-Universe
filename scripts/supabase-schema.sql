@@ -6,13 +6,19 @@
 
 -- ── 1. CATEGORIES ─────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS categories (
-  id          text PRIMARY KEY,
-  name        text NOT NULL,
-  slug        text UNIQUE,
-  description text,
-  image       text,
-  active      boolean NOT NULL DEFAULT true,
-  sort_order  integer NOT NULL DEFAULT 0
+  id                   text PRIMARY KEY,
+  name                 text NOT NULL,
+  slug                 text UNIQUE,
+  description          text,
+  image                text,
+  banner_image         text,
+  parent_id            text REFERENCES categories(id) ON DELETE SET NULL,
+  featured             boolean NOT NULL DEFAULT false,
+  active               boolean NOT NULL DEFAULT true,
+  sort_order           integer NOT NULL DEFAULT 0,
+  seo_title            text,
+  seo_description      text,
+  selected_product_ids text[] NOT NULL DEFAULT '{}'
 );
 
 -- ── 2. PRODUCTS ───────────────────────────────────────────────────────────────
@@ -34,6 +40,8 @@ CREATE TABLE IF NOT EXISTS products (
   stock_status        text NOT NULL DEFAULT 'in_stock'
                         CHECK (stock_status IN ('in_stock','low_stock','out_of_stock')),
   category_id         text REFERENCES categories(id) ON DELETE SET NULL,
+  brand               text,
+  tags                text[] NOT NULL DEFAULT '{}',
   images              text[] NOT NULL DEFAULT '{}',
   primary_image       text,
   featured            boolean NOT NULL DEFAULT false,
@@ -41,12 +49,45 @@ CREATE TABLE IF NOT EXISTS products (
   bestseller          boolean NOT NULL DEFAULT false,
   on_sale             boolean NOT NULL DEFAULT false,
   active              boolean NOT NULL DEFAULT true,
+  visibility          text NOT NULL DEFAULT 'public'
+                        CHECK (visibility IN ('public','hidden')),
   sort_order          integer NOT NULL DEFAULT 0,
+  weight              numeric(10,3),
+  dimensions          jsonb NOT NULL DEFAULT '{}',
   seo_title           text,
   seo_description     text,
+  seo_keywords        text[] NOT NULL DEFAULT '{}',
+  canonical_url       text,
   created_at          timestamptz NOT NULL DEFAULT now(),
   updated_at          timestamptz NOT NULL DEFAULT now()
 );
+
+-- Additive upgrades for projects created with an earlier schema version.
+ALTER TABLE categories ADD COLUMN IF NOT EXISTS banner_image text;
+ALTER TABLE categories ADD COLUMN IF NOT EXISTS parent_id text;
+ALTER TABLE categories ADD COLUMN IF NOT EXISTS featured boolean NOT NULL DEFAULT false;
+ALTER TABLE categories ADD COLUMN IF NOT EXISTS seo_title text;
+ALTER TABLE categories ADD COLUMN IF NOT EXISTS seo_description text;
+ALTER TABLE categories ADD COLUMN IF NOT EXISTS selected_product_ids text[] NOT NULL DEFAULT '{}';
+DO $$ BEGIN
+  ALTER TABLE categories
+    ADD CONSTRAINT categories_parent_id_fkey
+    FOREIGN KEY (parent_id) REFERENCES categories(id) ON DELETE SET NULL;
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+
+ALTER TABLE products ADD COLUMN IF NOT EXISTS brand text;
+ALTER TABLE products ADD COLUMN IF NOT EXISTS tags text[] NOT NULL DEFAULT '{}';
+ALTER TABLE products ADD COLUMN IF NOT EXISTS visibility text NOT NULL DEFAULT 'public';
+ALTER TABLE products ADD COLUMN IF NOT EXISTS weight numeric(10,3);
+ALTER TABLE products ADD COLUMN IF NOT EXISTS dimensions jsonb NOT NULL DEFAULT '{}';
+ALTER TABLE products ADD COLUMN IF NOT EXISTS seo_keywords text[] NOT NULL DEFAULT '{}';
+ALTER TABLE products ADD COLUMN IF NOT EXISTS canonical_url text;
+DO $$ BEGIN
+  ALTER TABLE products
+    ADD CONSTRAINT products_visibility_check CHECK (visibility IN ('public','hidden'));
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 -- ── 3. ORDERS ─────────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS orders (
@@ -145,6 +186,7 @@ CREATE TABLE IF NOT EXISTS order_number_allocator (
 -- =============================================================================
 -- INDEXES
 -- =============================================================================
+CREATE INDEX IF NOT EXISTS idx_categories_parent  ON categories(parent_id, sort_order);
 CREATE INDEX IF NOT EXISTS idx_products_category  ON products(category_id);
 CREATE INDEX IF NOT EXISTS idx_products_active     ON products(active, sort_order);
 CREATE INDEX IF NOT EXISTS idx_products_featured   ON products(featured) WHERE featured = true;

@@ -62,6 +62,8 @@ function rowToProduct(row: any): Product {
     lowStockThreshold: row.low_stock_threshold,
     stockStatus: row.stock_status,
     categoryId: row.category_id,
+    brand: row.brand,
+    tags: row.tags ?? [],
     images: row.images ?? [],
     primaryImage: row.primary_image,
     featured: row.featured,
@@ -69,9 +71,14 @@ function rowToProduct(row: any): Product {
     bestseller: row.bestseller,
     onSale: row.on_sale,
     active: row.active,
+    visibility: row.visibility,
     sortOrder: row.sort_order,
+    weight: row.weight != null ? Number(row.weight) : null,
+    dimensions: row.dimensions ?? undefined,
     seoTitle: row.seo_title,
     seoDescription: row.seo_description,
+    seoKeywords: row.seo_keywords ?? [],
+    canonicalUrl: row.canonical_url,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   }
@@ -96,6 +103,8 @@ function productToRow(p: Product) {
     low_stock_threshold: p.lowStockThreshold ?? 0,
     stock_status: p.stockStatus ?? 'in_stock',
     category_id: p.categoryId ?? null,
+    brand: p.brand ?? null,
+    tags: p.tags ?? [],
     images: p.images ?? [],
     primary_image: p.primaryImage ?? null,
     featured: p.featured ?? false,
@@ -103,9 +112,14 @@ function productToRow(p: Product) {
     bestseller: p.bestseller ?? false,
     on_sale: p.onSale ?? false,
     active: p.active ?? true,
+    visibility: p.visibility ?? (p.active === false ? 'hidden' : 'public'),
     sort_order: p.sortOrder ?? 0,
+    weight: p.weight ?? null,
+    dimensions: p.dimensions ?? {},
     seo_title: p.seoTitle ?? null,
     seo_description: p.seoDescription ?? null,
+    seo_keywords: p.seoKeywords ?? [],
+    canonical_url: p.canonicalUrl ?? null,
     updated_at: new Date().toISOString(),
   }
 }
@@ -231,6 +245,42 @@ export async function saveProducts(_products: Product[]) {
 
 // ─── CATEGORIES ───────────────────────────────────────────────────────────────
 
+function rowToCategory(row: any): Category {
+  return {
+    id: row.id,
+    name: row.name,
+    slug: row.slug,
+    description: row.description,
+    image: row.image,
+    bannerImage: row.banner_image,
+    parentId: row.parent_id,
+    featured: row.featured,
+    active: row.active,
+    sortOrder: row.sort_order,
+    seoTitle: row.seo_title,
+    seoDescription: row.seo_description,
+    selectedProductIds: row.selected_product_ids ?? [],
+  }
+}
+
+function categoryToRow(category: Category) {
+  return {
+    id: category.id,
+    name: category.name,
+    slug: category.slug ?? null,
+    description: category.description ?? null,
+    image: category.image ?? null,
+    banner_image: category.bannerImage ?? null,
+    parent_id: category.parentId ?? null,
+    featured: category.featured ?? false,
+    active: category.active ?? true,
+    sort_order: category.sortOrder ?? 0,
+    seo_title: category.seoTitle ?? null,
+    seo_description: category.seoDescription ?? null,
+    selected_product_ids: category.selectedProductIds ?? [],
+  }
+}
+
 export const getCategories = cache(async (): Promise<Category[]> => {
   const db = getAdminClient()
   const { data, error } = await db
@@ -238,15 +288,7 @@ export const getCategories = cache(async (): Promise<Category[]> => {
     .select('*')
     .order('sort_order', { ascending: true })
   if (error) throw new Error(error.message)
-  return (data ?? []).map((r: any) => ({
-    id: r.id,
-    name: r.name,
-    slug: r.slug,
-    description: r.description,
-    image: r.image,
-    active: r.active,
-    sortOrder: r.sort_order,
-  }))
+  return (data ?? []).map(rowToCategory)
 })
 
 export async function getCategoryById(id: string): Promise<Category | undefined> {
@@ -257,62 +299,36 @@ export async function getCategoryById(id: string): Promise<Category | undefined>
     .eq('id', id)
     .maybeSingle()
   if (error) throw new Error(error.message)
-  return data
-    ? { id: data.id, name: data.name, slug: data.slug, description: data.description, image: data.image, active: data.active, sortOrder: data.sort_order }
-    : undefined
+  return data ? rowToCategory(data) : undefined
 }
 
 export async function createCategory(category: Category): Promise<Category> {
   const db = getAdminClient()
   const { data, error } = await db
     .from('categories')
-    .insert({
-      id: category.id,
-      name: category.name,
-      slug: category.slug ?? null,
-      description: category.description ?? null,
-      image: category.image ?? null,
-      active: category.active ?? true,
-      sort_order: category.sortOrder ?? 0,
-    })
+    .insert(categoryToRow(category))
     .select()
     .single()
   if (error) throw new Error(error.message)
-  return { id: data.id, name: data.name, slug: data.slug, description: data.description, image: data.image, active: data.active, sortOrder: data.sort_order }
+  return rowToCategory(data)
 }
 
 export async function updateCategory(id: string, category: Category): Promise<Category | null> {
   const db = getAdminClient()
+  const { id: _categoryId, ...row } = categoryToRow({ ...category, id })
   const { data, error } = await db
     .from('categories')
-    .update({
-      name: category.name,
-      slug: category.slug ?? null,
-      description: category.description ?? null,
-      image: category.image ?? null,
-      active: category.active ?? true,
-      sort_order: category.sortOrder ?? 0,
-    })
+    .update(row)
     .eq('id', id)
     .select()
     .maybeSingle()
   if (error) throw new Error(error.message)
-  return data
-    ? { id: data.id, name: data.name, slug: data.slug, description: data.description, image: data.image, active: data.active, sortOrder: data.sort_order }
-    : null
+  return data ? rowToCategory(data) : null
 }
 
 export async function saveCategories(categories: Category[]) {
   const db = getAdminClient()
-  const rows = categories.map((c) => ({
-    id: c.id,
-    name: c.name,
-    slug: c.slug ?? null,
-    description: c.description ?? null,
-    image: c.image ?? null,
-    active: c.active ?? true,
-    sort_order: c.sortOrder ?? 0,
-  }))
+  const rows = categories.map(categoryToRow)
   const { error } = await db.from('categories').upsert(rows, { onConflict: 'id' })
   if (error) throw new Error(error.message)
 }

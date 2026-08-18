@@ -4,28 +4,34 @@ import { getNavigation } from '../../lib/repositories/fileRepo'
 import CartButton from './CartButton'
 import MobileMenuDrawer from './MobileMenuDrawer'
 
-const PERMANENT_LINKS = [
-  { label: 'Shop All', url: '/products' },
-  { label: 'Women', url: '/collections/women' },
-  { label: 'Men', url: '/collections/men' },
-  { label: 'Tupi', url: '/category/tupi' },
-  { label: 'Collections', url: '/category' },
-  { label: 'Track Order', url: '/track-order' },
-]
+type NavItem = {
+  id: string
+  label: string
+  url?: string
+  active?: boolean
+  desktopVisible?: boolean
+  mobileVisible?: boolean
+  location?: string
+  children?: NavItem[]
+}
+
+function visibleDesktopItems(items: NavItem[]): NavItem[] {
+  return items.filter((item) => item.active !== false && item.desktopVisible !== false)
+}
+
+function DesktopNavItem({ item }: { item: NavItem }) {
+  const children = visibleDesktopItems(item.children ?? [])
+  return (
+    <div className="group relative">
+      {item.url ? <Link href={item.url} className="relative flex items-center gap-1 px-3 py-2 text-[11.5px] font-semibold uppercase tracking-[0.1em] text-[var(--color-header-text)]/70 transition-colors hover:text-[var(--color-heading)] lg:px-4">{item.label}{children.length > 0 && <span aria-hidden="true">⌄</span>}</Link> : <span className="relative flex items-center gap-1 px-3 py-2 text-[11.5px] font-semibold uppercase tracking-[0.1em] text-[var(--color-header-text)]/70 lg:px-4">{item.label}{children.length > 0 && <span aria-hidden="true">⌄</span>}</span>}
+      {children.length > 0 && <div className="invisible absolute left-0 top-full z-50 min-w-52 translate-y-1 border border-[var(--color-border)] bg-white p-2 opacity-0 shadow-lg transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">{children.map((child) => <DesktopNavItem key={child.id} item={child} />)}</div>}
+    </div>
+  )
+}
 
 export const Header = async () => {
-  const nav = await getNavigation()
-
-  // Merge DB nav with permanent links, deduplicate by URL
-  const dbLinks = (nav || [])
-    .filter((item: any) => item.active && item.location !== 'footer' && item.url)
-    .sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0))
-    .map((item: any) => ({ label: item.label, url: item.url }))
-
-  // Use DB links if configured, otherwise use permanent links
-  const navLinks = dbLinks.length > 0
-    ? [...dbLinks, ...PERMANENT_LINKS.filter(p => !dbLinks.some((d: any) => d.url === p.url))].slice(0, 7)
-    : PERMANENT_LINKS
+  const nav = (await getNavigation()) as NavItem[]
+  const navLinks = visibleDesktopItems((nav || []).filter((item) => !item.location || item.location === 'header'))
 
   return (
     <div className="sticky top-0 z-40 bg-white shadow-[0_1px_0_rgba(0,0,0,0.06)]">
@@ -54,13 +60,8 @@ export const Header = async () => {
           </div>
           {/* Right: links */}
           <div className="flex shrink-0 items-center gap-3 text-[10px] font-medium opacity-85 sm:text-[11px]">
-            <Link href="/track-order" className="whitespace-nowrap transition-opacity hover:opacity-100 focus:outline-none">
-              Track Order
-            </Link>
-            <span className="opacity-40" aria-hidden="true">|</span>
-            <Link href="/products" className="hidden whitespace-nowrap transition-opacity hover:opacity-100 focus:outline-none sm:inline">
-              Help
-            </Link>
+            {navLinks.find((item) => item.url === '/track-order')?.url && <Link href="/track-order" className="whitespace-nowrap transition-opacity hover:opacity-100 focus:outline-none">Track Order</Link>}
+            {navLinks.find((item) => item.url === '/track-order')?.url && <span className="opacity-40" aria-hidden="true">|</span>}
           </div>
         </div>
       </div>
@@ -92,15 +93,7 @@ export const Header = async () => {
             className="hidden flex-1 items-center justify-center gap-1 md:flex lg:gap-0.5"
             aria-label="Primary navigation"
           >
-            {navLinks.map((item) => (
-              <Link
-                key={item.url}
-                href={item.url}
-                className="relative px-3 py-2 text-[11.5px] font-semibold uppercase tracking-[0.1em] text-[var(--color-header-text)]/70 transition-colors hover:text-[var(--color-heading)] lg:px-4"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {navLinks.map((item) => <DesktopNavItem key={item.id} item={item} />)}
           </nav>
 
           {/* Right: Icons */}

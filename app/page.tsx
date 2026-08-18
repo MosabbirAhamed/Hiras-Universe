@@ -22,9 +22,9 @@ export default async function Home() {
     getHomepageSections(),
   ])
 
-  // Active items only
+  // Storefront-visible items only
   const products = allProducts
-    .filter((product) => product.active !== false)
+    .filter((product) => product.active !== false && product.visibility !== 'hidden')
     .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
 
   const categories = allCategories
@@ -73,7 +73,7 @@ export default async function Home() {
         />
 
         {/* 2. Circular Category Navigation */}
-        {categories.length ? (
+        {categories.some((category) => !category.parentId && category.featured !== false) ? (
           <section aria-label="Categories">
             <CategoryNavigation categories={categories} />
           </section>
@@ -118,8 +118,8 @@ export default async function Home() {
               </Link>
             </div>
 
-            <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
-              {featuredGridProducts.map((product) => (
+            <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:gap-5">
+              {featuredGridProducts.slice(0, 8).map((product) => (
                 <ProductCard
                   key={product.id}
                   id={product.id}

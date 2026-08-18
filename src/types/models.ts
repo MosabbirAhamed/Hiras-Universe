@@ -70,8 +70,14 @@ export type Category = {
   slug?: string
   description?: string
   image?: string
+  bannerImage?: string
+  parentId?: ID | null
+  featured?: boolean
   active?: boolean
   sortOrder?: number
+  seoTitle?: string
+  seoDescription?: string
+  selectedProductIds?: ID[]
 }
 
 export type HomepageSection = {
@@ -260,4 +266,4 @@ export type EnrichedCartItem = {
   isUnavailable?: boolean
 }
 
-export {}
+export { }

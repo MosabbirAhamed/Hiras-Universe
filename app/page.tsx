@@ -7,7 +7,7 @@ import ProductCard from '../src/components/Product/ProductCard'
 import TrustSection from '../src/components/Trust/TrustSection'
 import Newsletter from '../src/components/Newsletter/Newsletter'
 import Link from 'next/link'
-import { getCategories, getHomepageSections, getProducts } from '../src/lib/repositories/fileRepo'
+import { getCategories, getHomepageSections, getNavigation, getProducts } from '../src/lib/repositories/fileRepo'
 
 export const revalidate = 300
 
@@ -16,10 +16,11 @@ function formatPrice(val: number) {
 }
 
 export default async function Home() {
-  const [allProducts, allCategories, homepageSections] = await Promise.all([
+  const [allProducts, allCategories, homepageSections, navigation] = await Promise.all([
     getProducts(),
     getCategories(),
     getHomepageSections(),
+    getNavigation(),
   ])
 
   // Storefront-visible items only
@@ -63,7 +64,7 @@ export default async function Home() {
 
   return (
     <div className="storefront-shell">
-      <div className="site-container space-y-12 py-6 sm:space-y-16 sm:py-8 lg:space-y-20 lg:py-10">
+      <div className="site-container space-y-10 py-4 sm:space-y-12 sm:py-5 lg:space-y-14 lg:py-6">
 
         {/* 1. Split Hero Section */}
         <Hero
@@ -75,7 +76,7 @@ export default async function Home() {
         {/* 2. Circular Category Navigation */}
         {categories.some((category) => !category.parentId && category.featured !== false) ? (
           <section aria-label="Categories">
-            <CategoryNavigation categories={categories} />
+            <CategoryNavigation categories={categories} navigation={navigation} />
           </section>
         ) : null}
 
@@ -98,7 +99,7 @@ export default async function Home() {
             <div className="mb-6 flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--color-accent)]">
-                  Curated Now
+                  Created Now
                 </p>
                 <h2
                   id="featured-heading"
@@ -118,7 +119,7 @@ export default async function Home() {
               </Link>
             </div>
 
-            <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:gap-5">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 lg:gap-5 xl:grid-cols-4">
               {featuredGridProducts.slice(0, 8).map((product) => (
                 <ProductCard
                   key={product.id}

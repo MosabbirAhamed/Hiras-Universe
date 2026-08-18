@@ -51,25 +51,25 @@ export const Hero = ({
   return (
     <section className="w-full" aria-label="Hero">
       {/* Hero Card — split layout */}
-      <div className="relative overflow-hidden rounded-[var(--radius-card)] bg-[#F5EFE6] shadow-[0_4px_32px_rgba(0,0,0,0.06)]" style={{ minHeight: '480px' }}>
-        <div className="grid h-full lg:grid-cols-[1fr_1.05fr]" style={{ minHeight: 'inherit' }}>
+      <div className="relative overflow-hidden rounded-[var(--radius-card)] bg-[var(--color-section-background)] shadow-[0_4px_32px_rgba(0,0,0,0.06)] lg:min-h-[500px]">
+        <div className="grid h-full lg:min-h-[500px] lg:grid-cols-[0.9fr_1.1fr]">
 
           {/* Left — Text content */}
-          <div className="relative z-10 flex flex-col justify-center px-8 py-12 sm:px-12 sm:py-14 lg:px-14 lg:py-16 xl:px-16">
+          <div className="relative z-10 flex flex-col justify-center px-6 py-9 sm:px-10 sm:py-12 lg:px-14 lg:py-16 xl:px-16">
             {/* Eyebrow */}
             <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[var(--color-accent)]">
               Timeless Modesty
             </p>
 
             {/* Headline */}
-            <h1 className="mt-4 font-serif text-[40px] font-bold leading-[1.04] tracking-tight text-[#1A1A18] sm:text-[52px] lg:text-[56px] xl:text-[62px]">
+            <h1 className="mt-4 font-serif text-[38px] font-bold leading-[1.04] text-[var(--color-heading)] sm:text-[48px] lg:text-[54px] xl:text-[58px]">
               {headline.split('\n').map((line, i) => (
                 <span key={i} className="block">{line}</span>
               ))}
             </h1>
 
             {/* Description */}
-            <p className="mt-5 max-w-sm text-[14px] leading-relaxed text-[#555550] sm:text-[15px]">
+            <p className="mt-5 max-w-sm text-[14px] leading-relaxed text-[var(--color-muted)] sm:text-[15px]">
               {sub}
             </p>
 
@@ -77,41 +77,40 @@ export const Hero = ({
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="/collections/women"
-                className="inline-flex h-11 items-center justify-center rounded-[var(--radius-button)] bg-[#1A1A18] px-6 text-[12px] font-bold uppercase tracking-[0.1em] text-white transition hover:bg-[#333330] focus:outline-none focus:ring-2 focus:ring-[#1A1A18] focus:ring-offset-2"
+                className="inline-flex h-11 items-center justify-center rounded-[var(--radius-button)] bg-[var(--color-button-background)] px-6 text-[12px] font-bold uppercase tracking-[0.1em] text-[var(--color-button-text)] transition hover:bg-[var(--color-button-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--color-input-focus)] focus:ring-offset-2"
               >
                 Shop Women
               </Link>
               <Link
                 href="/category/tupi"
-                className="inline-flex h-11 items-center justify-center rounded-[var(--radius-button)] border border-[#C8BFB5] bg-white px-6 text-[12px] font-bold uppercase tracking-[0.1em] text-[#1A1A18] transition hover:border-[#1A1A18] hover:bg-[#F5EFE6] focus:outline-none focus:ring-2 focus:ring-[#1A1A18] focus:ring-offset-2"
+                className="inline-flex h-11 items-center justify-center rounded-[var(--radius-button)] border border-[var(--color-border)] bg-[var(--color-card-background)] px-6 text-[12px] font-bold uppercase tracking-[0.1em] text-[var(--color-heading)] transition hover:border-[var(--color-heading)] hover:bg-[var(--color-main-background)] focus:outline-none focus:ring-2 focus:ring-[var(--color-input-focus)] focus:ring-offset-2"
               >
                 Shop Tupi
               </Link>
             </div>
 
             {/* Slide dots */}
-            <div className="mt-10 flex gap-2" aria-hidden="true">
-              <span className="h-2 w-6 rounded-full bg-[#1A1A18]" />
-              <span className="h-2 w-2 rounded-full bg-[#C8BFB5]" />
-              <span className="h-2 w-2 rounded-full bg-[#C8BFB5]" />
-              <span className="h-2 w-2 rounded-full bg-[#C8BFB5]" />
+            <div className="mt-8 flex gap-2 lg:mt-10" aria-hidden="true">
+              <span className="h-2 w-6 rounded-full bg-[var(--color-heading)]" />
+              <span className="h-2 w-2 rounded-full bg-[var(--color-secondary)]" />
+              <span className="h-2 w-2 rounded-full bg-[var(--color-secondary)]" />
+              <span className="h-2 w-2 rounded-full bg-[var(--color-secondary)]" />
             </div>
           </div>
 
           {/* Right — Product image */}
-          <div className="relative min-h-[300px] lg:min-h-full">
+          <div className="relative min-h-[280px] sm:min-h-[340px] lg:min-h-full">
             <Image
               src={image || '/products/hero-1.webp'}
               alt="Hira's Universe modest fashion collection — elegant model in modest attire"
               fill
               priority
-              sizes="(max-width: 1024px) 100vw, 55vw"
+              sizes="(max-width: 1024px) 100vw, 58vw"
               className="object-cover object-center"
             />
             {/* Subtle left fade to blend with text panel on large screens */}
             <div
-              className="absolute inset-y-0 left-0 w-16 hidden lg:block"
-              style={{ background: 'linear-gradient(to right, #F5EFE6, transparent)' }}
+              className="absolute inset-y-0 left-0 hidden w-16 bg-[linear-gradient(to_right,var(--color-section-background),transparent)] lg:block"
               aria-hidden="true"
             />
           </div>
@@ -119,9 +118,9 @@ export const Hero = ({
       </div>
 
       {/* Trust Badges */}
-      <div className="mt-4 grid grid-cols-3 divide-x divide-[var(--color-border)] overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-white shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
+      <div className="mt-4 flex snap-x overflow-x-auto rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-card-background)] shadow-[0_2px_12px_rgba(0,0,0,0.04)] hide-scrollbar sm:grid sm:grid-cols-3 sm:divide-x sm:divide-[var(--color-border)] sm:overflow-hidden">
         {trustBadges.map(({ icon, title, desc }) => (
-          <div key={title} className="flex items-center gap-3 px-4 py-4 sm:px-5 sm:py-5">
+          <div key={title} className="flex min-w-[230px] snap-start items-center gap-3 px-4 py-4 sm:min-w-0 sm:px-5 sm:py-5">
             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--color-section-background)] text-[var(--color-primary)]">
               {icon}
             </span>

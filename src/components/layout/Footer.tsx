@@ -45,22 +45,22 @@ export const Footer = async () => {
   const social = settings?.social || {}
 
   return (
-    <footer className="mt-auto w-full border-t border-[var(--color-border)] bg-white text-[#222222]">
-      <div className="site-container py-12 sm:py-16">
+    <footer className="mt-auto w-full border-t border-[#34322e] bg-[var(--color-footer-background)] text-[var(--color-footer-text)]">
+      <div className="site-container py-10 sm:py-12">
         {/* Main 5-column grid */}
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-5 lg:gap-10">
 
           {/* Col 1: Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
             <Link href="/" className="flex flex-col">
-              <span className="font-serif text-[20px] font-bold tracking-tight text-[#181817]">
+              <span className="font-serif text-[20px] font-bold tracking-tight text-[var(--color-footer-text)]">
                 Hira&apos;s Universe
               </span>
-              <span className="mt-0.5 text-[8px] font-bold uppercase tracking-[0.28em] text-[var(--color-muted)]">
+              <span className="mt-0.5 text-[8px] font-bold uppercase tracking-[0.28em] text-[var(--color-footer-text)]/60">
                 Tradition. Refined.
               </span>
             </Link>
-            <p className="mt-4 text-[12.5px] leading-relaxed text-[#666660]">
+            <p className="mt-4 text-[12.5px] leading-relaxed text-[var(--color-footer-text)]/65">
               {settings?.description || 'Modest fashion that inspires confidence and honors tradition.'}
             </p>
             {/* Social Icons */}
@@ -75,7 +75,7 @@ export const Footer = async () => {
                     rel="noreferrer"
                     aria-label={label}
                     title={label}
-                    className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F5EFE6] text-[#6B4F3B] transition-colors hover:bg-[#6B4F3B] hover:text-white"
+                    className="flex h-8 w-8 items-center justify-center rounded-full border border-[#4a4741] text-[var(--color-footer-text)]/80 transition-colors hover:bg-[var(--color-footer-text)] hover:text-[#1c1c1a]"
                   >
                     <Icon size={13} />
                   </a>
@@ -86,10 +86,10 @@ export const Footer = async () => {
 
           {/* Col 2: Shop */}
           <div>
-            <h3 className="text-[12px] font-bold uppercase tracking-[0.1em] text-[#181817]">
+            <h3 className="text-[12px] font-bold uppercase tracking-[0.1em] text-[var(--color-footer-text)]">
               Shop
             </h3>
-            <ul className="mt-4 space-y-2.5 text-[12.5px] text-[#666660]">
+            <ul className="mt-4 space-y-2.5 text-[12.5px] text-[var(--color-footer-text)]/65">
               {shopLinks.map((link) => (
                 <li key={link.label}>
                   <Link href={link.url} className="transition-colors hover:text-[#181817]">
@@ -102,10 +102,10 @@ export const Footer = async () => {
 
           {/* Col 3: Customer Care */}
           <div>
-            <h3 className="text-[12px] font-bold uppercase tracking-[0.1em] text-[#181817]">
+            <h3 className="text-[12px] font-bold uppercase tracking-[0.1em] text-[var(--color-footer-text)]">
               Customer Care
             </h3>
-            <ul className="mt-4 space-y-2.5 text-[12.5px] text-[#666660]">
+            <ul className="mt-4 space-y-2.5 text-[12.5px] text-[var(--color-footer-text)]/65">
               {customerCareLinks.map((link) => (
                 <li key={link.label}>
                   <Link href={link.url} className="transition-colors hover:text-[#181817]">
@@ -118,10 +118,10 @@ export const Footer = async () => {
 
           {/* Col 4: About */}
           <div>
-            <h3 className="text-[12px] font-bold uppercase tracking-[0.1em] text-[#181817]">
+            <h3 className="text-[12px] font-bold uppercase tracking-[0.1em] text-[var(--color-footer-text)]">
               About
             </h3>
-            <ul className="mt-4 space-y-2.5 text-[12.5px] text-[#666660]">
+            <ul className="mt-4 space-y-2.5 text-[12.5px] text-[var(--color-footer-text)]/65">
               {aboutLinks.map((link) => (
                 <li key={link.label}>
                   <Link href={link.url} className="transition-colors hover:text-[#181817]">
@@ -134,10 +134,10 @@ export const Footer = async () => {
 
           {/* Col 5: Help */}
           <div>
-            <h3 className="text-[12px] font-bold uppercase tracking-[0.1em] text-[#181817]">
+            <h3 className="text-[12px] font-bold uppercase tracking-[0.1em] text-[var(--color-footer-text)]">
               Help
             </h3>
-            <ul className="mt-4 space-y-2.5 text-[12.5px] text-[#666660]">
+            <ul className="mt-4 space-y-2.5 text-[12.5px] text-[var(--color-footer-text)]/65">
               {helpLinks.map((link) => (
                 <li key={link.label}>
                   <Link href={link.url} className="transition-colors hover:text-[#181817]">
@@ -151,23 +151,23 @@ export const Footer = async () => {
         </div>
 
         {/* Bottom copyright + payment icons */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-[var(--color-border)] pt-6 text-[11.5px] text-[var(--color-muted)] sm:flex-row">
+        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-[#3a3833] pt-6 text-[11.5px] text-[var(--color-footer-text)]/55 sm:flex-row">
           <span>
             {settings?.footerText || `© ${new Date().getFullYear()} Hira's Universe. All rights reserved.`}
           </span>
 
           {/* Payment Methods Badges */}
           <div className="flex items-center gap-2">
-            <span className="rounded border border-[#E0D9D0] bg-[#FAFAF8] px-2 py-0.5 text-[10px] font-bold text-[#E2136E]">
+            <span className="rounded border border-[#4a4741] bg-transparent px-2 py-0.5 text-[10px] font-bold text-[#f0b1ca]">
               bKash
             </span>
-            <span className="rounded border border-[#E0D9D0] bg-[#FAFAF8] px-2 py-0.5 text-[10px] font-bold text-[#1A1F71]">
+            <span className="rounded border border-[#4a4741] bg-transparent px-2 py-0.5 text-[10px] font-bold text-[#b9c7ee]">
               VISA
             </span>
-            <span className="rounded border border-[#E0D9D0] bg-[#FAFAF8] px-2 py-0.5 text-[10px] font-bold text-[#EB001B]">
+            <span className="rounded border border-[#4a4741] bg-transparent px-2 py-0.5 text-[10px] font-bold text-[#f08b8b]">
               Mastercard
             </span>
-            <span className="rounded border border-[#E0D9D0] bg-[#FAFAF8] px-2 py-0.5 text-[10px] font-bold text-[#F6921E]">
+            <span className="rounded border border-[#4a4741] bg-transparent px-2 py-0.5 text-[10px] font-bold text-[#f2bb76]">
               Nagad
             </span>
           </div>

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import type { Product, Category } from '../../types/models'
+import AddToBagButton from './AddToBagButton'
 
 interface FlashSaleProps {
   products: Product[]
@@ -27,15 +28,21 @@ function getEndOfDay() {
   return end.getTime()
 }
 
-function useCountdown(endTs: number) {
-  const [remaining, setRemaining] = useState(() => Math.max(0, endTs - Date.now()))
+function useCountdown() {
+  // Keep SSR and the first client render neutral; live time starts after hydration.
+  const [remaining, setRemaining] = useState<number | null>(null)
   useEffect(() => {
-    const id = setInterval(() => {
-      const r = Math.max(0, endTs - Date.now())
-      setRemaining(r)
-    }, 1000)
+    const endTs = getEndOfDay()
+    const updateRemaining = () => {
+      setRemaining(Math.max(0, endTs - Date.now()))
+    }
+
+    updateRemaining()
+    const id = setInterval(updateRemaining, 1000)
     return () => clearInterval(id)
-  }, [endTs])
+  }, [])
+
+  if (remaining === null) return { h: null, m: null, s: null }
 
   const totalSec = Math.floor(remaining / 1000)
   const h = Math.floor(totalSec / 3600)
@@ -44,13 +51,12 @@ function useCountdown(endTs: number) {
   return { h, m, s }
 }
 
-function Pad({ n }: { n: number }) {
-  return <>{String(n).padStart(2, '0')}</>
+function Pad({ n }: { n: number | null }) {
+  return <>{n === null ? '--' : String(n).padStart(2, '0')}</>
 }
 
 export default function FlashSale({ products, categories }: FlashSaleProps) {
-  const endTs = useRef(getEndOfDay()).current
-  const { h, m, s } = useCountdown(endTs)
+  const { h, m, s } = useCountdown()
 
   const scrollRef = useRef<HTMLDivElement>(null)
 
@@ -142,19 +148,26 @@ export default function FlashSale({ products, categories }: FlashSaleProps) {
           return (
             <article
               key={product.id}
-              className="group relative flex w-[170px] flex-none snap-start flex-col overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-card-background)] shadow-[0_2px_12px_rgba(0,0,0,0.04)] transition hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.09)] sm:w-[190px]"
+              className="group relative flex w-[min(72vw,260px)] flex-none snap-start flex-col overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-card-background)] shadow-[0_2px_12px_rgba(0,0,0,0.04)] transition hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.09)] sm:w-[calc((100%_-_48px)/4)] lg:w-[calc((100%_-_64px)/5)] xl:w-[calc((100%_-_80px)/6)]"
             >
               {/* Image */}
               <div className="relative aspect-[4/5] overflow-hidden bg-[var(--color-section-background)]">
-                <Link href={href} aria-label={`View ${product.name}`} className="absolute inset-0">
-                  <Image
-                    src={product.primaryImage || product.images?.[0] || '/products/placeholder.svg'}
-                    alt={product.name}
-                    fill
-                    sizes="190px"
-                    className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-                  />
-                </Link>
+                {product.primaryImage || product.images?.[0] ? (
+                  <Link href={href} aria-label={`View ${product.name}`} className="absolute inset-0">
+                    <Image
+                      src={product.primaryImage || product.images?.[0] || ''}
+                      alt={product.name}
+                      fill
+                      sizes="(max-width: 640px) 72vw, (max-width: 1024px) 25vw, 20vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                    />
+                  </Link>
+                ) : (
+                  <Link href={href} aria-label={`View ${product.name}`} className="absolute inset-0 flex flex-col items-center justify-center bg-[linear-gradient(145deg,var(--color-section-background),var(--color-surface))] px-4 text-center">
+                    <span className="font-serif text-lg text-[var(--color-primary)]/70">{"Hira's Universe"}</span>
+                    <span className="mt-2 text-[8px] font-bold uppercase tracking-[0.16em] text-[var(--color-muted)]">Image coming soon</span>
+                  </Link>
+                )}
                 {/* Discount badge */}
                 {discount && (
                   <div className="absolute left-2 top-2 rounded-full bg-[#E03D3D] px-2 py-1 text-[9px] font-bold text-white">
@@ -185,6 +198,10 @@ export default function FlashSale({ products, categories }: FlashSaleProps) {
                     {product.name}
                   </Link>
                 </h3>
+                <div className="mt-1.5 flex h-3.5 items-center gap-1" aria-label="Rated 5 out of 5">
+                  <span className="text-[10px] leading-none text-[var(--color-rating)]" aria-hidden="true">★★★★★</span>
+                  <span className="text-[9px] leading-none text-[var(--color-muted)]">(25)</span>
+                </div>
                 <div className="mt-2 flex items-baseline gap-2">
                   <span className={`text-sm font-bold ${product.salePrice ? 'text-[#E03D3D]' : 'text-[var(--color-heading)]'}`}>
                     {formatPrice(displayPrice)}
@@ -196,13 +213,17 @@ export default function FlashSale({ products, categories }: FlashSaleProps) {
                   )}
                 </div>
                 <div className="mt-auto pt-3">
-                  <Link
-                    href={product.hasVariants ? href : '#'}
-                    className="block w-full rounded-[var(--radius-button)] bg-[var(--color-heading)] py-2 text-center text-[10px] font-bold uppercase tracking-[0.1em] text-white transition hover:bg-[var(--color-primary)]"
-                    aria-label={`Add ${product.name} to bag`}
-                  >
-                    Add to Bag
-                  </Link>
+                  {product.hasVariants ? (
+                    <Link
+                      href={href}
+                      className="block w-full rounded-[var(--radius-button)] bg-[var(--color-heading)] py-2 text-center text-[10px] font-bold uppercase tracking-[0.1em] text-white transition hover:bg-[var(--color-primary)]"
+                      aria-label={`Select options for ${product.name}`}
+                    >
+                      Select Options
+                    </Link>
+                  ) : (
+                    <AddToBagButton id={product.id} title={product.name} stock={product.stock} active={product.active} hasVariants={product.hasVariants} />
+                  )}
                 </div>
               </div>
             </article>

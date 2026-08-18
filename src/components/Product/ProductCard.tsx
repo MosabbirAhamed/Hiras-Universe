@@ -53,14 +53,19 @@ export const ProductCard = ({
     <article className="group relative flex h-full w-full flex-col overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-card-background)] shadow-[0_2px_12px_rgba(0,0,0,0.04)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)]">
       {/* Product Image Area */}
       <div className="relative aspect-[4/5] w-full overflow-hidden bg-[var(--color-section-background)]">
-        {productHref ? (
+        {!image ? (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-[linear-gradient(145deg,var(--color-section-background),var(--color-surface))] px-4 text-center">
+            <span className="font-serif text-xl text-[var(--color-primary)]/70">{"Hira's Universe"}</span>
+            <span className="mt-2 text-[9px] font-bold uppercase tracking-[0.18em] text-[var(--color-muted)]">Image coming soon</span>
+          </div>
+        ) : productHref ? (
           <Link
             href={productHref}
             className="absolute inset-0 block"
             aria-label={`View ${title}`}
           >
             <Image
-              src={image ?? '/products/placeholder.svg'}
+              src={image}
               alt={title}
               fill
               sizes="(max-width: 640px) 180px, (max-width: 1024px) 240px, 280px"
@@ -69,7 +74,7 @@ export const ProductCard = ({
           </Link>
         ) : (
           <Image
-            src={image ?? '/products/placeholder.svg'}
+            src={image}
             alt={title}
             fill
             sizes="(max-width: 640px) 180px, (max-width: 1024px) 240px, 280px"
@@ -97,7 +102,7 @@ export const ProductCard = ({
       </div>
 
       {/* Product Information */}
-      <div className="flex flex-1 flex-col p-4 sm:p-4.5">
+      <div className="flex flex-1 flex-col p-3 sm:p-4">
         <div>
           {/* Category */}
           {category && (
@@ -107,7 +112,7 @@ export const ProductCard = ({
           )}
 
           {/* Product Name */}
-          <h3 className="line-clamp-2 min-h-[40px] font-serif text-[15px] font-semibold leading-snug text-[var(--color-heading)] sm:text-[16px]">
+          <h3 className="line-clamp-2 min-h-[38px] font-serif text-[14px] font-semibold leading-snug text-[var(--color-heading)] sm:text-[15px]">
             {productHref ? (
               <Link
                 href={productHref}

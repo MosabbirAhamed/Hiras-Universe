@@ -18,7 +18,7 @@ const cards = [
     title: 'Authentic. Comfortable. Timeless.',
     href: '/category/tupi',
     cta: 'Shop Now',
-    image: '/products/hero-1.webp',
+    image: '/products/premium-cotton-tupi.png',
     badge: null,
   },
   {
@@ -27,20 +27,19 @@ const cards = [
     title: 'Up to 40% OFF on selected items',
     href: '/products',
     cta: 'Shop Now',
-    image: '/products/hero-1.webp',
+    image: '/products/embroidered-prayer-tupi.png',
     badge: 'Up to 40% OFF',
   },
 ]
 
 const PromotionalCards = () => {
   return (
-    <div className="grid gap-4 sm:grid-cols-3 sm:gap-5">
+    <div className="grid gap-4 sm:grid-cols-3 sm:gap-5 lg:gap-6">
       {cards.map((card) => (
         <Link
           key={card.id}
           href={card.href}
-          className="group relative overflow-hidden rounded-[var(--radius-card)] bg-[var(--color-section-background)] focus:outline-none focus:ring-2 focus:ring-[var(--color-input-focus)] focus:ring-offset-2"
-          style={{ minHeight: '200px' }}
+          className="group relative min-h-[205px] overflow-hidden rounded-[var(--radius-card)] bg-[var(--color-section-background)] focus:outline-none focus:ring-2 focus:ring-[var(--color-input-focus)] focus:ring-offset-2 sm:min-h-[225px] lg:min-h-[240px]"
           aria-label={`${card.eyebrow} — ${card.cta}`}
         >
           {/* Background image */}
@@ -54,7 +53,7 @@ const PromotionalCards = () => {
           {/* Overlay */}
           <div
             className="absolute inset-0"
-            style={{ background: 'linear-gradient(135deg, rgba(0,0,0,0.52) 0%, rgba(0,0,0,0.18) 100%)' }}
+            style={{ background: 'linear-gradient(135deg, rgba(24,23,22,0.68) 0%, rgba(24,23,22,0.16) 100%)' }}
             aria-hidden="true"
           />
 

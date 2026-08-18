@@ -9,6 +9,17 @@ export interface MobileNavProps {
 
 export default function MobileMenuDrawer({ navItems }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const fallbackItems = [
+    { label: 'Shop All', url: '/products' },
+    { label: 'Women', url: '/collections/women' },
+    { label: 'Men', url: '/collections/men' },
+    { label: 'Tupi', url: '/category/tupi' },
+    { label: 'Collections', url: '/category' },
+    { label: 'Track Order', url: '/track-order' }
+  ]
+  const menuItems = navItems.filter(item => item.active !== false).length > 0
+    ? navItems.filter(item => item.active !== false).sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+    : fallbackItems
 
   // Handle escape key to close
   useEffect(() => {
@@ -37,7 +48,7 @@ export default function MobileMenuDrawer({ navItems }: MobileNavProps) {
         aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
         aria-expanded={isOpen}
         onClick={() => setIsOpen(!isOpen)}
-        className="inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full text-charcoal transition hover:bg-cream focus:outline-none focus:ring-2 focus:ring-gold md:hidden"
+        className="inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full text-[var(--color-header-text)] transition hover:bg-[var(--color-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--color-input-focus)] md:hidden"
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
           {isOpen ? (
@@ -52,14 +63,14 @@ export default function MobileMenuDrawer({ navItems }: MobileNavProps) {
       {isOpen && (
         <div
           onClick={() => setIsOpen(false)}
-          className="fixed inset-0 z-50 bg-charcoal/55 backdrop-blur-xs animate-fade-in md:hidden"
+          className="fixed inset-0 z-[60] bg-[var(--color-heading)]/60 md:hidden"
           aria-hidden="true"
         />
       )}
 
       {/* Slide-out Drawer */}
       <div
-        className={`fixed bottom-0 left-0 top-0 z-50 flex w-[88%] max-w-sm flex-col justify-between border-r border-black/10 bg-[#fbfaf7] px-5 pb-6 pt-5 shadow-2xl transition-transform duration-300 ease-in-out md:hidden ${isOpen ? 'translate-x-0' : '-translate-x-full'
+        className={`fixed bottom-0 left-0 top-0 z-[70] flex w-[88%] max-w-sm flex-col justify-between border-r border-[var(--color-border)] bg-[var(--color-surface)] px-5 pb-6 pt-5 shadow-2xl transition-transform duration-300 ease-in-out md:hidden ${isOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         role="dialog"
         aria-modal="true"
@@ -67,11 +78,11 @@ export default function MobileMenuDrawer({ navItems }: MobileNavProps) {
       >
         <div className="space-y-7">
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-black/10 pb-5">
+          <div className="flex items-center justify-between border-b border-[var(--color-border)] pb-5">
             <Link
               href="/"
               onClick={() => setIsOpen(false)}
-              className="font-serif text-xl font-semibold text-charcoal"
+              className="font-serif text-xl font-semibold text-[var(--color-heading)]"
             >
               Hira&apos;s Universe
             </Link>
@@ -79,7 +90,7 @@ export default function MobileMenuDrawer({ navItems }: MobileNavProps) {
               type="button"
               onClick={() => setIsOpen(false)}
               aria-label="Close menu"
-              className="inline-flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full text-taupe transition hover:bg-cream hover:text-charcoal focus:outline-none focus:ring-2 focus:ring-gold"
+              className="inline-flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full text-[var(--color-muted)] transition hover:bg-[var(--color-background)] hover:text-[var(--color-heading)] focus:outline-none focus:ring-2 focus:ring-[var(--color-input-focus)]"
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
@@ -89,49 +100,17 @@ export default function MobileMenuDrawer({ navItems }: MobileNavProps) {
 
           {/* Navigation Links */}
           <nav className="space-y-1.5" aria-label="Mobile navigation">
-            <Link
-              href="/products"
-              onClick={() => setIsOpen(false)}
-              className="block rounded-lg px-3 py-3 text-sm font-semibold text-charcoal transition hover:bg-cream focus:outline-none focus:ring-2 focus:ring-gold"
-            >
-              All Products
-            </Link>
-
-            <Link
-              href="/category"
-              onClick={() => setIsOpen(false)}
-              className="block rounded-lg px-3 py-3 text-sm font-semibold text-charcoal transition hover:bg-cream focus:outline-none focus:ring-2 focus:ring-gold"
-            >
-              Categories
-            </Link>
-
-            {navItems
-              ?.filter((n) => n.active !== false)
-              .sort((a, b) => (a.order || 0) - (b.order || 0))
-              .map((n) => (
-                <Link
-                  key={n.id}
-                  href={n.url}
-                  onClick={() => setIsOpen(false)}
-                  className="block rounded-lg px-3 py-3 text-sm font-semibold text-charcoal transition hover:bg-cream focus:outline-none focus:ring-2 focus:ring-gold"
-                >
-                  {n.label}
-                </Link>
-              ))}
-
-            <Link
-              href="/track-order"
-              onClick={() => setIsOpen(false)}
-              className="mt-3 block rounded-lg border border-black/10 bg-cream/55 px-3 py-3 text-sm font-semibold text-mocha transition hover:border-mocha/30 hover:bg-cream focus:outline-none focus:ring-2 focus:ring-gold"
-            >
-              Track Order
-            </Link>
+            {menuItems.map((item) => (
+              <Link key={item.url} href={item.url} onClick={() => setIsOpen(false)} className="block rounded-lg px-3 py-3 text-sm font-semibold text-[var(--color-text)] transition hover:bg-[var(--color-background)] focus:outline-none focus:ring-2 focus:ring-[var(--color-input-focus)]">
+                {item.label}
+              </Link>
+            ))}
           </nav>
         </div>
 
         {/* Footer info */}
-        <div className="space-y-1.5 border-t border-black/10 pt-5 text-xs text-taupe">
-          <p className="font-serif text-base text-charcoal">A considered modest edit.</p>
+        <div className="space-y-1.5 border-t border-[var(--color-border)] pt-5 text-xs text-[var(--color-muted)]">
+          <p className="font-serif text-base text-[var(--color-heading)]">A considered modest edit.</p>
           <p>© {new Date().getFullYear()} Hira&apos;s Universe</p>
         </div>
       </div>

@@ -175,14 +175,14 @@ textarea {
 
 /* Buttons */
 .btn-primary {
-  background: var(--color-primary);
-  color: var(--color-on-primary);
+  background: var(--color-button-background);
+  color: var(--color-button-text);
   border-radius: var(--radius-button);
   transition: background-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
 }
 
 .btn-primary:hover {
-  background: var(--color-text);
+  background: var(--color-button-hover);
   box-shadow: 0 8px 20px rgba(34, 34, 34, 0.12);
 }
 
@@ -206,7 +206,7 @@ textarea {
 
 /* Card surface */
 .card-surface {
-  background: var(--color-surface);
+  background: var(--color-card-background);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
   box-shadow: 0 8px 24px rgba(34, 34, 34, 0.04);
@@ -228,18 +228,23 @@ textarea {
 /* Links */
 a {
   color: var(--color-link);
+  transition: color 180ms ease;
+}
+
+a:hover {
+  color: var(--color-link-hover);
 }
 
 /* Generic elements */
 body {
-  background: var(--color-background);
+  background: var(--color-body-background);
   color: var(--color-text);
 }
 
 h1,
 h2,
 h3 {
-  color: var(--color-text);
+  color: var(--color-heading);
   font-family: var(--font-heading);
 }
 
@@ -273,8 +278,8 @@ input,
 textarea,
 select {
   border-radius: var(--radius-button);
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
+  border: 1px solid var(--color-input-border);
+  background: var(--color-input-background);
   color: var(--color-text);
   transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
 }
@@ -289,7 +294,7 @@ input:focus,
 textarea:focus,
 select:focus {
   outline: none;
-  border-color: var(--color-primary);
+  border-color: var(--color-input-focus);
   box-shadow: 0 0 0 3px rgba(107, 79, 59, 0.12);
 }
 
@@ -302,20 +307,20 @@ button {
   outline-offset: 3px;
 }
 
-/* Storefront-only primitives. These stay independent from the admin theme controls. */
+/* Storefront primitives consume the persisted admin theme contract. */
 .storefront-shell {
-  background: var(--storefront-paper);
+  background: var(--color-main-background);
 }
 
 .storefront-card {
-  border: 1px solid var(--storefront-line);
-  border-radius: var(--storefront-radius);
-  background: rgba(255, 255, 255, 0.72);
-  box-shadow: 0 18px 48px rgba(65, 49, 37, 0.07);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-card-background);
+  box-shadow: 0 14px 38px rgba(34, 34, 34, 0.06);
 }
 
 .storefront-eyebrow {
-  color: var(--storefront-olive);
+  color: var(--color-accent);
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.18em;
@@ -324,7 +329,7 @@ button {
 }
 
 .storefront-link {
-  color: var(--storefront-ink);
+  color: var(--color-link);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -333,14 +338,14 @@ button {
 }
 
 .storefront-link:hover {
-  color: var(--storefront-oxblood);
+  color: var(--color-link-hover);
 }
 
 .storefront-button {
   align-items: center;
-  background: var(--storefront-ink);
-  border-radius: 999px;
-  color: var(--color-ivory);
+  background: var(--color-button-background);
+  border-radius: var(--radius-button);
+  color: var(--color-button-text);
   display: inline-flex;
   font-size: 0.72rem;
   font-weight: 700;
@@ -353,19 +358,19 @@ button {
 }
 
 .storefront-button:hover {
-  background: var(--storefront-oxblood);
+  background: var(--color-button-hover);
   box-shadow: 0 10px 22px rgba(125, 64, 56, 0.18);
   transform: translateY(-1px);
 }
 
 .storefront-button--light {
-  background: var(--storefront-paper);
-  color: var(--storefront-ink);
+  background: var(--color-card-background);
+  color: var(--color-text);
 }
 
 .storefront-button--light:hover {
-  background: var(--color-cream);
-  color: var(--storefront-ink);
+  background: var(--color-section-background);
+  color: var(--color-heading);
 }
 
 @media (prefers-reduced-motion: reduce) {

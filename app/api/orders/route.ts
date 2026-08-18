@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto'
 import { NextResponse } from 'next/server'
 import { validateCheckoutInput } from '../../../src/lib/orderValidation'
 import { createOrderWithInventoryDeduction, getOrders } from '../../../src/lib/repositories/fileRepo'
@@ -42,10 +43,17 @@ export async function POST(req: Request) {
       },
       { status: 201 }
     )
-  } catch (err: any) {
+  } catch (error) {
+    const errorId = randomUUID()
+    console.error('[orders.create] order creation failed', { errorId, error })
+
     return NextResponse.json(
-      { ok: false, error: err.message || 'Failed to process order.' },
-      { status: 400 }
+      {
+        ok: false,
+        error: 'Your order could not be completed. Please try again in a moment.',
+        errorId
+      },
+      { status: 500, headers: { 'Cache-Control': 'no-store' } }
     )
   }
 }

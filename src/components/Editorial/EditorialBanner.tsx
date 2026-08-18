@@ -5,12 +5,12 @@ import { FiArrowUpRight } from 'react-icons/fi'
 
 const EditorialBanner = () => {
   return (
-    <div className="mt-6 overflow-hidden rounded-[18px] bg-[#626753] text-white">
+    <div className="mt-6 overflow-hidden rounded-[var(--radius-card)] bg-[var(--color-secondary)] text-[var(--color-button-text)]">
       <div className="grid min-h-[420px] md:grid-cols-[0.9fr_1.1fr]">
         <div className="flex flex-col justify-center p-7 sm:p-10 md:p-12 lg:p-16">
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#e2cfaa]">The seasonal edit</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--color-accent)]">The seasonal edit</p>
           <h3 className="mt-3 max-w-md font-serif text-4xl font-semibold leading-[1.06] sm:text-5xl">Timeless modesty, considered anew</h3>
-          <p className="mt-5 max-w-lg text-sm leading-7 text-white/72 sm:text-base">
+          <p className="mt-5 max-w-lg text-sm leading-7 text-[var(--color-button-text)]/72 sm:text-base">
             Explore a considered selection of versatile pieces and everyday essentials from the current collection.
           </p>
           <div className="mt-7">

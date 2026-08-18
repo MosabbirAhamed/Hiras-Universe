@@ -14,7 +14,7 @@ const CategoryScroller = ({ categories }: { categories: Category[] }) => {
           <Link
             key={category.id}
             href={`/category/${category.slug || category.id}`}
-            className="group relative min-h-[310px] w-[74vw] max-w-[310px] flex-none snap-start overflow-hidden rounded-[18px] bg-[#ded5c9] focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 sm:w-[280px] lg:w-auto lg:max-w-none"
+            className="group relative min-h-[310px] w-[74vw] max-w-[310px] flex-none snap-start overflow-hidden rounded-[var(--radius-card)] bg-[var(--color-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--color-input-focus)] focus:ring-offset-2 sm:w-[280px] lg:w-auto lg:max-w-none"
           >
             <Image
               src={category.image || '/products/placeholder.svg'}
@@ -23,15 +23,15 @@ const CategoryScroller = ({ categories }: { categories: Category[] }) => {
               sizes="(max-width: 640px) 74vw, (max-width: 1024px) 280px, 25vw"
               className="object-cover transition-transform duration-500 group-hover:scale-[1.035]"
             />
-            <span className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" aria-hidden="true" />
-            <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 text-white">
+            <span className="absolute inset-0 bg-gradient-to-t from-[var(--color-heading)]/75 via-[var(--color-heading)]/15 to-transparent" aria-hidden="true" />
+            <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 text-[var(--color-button-text)]">
               <span className="min-w-0">
                 <span className="block font-serif text-2xl font-semibold leading-tight">{category.name}</span>
                 {category.description ? (
-                  <span className="mt-1.5 line-clamp-2 block text-xs leading-5 text-white/75">{category.description}</span>
+                  <span className="mt-1.5 line-clamp-2 block text-xs leading-5 text-[var(--color-button-text)]/75">{category.description}</span>
                 ) : null}
               </span>
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/45 bg-black/10 transition-colors group-hover:bg-white group-hover:text-charcoal">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[var(--color-button-text)]/45 bg-[var(--color-heading)]/10 transition-colors group-hover:bg-[var(--color-button-text)] group-hover:text-[var(--color-heading)]">
                 <FiArrowUpRight aria-hidden="true" />
               </span>
             </span>

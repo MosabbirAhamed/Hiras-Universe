@@ -35,10 +35,10 @@ export const ProductCard = ({
   const productHref = slug ? `/products/${slug}` : undefined
 
   return (
-    <article className="group flex h-full w-full flex-col overflow-hidden rounded-[18px] border border-black/10 bg-white/70 transition duration-300 hover:-translate-y-0.5 hover:border-mocha/25 hover:shadow-[0_18px_40px_rgba(65,49,37,0.09)]">
+    <article className="group flex h-full w-full flex-col overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-card-background)] transition duration-300 hover:-translate-y-0.5 hover:border-[var(--color-primary)] hover:shadow-[0_18px_40px_rgba(34,34,34,0.09)]">
 
       {/* Product Image */}
-      <div className="relative aspect-[4/5.4] w-full overflow-hidden bg-cream">
+      <div className="relative aspect-[4/5.4] w-full overflow-hidden bg-[var(--color-section-background)]">
 
         {productHref ? (
           <Link
@@ -66,7 +66,7 @@ export const ProductCard = ({
 
         {/* Sale Badge */}
         {onSale && (
-          <div className="absolute left-3 top-3 z-10 rounded-full bg-[#7d4038] px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.14em] text-white">
+          <div className="absolute left-3 top-3 z-10 rounded-full bg-[var(--color-sale)] px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.14em] text-[var(--color-sale-text)]">
             Sale
           </div>
         )}
@@ -78,17 +78,17 @@ export const ProductCard = ({
         <div>
           {/* Category */}
           {category && (
-            <div className="mb-2 text-[9px] font-bold uppercase tracking-[0.16em] text-[#626753]">
+            <div className="mb-2 text-[9px] font-bold uppercase tracking-[0.16em] text-[var(--color-muted)]">
               {category}
             </div>
           )}
 
           {/* Product Name */}
-          <h3 className="min-h-[44px] font-serif text-[17px] font-semibold leading-[1.35] text-charcoal">
+          <h3 className="min-h-[44px] font-serif text-[17px] font-semibold leading-[1.35] text-[var(--color-heading)]">
             {productHref ? (
               <Link
                 href={productHref}
-                className="transition-colors hover:text-mocha"
+                className="transition-colors hover:text-[var(--color-link-hover)]"
               >
                 {title}
               </Link>
@@ -101,17 +101,17 @@ export const ProductCard = ({
           <div className="mt-3 min-h-[22px]">
             {salePrice ? (
               <div className="flex items-baseline gap-3">
-                <span className="text-sm font-bold text-[#7d4038]">
+                <span className="text-sm font-bold text-[var(--color-sale)]">
                   {pricePrefix ? `${pricePrefix} ` : ''}
                   {salePrice}
                 </span>
 
-                <span className="text-xs text-taupe line-through">
+                <span className="text-xs text-[var(--color-muted)] line-through">
                   {price}
                 </span>
               </div>
             ) : (
-              <div className="text-sm font-bold text-mocha">
+              <div className="text-sm font-bold text-[var(--color-primary)]">
                 {pricePrefix ? `${pricePrefix} ` : ''}
                 {price}
               </div>

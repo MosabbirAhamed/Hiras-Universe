@@ -4,9 +4,11 @@
  * All exported function signatures are identical to fileRepo.ts.
  * Import from this file exactly as you did from fileRepo.ts.
  */
+import { randomUUID } from 'crypto'
 import { cache } from 'react'
 import { getAdminClient } from '../supabase'
 import { Product, Category, HomepageSection, Order, OrderStatus, PaymentStatus, NotificationLogEntry } from '../../types/models'
+import { defaultTheme } from './defaultTheme'
 import { normalizeProduct } from '../productValidation'
 import { calculateAndValidateOrderItems, ValidatedCheckoutData } from '../orderValidation'
 
@@ -376,7 +378,15 @@ export async function saveSettings(s: StoreSettings) {
 }
 
 export async function getTheme(): Promise<any> {
-  return getSetting<any>('theme', null)
+  const theme = await getSetting<any>('theme', null)
+  if (!theme) return defaultTheme
+  return {
+    ...defaultTheme,
+    ...theme,
+    colors: { ...defaultTheme.colors, ...(theme.colors || {}) },
+    fonts: { ...defaultTheme.fonts, ...(theme.fonts || {}) },
+    layout: { ...defaultTheme.layout, ...(theme.layout || {}) }
+  }
 }
 
 export async function saveTheme(t: any) {
@@ -514,15 +524,19 @@ export async function createOrderWithInventoryDeduction(
   )
   if (!calc.ok) throw new Error(calc.error)
 
-  // 2. Generate the order ID. The RPC allocates the order number transactionally.
-  const orderId = `ord_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`
+  // 2. Generate collision-resistant request identifiers. Corrected RPC deployments
+  // allocate the canonical sequential number transactionally; the fallback value only
+  // protects older deployed function bodies that still consume p_order_number.
+  const requestId = randomUUID()
+  const orderId = `ord_${requestId}`
+  const legacyOrderNumberFallback = `HN-R${requestId.replace(/-/g, '').slice(0, 20).toUpperCase()}`
 
   // 3. Call the PostgreSQL RPC for atomic inventory deduction + order insert
   const { data: orderData, error: rpcErr } = await db.rpc(
     'create_order_with_inventory_deduction',
     {
       p_order_id: orderId,
-      p_order_number: '',
+      p_order_number: legacyOrderNumberFallback,
       p_customer: {
         fullName: checkoutData.fullName,
         phone: checkoutData.phone,

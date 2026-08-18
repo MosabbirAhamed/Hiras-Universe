@@ -14,16 +14,16 @@ export default function CartToast() {
       aria-live="polite"
       className="fixed bottom-5 right-5 z-50 max-w-sm w-[calc(100%-2.5rem)] sm:w-auto animate-fade-in pointer-events-auto"
     >
-      <div className="bg-charcoal text-ivory px-4 py-3 rounded-lg shadow-xl border border-cream/20 flex items-center justify-between gap-3 text-sm">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <span className="w-2 h-2 rounded-full bg-gold shrink-0" aria-hidden="true" />
+      <div className="flex items-center justify-between gap-3 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-footer-background)] px-4 py-3 text-sm text-[var(--color-footer-text)] shadow-xl">
+        <div className="flex min-w-0 items-center gap-2.5">
+          <span className="h-2 w-2 shrink-0 rounded-full bg-[var(--color-accent)]" aria-hidden="true" />
           <p className="font-medium truncate sm:whitespace-normal">{toastMessage}</p>
         </div>
         <button
           type="button"
           onClick={clearToast}
           aria-label="Dismiss notification"
-          className="text-ivory/70 hover:text-ivory p-1 rounded transition shrink-0"
+          className="shrink-0 rounded p-1 text-[var(--color-footer-text)] opacity-70 transition hover:opacity-100"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <line x1="18" y1="6" x2="6" y2="18" />

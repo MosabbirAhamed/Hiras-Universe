@@ -110,7 +110,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
         />
       </head>
-      <body className="bg-ivory text-charcoal antialiased flex min-h-screen flex-col">
+      <body className="flex min-h-screen flex-col bg-[var(--color-body-background)] text-[var(--color-text)] antialiased">
         <ThemeInjector />
         <CartProvider>
           <Header />

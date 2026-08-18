@@ -89,17 +89,17 @@ export default function TrackOrderPage() {
         {/* Page Header */}
         <div className="mx-auto mb-8 max-w-xl space-y-3 text-center sm:mb-10">
           <p className="storefront-eyebrow">Order progress</p>
-          <h1 className="font-serif text-3xl font-semibold text-charcoal sm:text-4xl">Track Your Order</h1>
-          <p className="text-sm leading-6 text-charcoal/60">
+          <h1 className="font-serif text-3xl font-semibold text-[var(--color-heading)] sm:text-4xl">Track Your Order</h1>
+          <p className="text-sm leading-6 text-[var(--color-muted)]">
             Enter your order number and mobile number to view its current delivery progress.
           </p>
         </div>
 
         {/* Tracking Form Card */}
-        <div className="storefront-card mx-auto mb-10 max-w-xl bg-white/60 p-5 sm:p-8">
+        <div className="storefront-card mx-auto mb-10 max-w-xl p-5 sm:p-8">
           <form onSubmit={handleTrack} className="space-y-4">
             <div>
-              <label htmlFor="tracking-order-number" className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-charcoal/75">
+              <label htmlFor="tracking-order-number" className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-[var(--color-text)]/75">
                 Order Number *
               </label>
               <input
@@ -109,16 +109,16 @@ export default function TrackOrderPage() {
                 placeholder="e.g. HN-1001"
                 value={orderNumber}
                 onChange={(e) => setOrderNumber(e.target.value)}
-                className={`w-full rounded-xl border bg-white p-3 text-sm text-charcoal transition focus:outline-none focus:ring-2 focus:ring-gold ${fieldErrors.orderNumber ? 'border-red-500' : 'border-taupe/30'
+                className={`w-full rounded-[var(--radius-button)] border bg-[var(--color-input-background)] p-3 text-sm text-[var(--color-text)] transition focus:outline-none focus:ring-2 focus:ring-[var(--color-input-focus)] ${fieldErrors.orderNumber ? 'border-[var(--color-error)]' : 'border-[var(--color-input-border)]'
                   }`}
               />
               {fieldErrors.orderNumber && (
-                <p className="text-xs text-red-600 mt-1">{fieldErrors.orderNumber}</p>
+                <p className="mt-1 text-xs text-[var(--color-error)]">{fieldErrors.orderNumber}</p>
               )}
             </div>
 
             <div>
-              <label htmlFor="tracking-phone" className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-charcoal/75">
+              <label htmlFor="tracking-phone" className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-[var(--color-text)]/75">
                 Mobile Number (Bangladesh) *
               </label>
               <input
@@ -128,11 +128,11 @@ export default function TrackOrderPage() {
                 placeholder="e.g. 01712345678"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className={`w-full rounded-xl border bg-white p-3 text-sm text-charcoal transition focus:outline-none focus:ring-2 focus:ring-gold ${fieldErrors.phone ? 'border-red-500' : 'border-taupe/30'
+                className={`w-full rounded-[var(--radius-button)] border bg-[var(--color-input-background)] p-3 text-sm text-[var(--color-text)] transition focus:outline-none focus:ring-2 focus:ring-[var(--color-input-focus)] ${fieldErrors.phone ? 'border-[var(--color-error)]' : 'border-[var(--color-input-border)]'
                   }`}
               />
               {fieldErrors.phone && (
-                <p className="text-xs text-red-600 mt-1">{fieldErrors.phone}</p>
+                <p className="mt-1 text-xs text-[var(--color-error)]">{fieldErrors.phone}</p>
               )}
             </div>
 
@@ -146,12 +146,12 @@ export default function TrackOrderPage() {
           </form>
 
           {error && (
-            <div className="mt-4 flex items-start justify-between rounded-xl border border-red-200 bg-red-50 p-3.5 text-xs text-red-700 animate-fade-in sm:text-sm">
+            <div className="mt-4 flex items-start justify-between rounded-[var(--radius-button)] border border-[var(--color-error)]/25 bg-[var(--color-error)]/10 p-3.5 text-xs text-[var(--color-error)] animate-fade-in sm:text-sm">
               <div>{error}</div>
               <button
                 type="button"
                 onClick={() => setError('')}
-                className="ml-3 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-red-600 transition hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-300"
+                className="ml-3 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-[var(--color-error)] transition hover:bg-[var(--color-error)]/10 focus:outline-none focus:ring-2 focus:ring-[var(--color-error)]"
                 aria-label="Dismiss error"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
@@ -166,32 +166,32 @@ export default function TrackOrderPage() {
         {result && (
           <div className="space-y-8 animate-fade-in">
             {/* Order Header Summary */}
-            <div className="storefront-card flex flex-col justify-between gap-4 bg-white/60 p-5 sm:flex-row sm:items-center sm:p-6">
+            <div className="storefront-card flex flex-col justify-between gap-4 p-5 sm:flex-row sm:items-center sm:p-6">
               <div>
                 <div className="flex items-center gap-3">
-                  <h2 className="font-serif text-xl font-semibold text-charcoal sm:text-2xl">
+                  <h2 className="font-serif text-xl font-semibold text-[var(--color-heading)] sm:text-2xl">
                     Order #{result.orderNumber}
                   </h2>
                   <span
                     className={`px-2.5 py-0.5 text-xs font-semibold rounded-full border uppercase tracking-wider ${result.orderStatus === 'cancelled'
-                        ? 'bg-red-100 text-red-800 border-red-200'
-                        : result.orderStatus === 'delivered'
-                          ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
-                          : 'bg-amber-100 text-amber-800 border-amber-200'
+                      ? 'bg-[var(--color-error)]/10 text-[var(--color-error)] border-[var(--color-error)]/25'
+                      : result.orderStatus === 'delivered'
+                        ? 'bg-[var(--color-success)]/10 text-[var(--color-success)] border-[var(--color-success)]/25'
+                        : 'bg-[var(--color-accent)]/15 text-[var(--color-heading)] border-[var(--color-accent)]/30'
                       }`}
                   >
                     {result.orderStatus}
                   </span>
                 </div>
-                <p className="text-xs text-taupe mt-1">
-                  Placed on {formatDate(result.createdAt)} • Recipient: <span className="font-medium text-charcoal">{result.customerName}</span> ({result.maskedPhone})
+                <p className="mt-1 text-xs text-[var(--color-muted)]">
+                  Placed on {formatDate(result.createdAt)} • Recipient: <span className="font-medium text-[var(--color-heading)]">{result.customerName}</span> ({result.maskedPhone})
                 </p>
               </div>
 
               <button
                 type="button"
                 onClick={() => setShowInvoiceModal(true)}
-                className="inline-flex min-h-11 self-start items-center gap-2 rounded-full border border-black/15 px-4 py-2 text-xs font-semibold text-charcoal transition hover:bg-cream focus:outline-none focus:ring-2 focus:ring-gold sm:self-auto"
+                className="inline-flex min-h-11 self-start items-center gap-2 rounded-full border border-[var(--color-border)] px-4 py-2 text-xs font-semibold text-[var(--color-heading)] transition hover:bg-[var(--color-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--color-input-focus)] sm:self-auto"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2m-4 0v4H8v-4" strokeLinecap="round" strokeLinejoin="round" />
@@ -201,8 +201,8 @@ export default function TrackOrderPage() {
             </div>
 
             {/* Visual Status Timeline */}
-            <div className="storefront-card bg-white/60 p-5 sm:p-8">
-              <h3 className="mb-6 border-b border-black/10 pb-3 font-serif text-lg font-semibold text-charcoal">
+            <div className="storefront-card p-5 sm:p-8">
+              <h3 className="mb-6 border-b border-[var(--color-border)] pb-3 font-serif text-lg font-semibold text-[var(--color-heading)]">
                 Delivery Progress
               </h3>
 
@@ -218,10 +218,10 @@ export default function TrackOrderPage() {
                         <div className="flex items-center gap-2">
                           <div
                             className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0 transition ${step.key === 'cancelled'
-                                ? 'bg-red-600 text-white'
-                                : isCompleted
-                                  ? 'bg-mocha text-ivory'
-                                  : 'bg-cream text-taupe border border-taupe/30'
+                              ? 'bg-[var(--color-error)] text-[var(--color-button-text)]'
+                              : isCompleted
+                                ? 'bg-[var(--color-success)] text-[var(--color-button-text)]'
+                                : 'border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-muted)]'
                               }`}
                           >
                             {step.key === 'cancelled' ? '✕' : isCompleted ? '✓' : idx + 1}
@@ -229,16 +229,16 @@ export default function TrackOrderPage() {
                         </div>
 
                         <div className="min-w-0">
-                          <div className={`text-sm font-semibold ${isCurrent ? 'text-mocha' : isCompleted ? 'text-charcoal' : 'text-taupe'}`}>
+                          <div className={`text-sm font-semibold ${isCurrent ? 'text-[var(--color-primary)]' : isCompleted ? 'text-[var(--color-heading)]' : 'text-[var(--color-muted)]'}`}>
                             {step.label}
                           </div>
                           {step.timestamp && (
-                            <div className="text-xs text-taupe mt-0.5">
+                            <div className="mt-0.5 text-xs text-[var(--color-muted)]">
                               {formatDate(step.timestamp)}
                             </div>
                           )}
                           {!step.timestamp && !isCompleted && (
-                            <div className="text-2xs text-taupe/70 mt-0.5">Pending</div>
+                            <div className="mt-0.5 text-2xs text-[var(--color-muted)]/70">Pending</div>
                           )}
                         </div>
                       </div>
@@ -250,48 +250,48 @@ export default function TrackOrderPage() {
 
             {/* Delivery & Payment Information (Privacy Filtered) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="storefront-card space-y-3 bg-white/60 p-5 text-sm">
-                <h4 className="border-b border-black/10 pb-3 font-serif text-lg font-semibold text-charcoal">
+              <div className="storefront-card space-y-3 p-5 text-sm">
+                <h4 className="border-b border-[var(--color-border)] pb-3 font-serif text-lg font-semibold text-[var(--color-heading)]">
                   Destination Summary
                 </h4>
-                <div className="space-y-1 text-charcoal">
-                  <div className="text-xs text-taupe uppercase tracking-wider">Recipient</div>
+                <div className="space-y-1 text-[var(--color-text)]">
+                  <div className="text-xs uppercase tracking-wider text-[var(--color-muted)]">Recipient</div>
                   <div className="font-medium">{result.customerName}</div>
-                  <div className="text-xs text-taupe pt-2 uppercase tracking-wider">Delivery Area</div>
+                  <div className="pt-2 text-xs uppercase tracking-wider text-[var(--color-muted)]">Delivery Area</div>
                   <div>{result.shippingAddress.thana}, {result.shippingAddress.district}</div>
                 </div>
               </div>
 
-              <div className="storefront-card space-y-3 bg-white/60 p-5 text-sm">
-                <h4 className="border-b border-black/10 pb-3 font-serif text-lg font-semibold text-charcoal">
+              <div className="storefront-card space-y-3 p-5 text-sm">
+                <h4 className="border-b border-[var(--color-border)] pb-3 font-serif text-lg font-semibold text-[var(--color-heading)]">
                   Payment Summary
                 </h4>
-                <div className="space-y-2 text-charcoal">
+                <div className="space-y-2 text-[var(--color-text)]">
                   <div className="flex justify-between">
-                    <span className="text-taupe">Method:</span>
+                    <span className="text-[var(--color-muted)]">Method:</span>
                     <span className="font-medium uppercase text-xs">
                       {result.paymentMethod === 'cod' ? 'Cash on Delivery' : result.paymentMethod}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-taupe">Status:</span>
-                    <span className="font-semibold uppercase text-xs text-mocha">{result.paymentStatus}</span>
+                    <span className="text-[var(--color-muted)]">Status:</span>
+                    <span className="text-xs font-semibold uppercase text-[var(--color-primary)]">{result.paymentStatus}</span>
                   </div>
-                  <div className="flex justify-between border-t border-cream pt-2 font-semibold">
+                  <div className="flex justify-between border-t border-[var(--color-border)] pt-2 font-semibold">
                     <span>Total Payable:</span>
-                    <span className="text-mocha">{formatPrice(result.total)}</span>
+                    <span className="text-[var(--color-primary)]">{formatPrice(result.total)}</span>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Purchased Items List */}
-            <div className="storefront-card space-y-4 bg-white/60 p-5 sm:p-6">
-              <h3 className="border-b border-black/10 pb-3 font-serif text-lg font-semibold text-charcoal">
+            <div className="storefront-card space-y-4 p-5 sm:p-6">
+              <h3 className="border-b border-[var(--color-border)] pb-3 font-serif text-lg font-semibold text-[var(--color-heading)]">
                 Purchased Items ({result.items.reduce((s, it) => s + it.quantity, 0)})
               </h3>
 
-              <div className="divide-y divide-cream">
+              <div className="divide-y divide-[var(--color-border)]">
                 {result.items.map((item, idx) => {
                   const thumbnail = item.image || '/products/placeholder.svg'
                   const itemSku = item.variantSku || item.productSku
@@ -299,24 +299,24 @@ export default function TrackOrderPage() {
                   return (
                     <div key={idx} className="flex items-center justify-between gap-3 py-4">
                       <div className="flex min-w-0 items-center gap-3">
-                        <div className="relative h-16 w-14 flex-shrink-0 overflow-hidden rounded-lg border border-black/10 bg-cream">
+                        <div className="relative h-16 w-14 flex-shrink-0 overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-section-background)]">
                           <Image src={thumbnail} alt={item.productName} fill sizes="56px" className="object-cover" />
                         </div>
                         <div>
-                          <div className="font-medium text-sm text-charcoal">{item.productName}</div>
+                          <div className="text-sm font-medium text-[var(--color-heading)]">{item.productName}</div>
                           {item.selectedAttributes && (
-                            <div className="text-xs text-taupe">
+                            <div className="text-xs text-[var(--color-muted)]">
                               {Object.entries(item.selectedAttributes).map(([k, v]) => `${k}: ${v}`).join(' • ')}
                             </div>
                           )}
-                          {itemSku && <div className="text-xs text-taupe/80">SKU: {itemSku}</div>}
-                          <div className="text-xs text-taupe mt-0.5">
+                          {itemSku && <div className="text-xs text-[var(--color-muted)]/80">SKU: {itemSku}</div>}
+                          <div className="mt-0.5 text-xs text-[var(--color-muted)]">
                             Qty: {item.quantity} × {formatPrice(item.unitPrice)}
                           </div>
                         </div>
                       </div>
 
-                      <div className="font-semibold text-sm text-charcoal whitespace-nowrap">
+                      <div className="whitespace-nowrap text-sm font-semibold text-[var(--color-heading)]">
                         {formatPrice(item.lineTotal)}
                       </div>
                     </div>
@@ -330,18 +330,18 @@ export default function TrackOrderPage() {
         {/* Verified Invoice Modal */}
         {showInvoiceModal && result && (
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-charcoal/65 p-3 backdrop-blur-xs sm:p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-[var(--color-heading)]/65 p-3 backdrop-blur-xs sm:p-4"
             role="dialog"
             aria-modal="true"
           >
-            <div className="relative my-8 max-h-[90vh] w-full max-w-3xl space-y-6 overflow-y-auto rounded-[18px] border border-black/10 bg-[#fbfaf7] p-5 shadow-2xl animate-fade-in sm:p-8">
-              <div className="flex items-center justify-between border-b border-black/10 pb-4 print:hidden">
-                <h2 className="font-serif text-lg font-semibold text-charcoal">Customer Receipt / Invoice</h2>
+            <div className="relative my-8 max-h-[90vh] w-full max-w-3xl space-y-6 overflow-y-auto rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-card-background)] p-5 shadow-2xl animate-fade-in sm:p-8">
+              <div className="flex items-center justify-between border-b border-[var(--color-border)] pb-4 print:hidden">
+                <h2 className="font-serif text-lg font-semibold text-[var(--color-heading)]">Customer Receipt / Invoice</h2>
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={() => window.print()}
-                    className="inline-flex min-h-9 items-center gap-1.5 rounded-full bg-mocha px-3 py-1.5 text-xs font-semibold text-ivory transition hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-gold"
+                    className="storefront-button inline-flex min-h-9 items-center gap-1.5 px-3 py-1.5 text-xs font-semibold transition hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--color-input-focus)]"
                   >
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                       <path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2m-4 0v4H8v-4" strokeLinecap="round" strokeLinejoin="round" />
@@ -351,7 +351,7 @@ export default function TrackOrderPage() {
                   <button
                     type="button"
                     onClick={() => setShowInvoiceModal(false)}
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-full text-taupe transition hover:bg-cream hover:text-charcoal focus:outline-none focus:ring-2 focus:ring-gold"
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-full text-[var(--color-muted)] transition hover:bg-[var(--color-surface)] hover:text-[var(--color-heading)] focus:outline-none focus:ring-2 focus:ring-[var(--color-input-focus)]"
                     aria-label="Close invoice"
                   >
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
@@ -362,26 +362,26 @@ export default function TrackOrderPage() {
               </div>
 
               {/* Modal Invoice Content */}
-              <div className="space-y-6 text-sm text-charcoal">
-                <div className="flex justify-between items-start border-b border-cream pb-4">
+              <div className="space-y-6 text-sm text-[var(--color-text)]">
+                <div className="flex items-start justify-between border-b border-[var(--color-border)] pb-4">
                   <div>
-                    <div className="font-serif text-xl font-bold text-mocha">Hira&apos;s Universe</div>
-                    <div className="text-xs text-taupe">Curated Modest Fashion & Essentials</div>
+                    <div className="font-serif text-xl font-bold text-[var(--color-primary)]">Hira&apos;s Universe</div>
+                    <div className="text-xs text-[var(--color-muted)]">Curated Modest Fashion & Essentials</div>
                   </div>
                   <div className="text-right">
                     <div className="font-bold">INVOICE #{result.orderNumber}</div>
-                    <div className="text-xs text-taupe">{formatDate(result.createdAt)}</div>
+                    <div className="text-xs text-[var(--color-muted)]">{formatDate(result.createdAt)}</div>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 text-xs">
                   <div>
-                    <span className="font-semibold text-taupe block">CUSTOMER:</span>
+                    <span className="block font-semibold text-[var(--color-muted)]">CUSTOMER:</span>
                     <div>{result.customerName}</div>
                     <div>{result.maskedPhone}</div>
                   </div>
                   <div>
-                    <span className="font-semibold text-taupe block">DELIVERY DESTINATION:</span>
+                    <span className="block font-semibold text-[var(--color-muted)]">DELIVERY DESTINATION:</span>
                     <div>{result.shippingAddress.thana}, {result.shippingAddress.district}</div>
                     <div className="uppercase font-medium pt-1">Payment: {result.paymentMethod}</div>
                   </div>
@@ -390,20 +390,20 @@ export default function TrackOrderPage() {
                 {/* Items */}
                 <table className="w-full text-xs text-left border-collapse">
                   <thead>
-                    <tr className="border-b border-cream text-taupe uppercase font-semibold">
+                    <tr className="border-b border-[var(--color-border)] uppercase font-semibold text-[var(--color-muted)]">
                       <th className="py-2">Item</th>
                       <th className="py-2 text-center">Qty</th>
                       <th className="py-2 text-right">Price</th>
                       <th className="py-2 text-right">Total</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-cream/60">
+                  <tbody className="divide-y divide-[var(--color-border)]/60">
                     {result.items.map((it, i) => (
                       <tr key={i}>
                         <td className="py-2">
                           <strong>{it.productName}</strong>
                           {it.selectedAttributes && (
-                            <span className="text-taupe block text-2xs">
+                            <span className="block text-2xs text-[var(--color-muted)]">
                               {Object.entries(it.selectedAttributes).map(([k, v]) => `${k}: ${v}`).join(', ')}
                             </span>
                           )}
@@ -416,10 +416,10 @@ export default function TrackOrderPage() {
                   </tbody>
                 </table>
 
-                <div className="border-t border-cream pt-3 space-y-1 text-xs text-right">
-                  <div className="text-taupe">Subtotal: <span className="font-medium text-charcoal">{formatPrice(result.subtotal)}</span></div>
-                  <div className="text-taupe">Delivery Charge: <span className="font-medium text-charcoal">{formatPrice(result.deliveryCharge)}</span></div>
-                  <div className="font-bold text-sm text-mocha pt-1">Total: {formatPrice(result.total)}</div>
+                <div className="space-y-1 border-t border-[var(--color-border)] pt-3 text-right text-xs">
+                  <div className="text-[var(--color-muted)]">Subtotal: <span className="font-medium text-[var(--color-heading)]">{formatPrice(result.subtotal)}</span></div>
+                  <div className="text-[var(--color-muted)]">Delivery Charge: <span className="font-medium text-[var(--color-heading)]">{formatPrice(result.deliveryCharge)}</span></div>
+                  <div className="pt-1 text-sm font-bold text-[var(--color-primary)]">Total: {formatPrice(result.total)}</div>
                 </div>
               </div>
             </div>
@@ -427,7 +427,7 @@ export default function TrackOrderPage() {
         )}
 
         {/* Bottom CTA */}
-        <div className="mt-12 border-t border-black/10 pt-6 text-center">
+        <div className="mt-12 border-t border-[var(--color-border)] pt-6 text-center">
           <Link
             href="/products"
             className="storefront-link inline-flex items-center gap-1 text-xs sm:text-sm"

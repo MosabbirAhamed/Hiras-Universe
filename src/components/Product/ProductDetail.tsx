@@ -124,7 +124,7 @@ const ProductDetail = ({ product, category, categories }: { product: Product; ca
       <div className="site-container grid grid-cols-1 gap-10 pb-16 pt-8 sm:gap-12 sm:pb-20 sm:pt-12 md:grid-cols-2 md:gap-10 lg:gap-16 lg:pb-24 lg:pt-16">
         {/* Left: Gallery */}
         <div>
-          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[18px] border border-black/10 bg-cream shadow-[0_18px_45px_rgba(65,49,37,0.10)]">
+          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[0_18px_45px_rgba(34,34,34,0.08)]">
             <Image src={activeImage} alt={product.name} fill style={{ objectFit: 'cover' }} priority />
           </div>
           {gallery.length > 0 && (
@@ -135,7 +135,7 @@ const ProductDetail = ({ product, category, categories }: { product: Product; ca
                   type="button"
                   onClick={() => setActiveImage(img)}
                   aria-label={`View image ${i + 1} for ${product.name}`}
-                  className={`relative h-16 w-16 overflow-hidden rounded-[10px] border transition sm:h-20 sm:w-20 ${activeImage === img ? 'ring-2 ring-mocha border-transparent' : 'border-black/10 opacity-80 hover:opacity-100'
+                  className={`relative h-16 w-16 overflow-hidden rounded-[var(--radius-button)] border transition sm:h-20 sm:w-20 ${activeImage === img ? 'border-transparent ring-2 ring-[var(--color-input-focus)]' : 'border-[var(--color-border)] opacity-80 hover:opacity-100'
                     }`}
                 >
                   <Image src={img} alt={`${product.name} ${i + 1}`} fill style={{ objectFit: 'cover' }} />
@@ -148,21 +148,21 @@ const ProductDetail = ({ product, category, categories }: { product: Product; ca
         {/* Right: Info & Actions */}
         <div className="flex flex-col justify-start">
           <p className="storefront-eyebrow mb-3">The considered edit</p>
-          <h1 className="mb-3 font-serif text-4xl font-semibold leading-[1.05] text-charcoal sm:text-5xl">{product.name}</h1>
+          <h1 className="mb-3 font-serif text-4xl font-semibold leading-[1.05] text-[var(--color-heading)] sm:text-5xl">{product.name}</h1>
 
           {flags.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-3">
               {flags.map((flag, i) => (
-                <span key={i} className="rounded-full bg-oxblood px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-white">
+                <span key={i} className="rounded-full bg-[var(--color-sale)] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--color-sale-text)]">
                   {flag}
                 </span>
               ))}
             </div>
           )}
 
-          <div className="mb-5 flex items-center gap-2 text-sm text-taupe">
+          <div className="mb-5 flex items-center gap-2 text-sm text-[var(--color-muted)]">
             {category && categoryHref && (
-              <Link href={categoryHref} className="underline hover:text-charcoal transition">
+              <Link href={categoryHref} className="underline transition hover:text-[var(--color-link-hover)]">
                 {category.name}
               </Link>
             )}
@@ -171,25 +171,25 @@ const ProductDetail = ({ product, category, categories }: { product: Product; ca
           </div>
 
           {/* Pricing */}
-          <div className="mb-5 border-b border-black/10 pb-5">
+          <div className="mb-5 border-b border-[var(--color-border)] pb-5">
             {effectiveDisplayPrice.onSale ? (
               <div className="flex items-baseline gap-3">
-                <span className="text-3xl font-semibold text-mocha">{formatPrice(effectiveDisplayPrice.current)}</span>
-                <span className="text-base text-taupe line-through">{formatPrice(effectiveDisplayPrice.original)}</span>
+                <span className="text-3xl font-semibold text-[var(--color-primary)]">{formatPrice(effectiveDisplayPrice.current)}</span>
+                <span className="text-base text-[var(--color-muted)] line-through">{formatPrice(effectiveDisplayPrice.original)}</span>
               </div>
             ) : (
-              <div className="text-3xl font-semibold text-mocha">{formatPrice(effectiveDisplayPrice.current)}</div>
+              <div className="text-3xl font-semibold text-[var(--color-primary)]">{formatPrice(effectiveDisplayPrice.current)}</div>
             )}
           </div>
 
           {/* Stock Status Badge */}
           <div className="mb-5">
             <span
-              className={`inline-flex items-center rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] ${isOutOfStock
-                ? 'bg-red-50 text-red-700 border border-red-200'
+              className={`inline-flex items-center rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] ${isOutOfStock
+                ? 'border-[var(--color-error)]/25 bg-[var(--color-error)]/10 text-[var(--color-error)]'
                 : (hasVariants ? selectedVariant?.stockStatus : product.stockStatus) === 'low_stock'
-                  ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                  : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                  ? 'border-[var(--color-accent)]/30 bg-[var(--color-accent)]/15 text-[var(--color-heading)]'
+                  : 'border-[var(--color-success)]/25 bg-[var(--color-success)]/10 text-[var(--color-success)]'
                 }`}
             >
               {isProductInactive && 'Currently Unavailable'}
@@ -201,12 +201,12 @@ const ProductDetail = ({ product, category, categories }: { product: Product; ca
 
           {/* Variant Attributes Selection */}
           {hasVariants && attributes.length > 0 && (
-            <div className="mb-6 space-y-5 rounded-[14px] border border-black/10 bg-white/65 p-5 sm:p-6">
+            <div className="mb-6 space-y-5 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-card-background)] p-5 sm:p-6">
               {attributes.map((attr) => (
                 <div key={attr.id} className="space-y-2">
                   <div className="flex justify-between items-baseline text-xs">
-                    <span className="font-semibold text-charcoal tracking-wide uppercase">{attr.name}:</span>
-                    <span className="text-taupe">{selectedAttributes[attr.name] || 'Select'}</span>
+                    <span className="font-semibold uppercase tracking-wide text-[var(--color-heading)]">{attr.name}:</span>
+                    <span className="text-[var(--color-muted)]">{selectedAttributes[attr.name] || 'Select'}</span>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {attr.values.map((val) => {
@@ -217,8 +217,8 @@ const ProductDetail = ({ product, category, categories }: { product: Product; ca
                           type="button"
                           onClick={() => handleAttributeSelect(attr.name, val)}
                           className={`rounded-full border px-4 py-2 text-xs font-medium transition sm:text-sm ${isSelected
-                            ? 'bg-mocha text-ivory border-mocha shadow-xs'
-                            : 'bg-white text-charcoal border-taupe/30 hover:border-mocha hover:bg-cream/40'
+                            ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--color-on-primary)] shadow-xs'
+                            : 'border-[var(--color-input-border)] bg-[var(--color-input-background)] text-[var(--color-text)] hover:border-[var(--color-primary)] hover:bg-[var(--color-surface)]'
                             }`}
                         >
                           {val}
@@ -232,26 +232,26 @@ const ProductDetail = ({ product, category, categories }: { product: Product; ca
           )}
 
           {product.shortDescription && (
-            <div className="mb-6 text-sm leading-7 text-charcoal/65 sm:text-base">
+            <div className="mb-6 text-sm leading-7 text-[var(--color-text)]/65 sm:text-base">
               {product.shortDescription}
             </div>
           )}
 
           {/* Add to Bag Controls */}
-          <div className="mb-6 rounded-[14px] border border-black/10 bg-cream/70 p-4 sm:p-5">
+          <div className="mb-6 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-section-background)] p-4 sm:p-5">
             <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
               {/* Quantity Selector */}
-              <div className="flex min-h-[48px] items-center justify-between rounded-[10px] border border-black/10 bg-white sm:justify-start">
+              <div className="flex min-h-[48px] items-center justify-between rounded-[var(--radius-button)] border border-[var(--color-input-border)] bg-[var(--color-input-background)] sm:justify-start">
                 <button
                   type="button"
                   onClick={() => handleQuantityChange(-1)}
                   disabled={selectedQty <= 1 || isOutOfStock}
                   aria-label="Decrease quantity"
-                  className="px-3.5 py-2 text-sm font-semibold text-charcoal hover:bg-cream disabled:opacity-30 disabled:hover:bg-transparent transition"
+                  className="px-3.5 py-2 text-sm font-semibold text-[var(--color-heading)] transition hover:bg-[var(--color-surface)] disabled:opacity-30 disabled:hover:bg-transparent"
                 >
                   -
                 </button>
-                <span className="px-3 text-sm font-medium text-charcoal min-w-[32px] text-center" aria-live="polite">
+                <span className="min-w-[32px] px-3 text-center text-sm font-medium text-[var(--color-heading)]" aria-live="polite">
                   {isOutOfStock ? 0 : selectedQty}
                 </span>
                 <button
@@ -259,7 +259,7 @@ const ProductDetail = ({ product, category, categories }: { product: Product; ca
                   onClick={() => handleQuantityChange(1)}
                   disabled={selectedQty >= maxStock || isOutOfStock}
                   aria-label="Increase quantity"
-                  className="px-3.5 py-2 text-sm font-semibold text-charcoal hover:bg-cream disabled:opacity-30 disabled:hover:bg-transparent transition"
+                  className="px-3.5 py-2 text-sm font-semibold text-[var(--color-heading)] transition hover:bg-[var(--color-surface)] disabled:opacity-30 disabled:hover:bg-transparent"
                 >
                   +
                 </button>
@@ -271,9 +271,9 @@ const ProductDetail = ({ product, category, categories }: { product: Product; ca
                 onClick={handleAddToCart}
                 disabled={isOutOfStock || adding}
                 aria-label={isOutOfStock ? `${product.name} is currently out of stock` : `Add ${product.name} to bag`}
-                className={`flex min-h-[48px] flex-1 items-center justify-center rounded-[10px] px-6 py-3 text-sm font-semibold transition shadow-sm ${isOutOfStock
-                  ? 'bg-taupe/40 text-taupe cursor-not-allowed'
-                  : 'bg-mocha text-ivory hover:opacity-90 active:scale-[0.99]'
+                className={`flex min-h-[48px] flex-1 items-center justify-center rounded-[var(--radius-button)] px-6 py-3 text-sm font-semibold shadow-sm transition ${isOutOfStock
+                  ? 'cursor-not-allowed bg-[var(--color-muted)]/20 text-[var(--color-muted)]'
+                  : 'bg-[var(--color-button-background)] text-[var(--color-button-text)] hover:bg-[var(--color-button-hover)] active:scale-[0.99]'
                   }`}
               >
                 {isProductInactive ? (
@@ -296,15 +296,15 @@ const ProductDetail = ({ product, category, categories }: { product: Product; ca
             </div>
 
             {!isOutOfStock && isHydrated && maxStock > 0 && maxStock <= 5 && (
-              <p className="mt-2 text-xs text-amber-700">Only {maxStock} left in stock - order soon.</p>
+              <p className="mt-2 text-xs text-[var(--color-error)]">Only {maxStock} left in stock - order soon.</p>
             )}
           </div>
 
           {/* Full Description */}
           {product.description && (
-            <div className="border-t border-black/10 pt-6">
+            <div className="border-t border-[var(--color-border)] pt-6">
               <h2 className="storefront-eyebrow mb-3">Description</h2>
-              <div className="whitespace-pre-line text-sm leading-7 text-charcoal/75">
+              <div className="whitespace-pre-line text-sm leading-7 text-[var(--color-text)]/75">
                 {product.description}
               </div>
             </div>

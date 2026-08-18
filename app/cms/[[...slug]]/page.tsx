@@ -47,14 +47,14 @@ export default async function CmsPage({ params }: { params: { slug?: string[] } 
   return (
     <main className="storefront-shell">
       <article className="site-container max-w-3xl py-10 sm:py-14 lg:py-20">
-        <header className="mb-8 border-b border-black/10 pb-8 sm:mb-10 sm:pb-10">
+        <header className="mb-8 border-b border-[var(--color-border)] pb-8 sm:mb-10 sm:pb-10">
           <p className="storefront-eyebrow mb-3">{"Hira's Universe"}</p>
-          <h1 className="font-serif text-3xl font-semibold leading-tight text-charcoal sm:text-4xl">
+          <h1 className="font-serif text-3xl font-semibold leading-tight text-[var(--color-heading)] sm:text-4xl">
             {page.title}
           </h1>
         </header>
         <div
-          className="prose prose-stone max-w-none space-y-4 leading-relaxed text-charcoal prose-headings:font-serif prose-headings:font-semibold prose-a:text-mocha prose-a:underline prose-a:decoration-mocha/30 prose-a:underline-offset-4"
+          className="prose max-w-none space-y-4 leading-relaxed text-[var(--color-text)] prose-headings:font-serif prose-headings:font-semibold prose-headings:text-[var(--color-heading)] prose-a:text-[var(--color-link)] prose-a:underline prose-a:decoration-[var(--color-border)] prose-a:underline-offset-4 hover:prose-a:text-[var(--color-link-hover)]"
           dangerouslySetInnerHTML={{ __html: sanitizeHtml(page.content || '') }}
         />
       </article>

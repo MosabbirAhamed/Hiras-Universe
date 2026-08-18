@@ -19,6 +19,18 @@ function test(name, fn) {
   }
 }
 
+async function testAsync(name, fn) {
+  total++
+  try {
+    await fn()
+    console.log(`✓ PASS: ${name}`)
+    passed++
+  } catch (err) {
+    console.error(`✗ FAIL: ${name}`)
+    console.error(err)
+  }
+}
+
 // -------------------------------------------------------------------
 // REFERENCE DATA & UTILITIES UNDER TEST (matching src/lib implementation)
 // -------------------------------------------------------------------
@@ -303,6 +315,102 @@ function generateNextOrderNumber(orders) {
     }
   }
   return `HN-${maxSuffix + 1}`
+}
+
+class TransactionMutex {
+  constructor() {
+    this.tail = Promise.resolve()
+  }
+
+  async runExclusive(operation) {
+    const previous = this.tail
+    let release
+    this.tail = new Promise((resolve) => {
+      release = resolve
+    })
+    await previous
+    try {
+      return await operation()
+    } finally {
+      release()
+    }
+  }
+}
+
+class InMemoryOrderDatabase {
+  constructor({ orders = [], stock = 10, nextSuffix = null } = {}) {
+    this.orders = structuredClone(orders)
+    this.stock = stock
+    this.nextSuffix = nextSuffix
+    this.transactionMutex = new TransactionMutex()
+  }
+
+  highestPersistedSuffix() {
+    return Number(generateNextOrderNumber(this.orders).replace('HN-', '')) - 1
+  }
+
+  async insertOrderWithUniqueConstraint({ id, orderNumber, quantity = 0 }) {
+    return this.transactionMutex.runExclusive(async () => {
+      const snapshot = {
+        orders: structuredClone(this.orders),
+        stock: this.stock,
+        nextSuffix: this.nextSuffix
+      }
+
+      try {
+        if (this.orders.some((order) => order.orderNumber === orderNumber)) {
+          const error = new Error('orders_order_number_key')
+          error.code = '23505'
+          throw error
+        }
+        if (quantity > this.stock) throw new Error('insufficient_stock')
+        this.stock -= quantity
+        this.orders.push({ id, orderNumber, quantity })
+        return { id, orderNumber, quantity }
+      } catch (error) {
+        this.orders = snapshot.orders
+        this.stock = snapshot.stock
+        this.nextSuffix = snapshot.nextSuffix
+        throw error
+      }
+    })
+  }
+
+  async createOrder({ id, quantity = 1, failAfterDeduction = false }) {
+    return this.transactionMutex.runExclusive(async () => {
+      const snapshot = {
+        orders: structuredClone(this.orders),
+        stock: this.stock,
+        nextSuffix: this.nextSuffix
+      }
+
+      try {
+        const minimumNextSuffix = this.highestPersistedSuffix() + 1
+        const allocatedSuffix = Math.max(this.nextSuffix ?? minimumNextSuffix, minimumNextSuffix)
+        this.nextSuffix = allocatedSuffix + 1
+        const orderNumber = `HN-${allocatedSuffix}`
+
+        if (this.stock < quantity) throw new Error('insufficient_stock')
+        this.stock -= quantity
+        if (failAfterDeduction) throw new Error('forced_order_insert_failure')
+
+        if (this.orders.some((order) => order.orderNumber === orderNumber)) {
+          const error = new Error('orders_order_number_key')
+          error.code = '23505'
+          throw error
+        }
+
+        const order = { id, orderNumber, quantity }
+        this.orders.push(order)
+        return structuredClone(order)
+      } catch (error) {
+        this.orders = snapshot.orders
+        this.stock = snapshot.stock
+        this.nextSuffix = snapshot.nextSuffix
+        throw error
+      }
+    })
+  }
 }
 
 function computeProductStockStatus(stock, lowStockThreshold = 0) {
@@ -700,6 +808,100 @@ test('20. Generates sequential order numbers HN-1001, HN-1002, HN-1003 based on 
   // Gap / deletion test (e.g. HN-1003 deleted, highest is HN-1005)
   const ordersWithGaps = [{ orderNumber: 'HN-1001' }, { orderNumber: 'HN-1005' }]
   assert.strictEqual(generateNextOrderNumber(ordersWithGaps), 'HN-1006')
+})
+
+await testAsync('21. Transactional allocator creates first and sequential order numbers', async () => {
+  const database = new InMemoryOrderDatabase({ stock: 5 })
+  const first = await database.createOrder({ id: 'ord-first' })
+  const second = await database.createOrder({ id: 'ord-second' })
+
+  assert.strictEqual(first.orderNumber, 'HN-1001')
+  assert.strictEqual(second.orderNumber, 'HN-1002')
+  assert.strictEqual(database.stock, 3)
+})
+
+await testAsync('22. Transactional allocator starts above the highest legacy number and does not fill gaps', async () => {
+  const database = new InMemoryOrderDatabase({
+    orders: [
+      { id: 'ord-1001', orderNumber: 'HN-1001' },
+      { id: 'ord-1005', orderNumber: 'HN-1005' },
+      { id: 'legacy', orderNumber: 'HN-RANDOM' }
+    ]
+  })
+
+  const order = await database.createOrder({ id: 'ord-next' })
+  assert.strictEqual(order.orderNumber, 'HN-1006')
+})
+
+await testAsync('23. Concurrent order creation allocates unique contiguous numbers', async () => {
+  const database = new InMemoryOrderDatabase({ stock: 25 })
+  const attempts = Array.from({ length: 20 }, (_, index) =>
+    database.createOrder({ id: `ord-concurrent-${index}` })
+  )
+  const orders = await Promise.all(attempts)
+  const numbers = orders.map((order) => order.orderNumber)
+
+  assert.strictEqual(new Set(numbers).size, 20)
+  assert.deepStrictEqual(
+    numbers.map((number) => Number(number.replace('HN-', ''))).sort((a, b) => a - b),
+    Array.from({ length: 20 }, (_, index) => 1001 + index)
+  )
+  assert.strictEqual(database.stock, 5)
+})
+
+await testAsync('24. Failed order creation rolls back inventory, order, and allocator state', async () => {
+  const database = new InMemoryOrderDatabase({ stock: 2 })
+
+  await assert.rejects(
+    database.createOrder({ id: 'ord-failed', failAfterDeduction: true }),
+    /forced_order_insert_failure/
+  )
+  assert.strictEqual(database.stock, 2)
+  assert.strictEqual(database.orders.length, 0)
+  assert.strictEqual(database.nextSuffix, null)
+})
+
+await testAsync('25. Retry after a failed transaction safely reuses the uncommitted number', async () => {
+  const database = new InMemoryOrderDatabase({ stock: 2 })
+  await assert.rejects(
+    database.createOrder({ id: 'ord-failed', failAfterDeduction: true }),
+    /forced_order_insert_failure/
+  )
+
+  const retry = await database.createOrder({ id: 'ord-retry' })
+  assert.strictEqual(retry.orderNumber, 'HN-1001')
+  assert.strictEqual(database.stock, 1)
+  assert.strictEqual(database.orders.length, 1)
+})
+
+await testAsync('26. Unique constraint collision rejects the transaction without partial inventory deduction', async () => {
+  const database = new InMemoryOrderDatabase({
+    orders: [{ id: 'ord-existing', orderNumber: 'HN-1001' }],
+    stock: 3,
+    nextSuffix: 1001
+  })
+
+  await assert.rejects(
+    database.insertOrderWithUniqueConstraint({ id: 'ord-collision', orderNumber: 'HN-1001' }),
+    (error) => error.code === '23505' && error.message === 'orders_order_number_key'
+  )
+  assert.strictEqual(database.stock, 3)
+  assert.strictEqual(database.orders.length, 1)
+  assert.strictEqual(database.nextSuffix, 1001)
+})
+
+await testAsync('27. Concurrent checkout attempts cannot oversell inventory', async () => {
+  const database = new InMemoryOrderDatabase({ stock: 1 })
+  const results = await Promise.allSettled([
+    database.createOrder({ id: 'ord-race-a' }),
+    database.createOrder({ id: 'ord-race-b' })
+  ])
+
+  assert.strictEqual(results.filter((result) => result.status === 'fulfilled').length, 1)
+  assert.strictEqual(results.filter((result) => result.status === 'rejected').length, 1)
+  assert.strictEqual(database.orders.length, 1)
+  assert.strictEqual(database.stock, 0)
+  assert.strictEqual(database.nextSuffix, 1002)
 })
 
 console.log(`\n====================================================`)

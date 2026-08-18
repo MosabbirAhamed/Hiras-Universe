@@ -39,8 +39,8 @@ export default function AddToBagButton({ id, title, stock, active, hasVariants }
         transition
         active:scale-[0.99]
         ${isOutOfStock
-                    ? 'bg-taupe/20 text-taupe/70 border-cream cursor-not-allowed'
-                    : 'text-charcoal bg-ivory hover:bg-mocha hover:text-ivory border-cream'
+                    ? 'cursor-not-allowed border-[var(--color-border)] bg-[var(--color-muted)]/15 text-[var(--color-muted)]'
+                    : 'border-[var(--color-border)] bg-[var(--color-card-background)] text-[var(--color-heading)] hover:border-[var(--color-primary)] hover:bg-[var(--color-button-background)] hover:text-[var(--color-button-text)]'
                 }
       `}
         >

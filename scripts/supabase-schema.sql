@@ -126,10 +126,21 @@ CREATE TABLE IF NOT EXISTS settings (
 -- Seed default rows so reads always return something
 INSERT INTO settings (key, value) VALUES
   ('store',      '{"storeName":"Hira''s Universe","description":"Curated modest fashion and timeless essentials.","contactEmail":"info@example.com"}'),
-  ('theme',      '{"colors":{"primary":"#6B4F3B","secondary":"#B8A99A","accent":"#B89A6A","background":"#F6F1EB","surface":"#F3EDE7","text":"#222222","muted":"#DCCCBF","border":"#E8E0D6","sale":"#B89A6A","onPrimary":"#F6F1EB","link":"#6B4F3B"},"fonts":{"heading":"ui-serif, Georgia, serif","body":"ui-sans-serif, system-ui, Arial"},"layout":{"containerWidth":"1200px","borderRadius":"6px","radiusButton":"6px","radiusCard":"8px","sectionSpacing":"3rem","productImageAspect":"4/5","headerStyle":"default","footerStyle":"default"}}'),
+  ('theme',      '{"colors":{"bodyBackground":"#F6F1EB","mainBackground":"#F6F1EB","sectionBackground":"#FBFAF7","cardBackground":"#FFFFFF","primary":"#6B4F3B","secondary":"#B8A99A","accent":"#B89A6A","background":"#F6F1EB","surface":"#F3EDE7","text":"#222222","heading":"#222222","muted":"#8B8177","border":"#E8E0D6","buttonBackground":"#6B4F3B","buttonText":"#F6F1EB","buttonHover":"#513A2C","sale":"#B89A6A","saleText":"#FFFFFF","onPrimary":"#F6F1EB","link":"#6B4F3B","linkHover":"#513A2C","headerBackground":"#FFFFFF","headerText":"#222222","footerBackground":"#292724","footerText":"#F6F1EB","announcementBackground":"#6B4F3B","announcementText":"#F6F1EB","inputBackground":"#FFFFFF","inputBorder":"#D8D0C6","inputFocus":"#6B4F3B","error":"#A33A32","success":"#3F6B4F","wishlist":"#9B4D55"},"fonts":{"heading":"ui-serif, Georgia, serif","body":"ui-sans-serif, system-ui, Arial"},"layout":{"containerWidth":"1200px","borderRadius":"6px","radiusButton":"6px","radiusCard":"8px","sectionSpacing":"3rem","productImageAspect":"4/5","headerStyle":"default","footerStyle":"default"}}'),
   ('navigation', '[{"id":"n-1","label":"Women","url":"/collections/women","active":true,"order":1},{"id":"n-2","label":"Men","url":"/collections/men","active":true,"order":2},{"id":"n-3","label":"Tupi","url":"/category/tupi","active":true,"order":3}]'),
   ('homepage',   '[{"id":"s-hero","type":"hero","enabled":true,"order":0,"data":{"headline":"Elegance in Modesty","sub":"Curated modest fashion and timeless essentials.","image":"/products/hero-1.webp"}},{"id":"s-featured","type":"featured_products","enabled":true,"order":1,"data":{"productIds":["p-1","p-2"]}}]')
 ON CONFLICT (key) DO NOTHING;
+
+-- =============================================================================
+-- ORDER NUMBER ALLOCATOR
+-- =============================================================================
+-- A singleton row is used instead of MAX(order_number) + 1 on every request.
+-- The row is initialized from existing orders and advanced under the same
+-- transaction-scoped advisory lock used by the order RPC.
+CREATE TABLE IF NOT EXISTS order_number_allocator (
+  id          boolean PRIMARY KEY DEFAULT true CHECK (id),
+  next_suffix bigint NOT NULL CHECK (next_suffix > 0)
+);
 
 -- =============================================================================
 -- INDEXES
@@ -176,7 +187,7 @@ DECLARE
   v_derived       int;
   v_variant_found boolean;
   v_order_number  text;
-  v_max_suffix    int;
+  v_allocated_suffix bigint;
   v_order_row     jsonb;
 BEGIN
   -- Canonical lock order prevents deadlocks for carts containing the same products.
@@ -189,12 +200,26 @@ BEGIN
    ORDER BY p.id
    FOR UPDATE OF p;
 
-  -- Allocate the next order number while serializing only this short transaction section.
+  -- Reconcile legacy orders before allocating from one transactionally locked row.
+  -- Any later exception rolls this increment back with inventory and the order insert.
   PERFORM pg_advisory_xact_lock(hashtext('orders:order_number'));
-  SELECT COALESCE(MAX(substring(order_number FROM '^HN-([0-9]+)$')::int), 1000)
-    INTO v_max_suffix
-    FROM orders;
-  v_order_number := 'HN-' || (v_max_suffix + 1)::text;
+
+  INSERT INTO order_number_allocator (id, next_suffix)
+  SELECT true, COALESCE(MAX(substring(order_number FROM '^HN-([0-9]+)$')::bigint), 1000) + 1
+    FROM orders
+  ON CONFLICT (id) DO UPDATE
+    SET next_suffix = GREATEST(order_number_allocator.next_suffix, EXCLUDED.next_suffix);
+
+  UPDATE order_number_allocator
+     SET next_suffix = next_suffix + 1
+   WHERE id = true
+  RETURNING next_suffix - 1 INTO v_allocated_suffix;
+
+  IF v_allocated_suffix IS NULL THEN
+    RAISE EXCEPTION 'order_number_allocator_unavailable';
+  END IF;
+
+  v_order_number := 'HN-' || v_allocated_suffix::text;
 
   -- Revalidate and deduct inventory while the product rows are locked.
   FOR v_item IN SELECT * FROM jsonb_array_elements(p_items)

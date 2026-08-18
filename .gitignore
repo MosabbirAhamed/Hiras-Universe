@@ -9,3 +9,5 @@ dist/
 # Sensitive runtime data — must never be committed
 data/orders.json
 data/notifications.json
+
+*.tsbuildinfo

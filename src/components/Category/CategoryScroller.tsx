@@ -1,39 +1,79 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { FiArrowUpRight } from 'react-icons/fi'
 import type { Category } from '../../types/models'
 
-const CategoryScroller = ({ categories }: { categories: Category[] }) => {
-  if (!categories.length) return null
+// Fixed extra navigation entries appended after dynamic categories
+const EXTRA_LINKS = [
+  {
+    id: 'nav-shop-all',
+    name: 'Shop All',
+    href: '/products',
+    image: null,
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <rect x="2" y="7" width="20" height="14" rx="2" />
+        <path d="M16 7V5a4 4 0 00-8 0v2" />
+      </svg>
+    ),
+  },
+  {
+    id: 'nav-track',
+    name: 'Track Order',
+    href: '/track-order',
+    image: null,
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="12 6 12 12 16 14" />
+      </svg>
+    ),
+  },
+]
+
+const CategoryNavigation = ({ categories }: { categories: Category[] }) => {
+  const visibleCategories = categories.filter(c => c.active !== false)
+
+  const allItems = [
+    ...visibleCategories.map(cat => ({
+      id: cat.id,
+      name: cat.name,
+      href: `/category/${cat.slug || cat.id}`,
+      image: cat.image,
+      icon: null,
+    })),
+    ...EXTRA_LINKS,
+  ]
 
   return (
-    <div className="-mx-4 mt-6 px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0">
-      <div className="flex snap-x snap-mandatory gap-3.5 overflow-x-auto pb-3 hide-scrollbar lg:grid lg:grid-cols-4 lg:overflow-visible">
-        {categories.map((category) => (
+    <div className="-mx-4 px-4 sm:-mx-0 sm:px-0">
+      <div className="flex gap-5 overflow-x-auto pb-2 hide-scrollbar sm:justify-center lg:overflow-visible">
+        {allItems.map(item => (
           <Link
-            key={category.id}
-            href={`/category/${category.slug || category.id}`}
-            className="group relative min-h-[310px] w-[74vw] max-w-[310px] flex-none snap-start overflow-hidden rounded-[var(--radius-card)] bg-[var(--color-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--color-input-focus)] focus:ring-offset-2 sm:w-[280px] lg:w-auto lg:max-w-none"
+            key={item.id}
+            href={item.href}
+            className="group flex min-w-[72px] flex-col items-center gap-2.5 focus:outline-none"
+            aria-label={item.name}
           >
-            <Image
-              src={category.image || '/products/placeholder.svg'}
-              alt={category.name}
-              fill
-              sizes="(max-width: 640px) 74vw, (max-width: 1024px) 280px, 25vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-[1.035]"
-            />
-            <span className="absolute inset-0 bg-gradient-to-t from-[var(--color-heading)]/75 via-[var(--color-heading)]/15 to-transparent" aria-hidden="true" />
-            <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 text-[var(--color-button-text)]">
-              <span className="min-w-0">
-                <span className="block font-serif text-2xl font-semibold leading-tight">{category.name}</span>
-                {category.description ? (
-                  <span className="mt-1.5 line-clamp-2 block text-xs leading-5 text-[var(--color-button-text)]/75">{category.description}</span>
-                ) : null}
-              </span>
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[var(--color-button-text)]/45 bg-[var(--color-heading)]/10 transition-colors group-hover:bg-[var(--color-button-text)] group-hover:text-[var(--color-heading)]">
-                <FiArrowUpRight aria-hidden="true" />
-              </span>
+            {/* Circle */}
+            <div className="relative flex h-[72px] w-[72px] shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-[var(--color-border)] bg-[var(--color-section-background)] transition-all duration-300 group-hover:border-[var(--color-primary)] group-hover:shadow-md sm:h-[80px] sm:w-[80px]">
+              {item.image ? (
+                <Image
+                  src={item.image}
+                  alt={item.name}
+                  fill
+                  sizes="80px"
+                  className="object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+              ) : (
+                <span className="text-[var(--color-muted)] transition-colors group-hover:text-[var(--color-primary)]">
+                  {item.icon}
+                </span>
+              )}
+            </div>
+            {/* Label */}
+            <span className="max-w-[80px] text-center text-[11px] font-semibold leading-tight text-[var(--color-heading)] transition-colors group-hover:text-[var(--color-primary)]">
+              {item.name}
             </span>
           </Link>
         ))}
@@ -42,4 +82,4 @@ const CategoryScroller = ({ categories }: { categories: Category[] }) => {
   )
 }
 
-export default CategoryScroller
+export default CategoryNavigation

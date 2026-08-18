@@ -1,96 +1,176 @@
 import React from 'react'
 import Link from 'next/link'
-import { FiArrowUpRight, FiMail, FiMapPin, FiPhone } from 'react-icons/fi'
 import { FaFacebookF, FaInstagram, FaTiktok, FaYoutube } from 'react-icons/fa'
-import { getNavigation, getSettings } from '../../lib/repositories/fileRepo'
+import { getSettings } from '../../lib/repositories/fileRepo'
 
-const fallbackLinks = [
-  { label: 'Shop all', url: '/products' },
-  { label: 'Browse categories', url: '/category' }
+const shopLinks = [
+  { label: 'Women', url: '/collections/women' },
+  { label: 'Men', url: '/collections/men' },
+  { label: 'Tupi', url: '/category/tupi' },
+  { label: 'Collections', url: '/category' },
+  { label: 'Shop All', url: '/products' },
 ]
 
-const careLinks = [
-  { label: 'Track your order', url: '/track-order' },
-  { label: 'Shopping bag', url: '/cart' },
-  { label: 'Browse categories', url: '/category' }
+const customerCareLinks = [
+  { label: 'Track Order', url: '/track-order' },
+  { label: 'Shipping & Delivery', url: '/track-order' },
+  { label: 'Returns & Exchanges', url: '/track-order' },
+  { label: 'FAQs', url: '/track-order' },
+  { label: 'Contact Us', url: '/track-order' },
+]
+
+const aboutLinks = [
+  { label: 'Our Story', url: '/products' },
+  { label: 'Quality & Craftsmanship', url: '/products' },
+  { label: 'Sustainability', url: '/products' },
+  { label: 'Blog', url: '/products' },
+]
+
+const helpLinks = [
+  { label: 'Privacy Policy', url: '/products' },
+  { label: 'Terms & Conditions', url: '/products' },
+  { label: 'Return Policy', url: '/products' },
+  { label: 'Size Guide', url: '/products' },
 ]
 
 const socialIcons = [
-  { key: 'facebook', label: 'Facebook', Icon: FaFacebookF },
-  { key: 'instagram', label: 'Instagram', Icon: FaInstagram },
-  { key: 'tiktok', label: 'TikTok', Icon: FaTiktok },
-  { key: 'youtube', label: 'YouTube', Icon: FaYoutube }
+  { key: 'facebook', label: 'Facebook', defaultUrl: 'https://facebook.com', Icon: FaFacebookF },
+  { key: 'instagram', label: 'Instagram', defaultUrl: 'https://instagram.com', Icon: FaInstagram },
+  { key: 'tiktok', label: 'TikTok', defaultUrl: 'https://tiktok.com', Icon: FaTiktok },
+  { key: 'youtube', label: 'YouTube', defaultUrl: 'https://youtube.com', Icon: FaYoutube },
 ] as const
 
 export const Footer = async () => {
-  const [nav, settings] = await Promise.all([getNavigation(), getSettings()])
-  const navigationLinks = (nav || [])
-    .filter((item: any) => item.active && item.url)
-    .sort((a: any, b: any) => a.order - b.order)
-    .slice(0, 5)
-    .map((item: any) => ({ label: item.label, url: item.url }))
-  const shopLinks = navigationLinks.length ? navigationLinks : fallbackLinks
+  const settings = await getSettings()
   const social = settings?.social || {}
-  const configuredSocial = socialIcons.filter(({ key }) => Boolean(social[key]?.trim()))
 
   return (
-    <footer className="mt-auto w-full bg-[var(--color-footer-background)] text-[var(--color-footer-text)]">
-      <div className="site-container py-12 sm:py-16 lg:py-20">
-        <div className="grid gap-10 border-b border-current/15 pb-12 sm:grid-cols-2 lg:grid-cols-[1.4fr_0.8fr_0.9fr_1.1fr] lg:gap-14 lg:pb-16">
-          <div className="max-w-md">
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--color-accent)]">Modest essentials</p>
-            <Link href="/" className="mt-3 inline-block font-serif text-3xl font-semibold text-[var(--color-footer-text)] transition-opacity hover:opacity-80">
-              {settings?.storeName || "Hira's Universe"}
+    <footer className="mt-auto w-full border-t border-[var(--color-border)] bg-white text-[#222222]">
+      <div className="site-container py-12 sm:py-16">
+        {/* Main 5-column grid */}
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-5 lg:gap-10">
+
+          {/* Col 1: Brand */}
+          <div className="sm:col-span-2 lg:col-span-1">
+            <Link href="/" className="flex flex-col">
+              <span className="font-serif text-[20px] font-bold tracking-tight text-[#181817]">
+                Hira&apos;s Universe
+              </span>
+              <span className="mt-0.5 text-[8px] font-bold uppercase tracking-[0.28em] text-[var(--color-muted)]">
+                Tradition. Refined.
+              </span>
             </Link>
-            <p className="mt-4 max-w-sm text-sm leading-7 text-[var(--color-footer-text)]/65">
-              {settings?.description || 'A considered selection of modest fashion and timeless essentials for everyday life.'}
+            <p className="mt-4 text-[12.5px] leading-relaxed text-[#666660]">
+              {settings?.description || 'Modest fashion that inspires confidence and honors tradition.'}
             </p>
-            <Link href="/products" className="mt-7 inline-flex items-center gap-2 border-b border-current/40 pb-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--color-footer-text)] transition-opacity hover:opacity-75">
-              Shop the collection
-              <FiArrowUpRight aria-hidden="true" />
-            </Link>
-          </div>
-
-          <div>
-            <h2 className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--color-footer-text)]">Explore</h2>
-            <ul className="mt-5 space-y-3.5 text-sm text-[var(--color-footer-text)]/65">
-              {shopLinks.map((link) => (
-                <li key={link.url}><Link href={link.url} className="text-inherit transition-opacity hover:opacity-75">{link.label}</Link></li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h2 className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--color-footer-text)]">Customer care</h2>
-            <ul className="mt-5 space-y-3.5 text-sm text-[var(--color-footer-text)]/65">
-              {careLinks.map((link) => (
-                <li key={link.url}><Link href={link.url} className="text-inherit transition-opacity hover:opacity-75">{link.label}</Link></li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h2 className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--color-footer-text)]">Contact</h2>
-            <div className="mt-5 space-y-4 text-sm leading-6 text-[var(--color-footer-text)]/65">
-              {settings?.contactEmail ? <a href={`mailto:${settings.contactEmail}`} className="flex items-start gap-3 text-inherit transition-opacity hover:opacity-75"><FiMail className="mt-1 shrink-0" aria-hidden="true" /><span>{settings.contactEmail}</span></a> : null}
-              {settings?.phone ? <a href={`tel:${settings.phone}`} className="flex items-start gap-3 text-inherit transition-opacity hover:opacity-75"><FiPhone className="mt-1 shrink-0" aria-hidden="true" /><span>{settings.phone}</span></a> : null}
-              {settings?.address ? <p className="flex items-start gap-3"><FiMapPin className="mt-1 shrink-0" aria-hidden="true" /><span>{settings.address}</span></p> : null}
-            </div>
-            {configuredSocial.length ? (
-              <div className="mt-6 flex gap-2.5">
-                {configuredSocial.map(({ key, label, Icon }) => (
-                  <a key={key} href={social[key]} target="_blank" rel="noreferrer" aria-label={label} title={label} className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-current/25 text-[var(--color-footer-text)] transition-opacity hover:opacity-70">
-                    <Icon size={14} />
+            {/* Social Icons */}
+            <div className="mt-5 flex items-center gap-2">
+              {socialIcons.map(({ key, label, defaultUrl, Icon }) => {
+                const url = (social as any)[key] || defaultUrl
+                return (
+                  <a
+                    key={key}
+                    href={url}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={label}
+                    title={label}
+                    className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F5EFE6] text-[#6B4F3B] transition-colors hover:bg-[#6B4F3B] hover:text-white"
+                  >
+                    <Icon size={13} />
                   </a>
-                ))}
-              </div>
-            ) : null}
+                )
+              })}
+            </div>
           </div>
+
+          {/* Col 2: Shop */}
+          <div>
+            <h3 className="text-[12px] font-bold uppercase tracking-[0.1em] text-[#181817]">
+              Shop
+            </h3>
+            <ul className="mt-4 space-y-2.5 text-[12.5px] text-[#666660]">
+              {shopLinks.map((link) => (
+                <li key={link.label}>
+                  <Link href={link.url} className="transition-colors hover:text-[#181817]">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Col 3: Customer Care */}
+          <div>
+            <h3 className="text-[12px] font-bold uppercase tracking-[0.1em] text-[#181817]">
+              Customer Care
+            </h3>
+            <ul className="mt-4 space-y-2.5 text-[12.5px] text-[#666660]">
+              {customerCareLinks.map((link) => (
+                <li key={link.label}>
+                  <Link href={link.url} className="transition-colors hover:text-[#181817]">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Col 4: About */}
+          <div>
+            <h3 className="text-[12px] font-bold uppercase tracking-[0.1em] text-[#181817]">
+              About
+            </h3>
+            <ul className="mt-4 space-y-2.5 text-[12.5px] text-[#666660]">
+              {aboutLinks.map((link) => (
+                <li key={link.label}>
+                  <Link href={link.url} className="transition-colors hover:text-[#181817]">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Col 5: Help */}
+          <div>
+            <h3 className="text-[12px] font-bold uppercase tracking-[0.1em] text-[#181817]">
+              Help
+            </h3>
+            <ul className="mt-4 space-y-2.5 text-[12.5px] text-[#666660]">
+              {helpLinks.map((link) => (
+                <li key={link.label}>
+                  <Link href={link.url} className="transition-colors hover:text-[#181817]">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
         </div>
 
-        <div className="flex flex-col gap-2 pt-6 text-xs text-[var(--color-footer-text)]/50 sm:flex-row sm:items-center sm:justify-between">
-          <span>{settings?.footerText || `© ${new Date().getFullYear()} Hira${String.fromCharCode(39)}s Universe. All rights reserved.`}</span>
-          <span>Thoughtfully curated in Bangladesh</span>
+        {/* Bottom copyright + payment icons */}
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-[var(--color-border)] pt-6 text-[11.5px] text-[var(--color-muted)] sm:flex-row">
+          <span>
+            {settings?.footerText || `© ${new Date().getFullYear()} Hira's Universe. All rights reserved.`}
+          </span>
+
+          {/* Payment Methods Badges */}
+          <div className="flex items-center gap-2">
+            <span className="rounded border border-[#E0D9D0] bg-[#FAFAF8] px-2 py-0.5 text-[10px] font-bold text-[#E2136E]">
+              bKash
+            </span>
+            <span className="rounded border border-[#E0D9D0] bg-[#FAFAF8] px-2 py-0.5 text-[10px] font-bold text-[#1A1F71]">
+              VISA
+            </span>
+            <span className="rounded border border-[#E0D9D0] bg-[#FAFAF8] px-2 py-0.5 text-[10px] font-bold text-[#EB001B]">
+              Mastercard
+            </span>
+            <span className="rounded border border-[#E0D9D0] bg-[#FAFAF8] px-2 py-0.5 text-[10px] font-bold text-[#F6921E]">
+              Nagad
+            </span>
+          </div>
         </div>
       </div>
     </footer>

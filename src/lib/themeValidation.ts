@@ -126,6 +126,10 @@ export function buildThemeCss(theme: unknown): string {
         declarations.push(`${COLOR_VARIABLES[key]}: ${safeTheme.colors[key]};`)
     }
 
+    // Direct aliases for convenience
+    declarations.push(`--color-body-bg: ${safeTheme.colors.bodyBackground};`)
+    declarations.push(`--color-text-muted: ${safeTheme.colors.muted};`)
+
     declarations.push(`--font-heading: ${safeTheme.fonts.heading};`)
     declarations.push(`--font-body: ${safeTheme.fonts.body};`)
     declarations.push(`--container-width: ${safeTheme.layout.containerWidth};`)

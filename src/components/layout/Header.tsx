@@ -4,102 +4,137 @@ import { getNavigation } from '../../lib/repositories/fileRepo'
 import CartButton from './CartButton'
 import MobileMenuDrawer from './MobileMenuDrawer'
 
-const permanentLinks = [
+const PERMANENT_LINKS = [
   { label: 'Shop All', url: '/products' },
-  { label: 'Collections', url: '/category' }
+  { label: 'Women', url: '/collections/women' },
+  { label: 'Men', url: '/collections/men' },
+  { label: 'Tupi', url: '/category/tupi' },
+  { label: 'Collections', url: '/category' },
+  { label: 'Track Order', url: '/track-order' },
 ]
 
 export const Header = async () => {
   const nav = await getNavigation()
-  const configuredLinks = (nav || [])
+
+  // Merge DB nav with permanent links, deduplicate by URL
+  const dbLinks = (nav || [])
     .filter((item: any) => item.active && item.location !== 'footer' && item.url)
-    .sort((a: any, b: any) => a.order - b.order)
+    .sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0))
     .map((item: any) => ({ label: item.label, url: item.url }))
-  const primaryLinks = [...permanentLinks.slice(0, 1), ...configuredLinks, ...permanentLinks.slice(1)]
-    .filter((item, index, links) => links.findIndex((candidate) => candidate.url === item.url) === index)
-    .slice(0, 5)
+
+  // Use DB links if configured, otherwise use permanent links
+  const navLinks = dbLinks.length > 0
+    ? [...dbLinks, ...PERMANENT_LINKS.filter(p => !dbLinks.some((d: any) => d.url === p.url))].slice(0, 7)
+    : PERMANENT_LINKS
 
   return (
-    <div className="sticky top-0 z-40 bg-[var(--color-header-background)] text-[var(--color-header-text)] shadow-[0_1px_12px_rgba(34,34,34,0.05)]">
-      <div className="bg-[var(--color-announcement-background)] py-2.5 text-[10px] text-[var(--color-announcement-text)] sm:text-[11px]">
-        <div className="site-container flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3 overflow-hidden whitespace-nowrap">
-            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-accent)]" aria-hidden="true" />
-            <span className="font-semibold uppercase tracking-[0.14em]">Free delivery over Tk 2,000</span>
-            <span className="hidden text-[var(--color-announcement-text)]/55 md:inline">Thoughtful essentials, refined for everyday life</span>
-          </div>
-          <div className="flex shrink-0 items-center gap-3 text-[var(--color-announcement-text)]/80">
-            <Link
-              href="/track-order"
-              className="flex items-center gap-1.5 font-medium transition-colors hover:text-[var(--color-announcement-text)]"
-            >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <div className="sticky top-0 z-40 bg-white shadow-[0_1px_0_rgba(0,0,0,0.06)]">
+      {/* Announcement Bar */}
+      <div
+        className="bg-[var(--color-announcement-background)] py-2 text-[var(--color-announcement-text)]"
+        role="banner"
+        aria-label="Store announcement"
+      >
+        <div className="site-container flex items-center justify-between gap-2">
+          {/* Left: delivery info */}
+          <div className="flex items-center gap-4 overflow-hidden text-[10px] sm:text-[11px]">
+            <span className="flex items-center gap-1.5 whitespace-nowrap font-medium">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <circle cx="12" cy="12" r="10" />
                 <polyline points="12 6 12 12 16 14" />
               </svg>
-              Track Your Order
+              Free delivery over Tk 2,000
+            </span>
+            <span className="hidden items-center gap-1.5 whitespace-nowrap font-medium opacity-80 sm:flex">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              Premium quality, thoughtfully selected
+            </span>
+          </div>
+          {/* Right: links */}
+          <div className="flex shrink-0 items-center gap-3 text-[10px] font-medium opacity-85 sm:text-[11px]">
+            <Link href="/track-order" className="whitespace-nowrap transition-opacity hover:opacity-100 focus:outline-none">
+              Track Order
+            </Link>
+            <span className="opacity-40" aria-hidden="true">|</span>
+            <Link href="/products" className="hidden whitespace-nowrap transition-opacity hover:opacity-100 focus:outline-none sm:inline">
+              Help
             </Link>
           </div>
         </div>
       </div>
 
-      {/* Main Navigation Header */}
-      <header className="border-b border-[var(--color-border)] bg-[var(--color-header-background)]/95 backdrop-blur-md">
-        <div className="site-container flex min-h-[72px] items-center justify-between py-3 md:min-h-[82px] md:py-4">
-          {/* Left: Brand / Logo */}
-          <div className="flex items-center gap-3 sm:gap-4">
+      {/* Main Header */}
+      <header
+        className="border-b border-[#F0F0F0] bg-white"
+        role="banner"
+        aria-label="Main navigation"
+      >
+        <div className="site-container flex h-[68px] items-center justify-between gap-4 md:h-[76px]">
+
+          {/* Left: Mobile hamburger + Logo */}
+          <div className="flex items-center gap-2 sm:gap-3">
             <MobileMenuDrawer navItems={nav || []} />
-            <Link href="/" className="group flex flex-col">
-              <span className="font-serif text-[21px] font-semibold tracking-[-0.02em] text-[var(--color-header-text)] transition-colors group-hover:text-[var(--color-link)] sm:text-[25px]">
+
+            <Link href="/" className="group flex flex-col" aria-label="Hira's Universe — home">
+              <span className="font-serif text-[20px] font-bold leading-none tracking-tight text-[var(--color-heading)] transition-colors group-hover:text-[var(--color-primary)] sm:text-[23px]">
                 Hira&apos;s Universe
               </span>
-              <span className="mt-1 hidden text-[8px] font-semibold uppercase tracking-[0.28em] text-[var(--color-muted)] sm:block">
-                Modest essentials, thoughtfully chosen
+              <span className="mt-[3px] hidden text-[7.5px] font-bold uppercase tracking-[0.3em] text-[var(--color-muted)] sm:block">
+                Tradition. Refined.
               </span>
             </Link>
           </div>
 
           {/* Center: Desktop Navigation */}
-          <nav className="hidden items-center gap-5 text-[11px] font-semibold uppercase tracking-[0.13em] text-[var(--color-header-text)]/70 md:flex lg:gap-7" aria-label="Primary navigation">
-            {primaryLinks.map((item, index) => (
+          <nav
+            className="hidden flex-1 items-center justify-center gap-1 md:flex lg:gap-0.5"
+            aria-label="Primary navigation"
+          >
+            {navLinks.map((item) => (
               <Link
                 key={item.url}
                 href={item.url}
-                className={`${index === primaryLinks.length - 1 ? 'hidden lg:block ' : ''}border-b border-transparent py-2 transition-colors hover:border-[var(--color-link)] hover:text-[var(--color-link)]`}
+                className="relative px-3 py-2 text-[11.5px] font-semibold uppercase tracking-[0.1em] text-[var(--color-header-text)]/70 transition-colors hover:text-[var(--color-heading)] lg:px-4"
               >
                 {item.label}
               </Link>
             ))}
           </nav>
 
-          {/* Right: Controls & Shopping Bag */}
-          <div className="flex items-center gap-0.5 text-[var(--color-header-text)] sm:gap-1.5">
+          {/* Right: Icons */}
+          <div className="flex shrink-0 items-center gap-0.5">
+            {/* Search */}
             <Link
               href="/products"
               aria-label="Search products"
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full text-[var(--color-header-text)] transition-colors hover:bg-[var(--color-surface)] hover:text-[var(--color-link)] focus:outline-none focus:ring-2 focus:ring-[var(--color-input-focus)]"
-              title="Search Products"
+              title="Search"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-[var(--color-header-text)]/70 transition hover:bg-[var(--color-section-background)] hover:text-[var(--color-heading)] focus:outline-none focus:ring-2 focus:ring-[var(--color-input-focus)]"
             >
-              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <circle cx="11" cy="11" r="8" />
                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
             </Link>
 
+            {/* Account */}
             <Link
               href="/admin/login"
-              aria-label="Account Login"
-              className="hidden h-11 w-11 items-center justify-center rounded-full text-[var(--color-header-text)] transition-colors hover:bg-[var(--color-surface)] hover:text-[var(--color-link)] focus:outline-none focus:ring-2 focus:ring-[var(--color-input-focus)] sm:inline-flex"
+              aria-label="My account"
               title="Account"
+              className="hidden h-10 w-10 items-center justify-center rounded-lg text-[var(--color-header-text)]/70 transition hover:bg-[var(--color-section-background)] hover:text-[var(--color-heading)] focus:outline-none focus:ring-2 focus:ring-[var(--color-input-focus)] sm:inline-flex"
             >
-              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
               </svg>
             </Link>
 
+            {/* Cart */}
             <CartButton />
           </div>
+
         </div>
       </header>
     </div>

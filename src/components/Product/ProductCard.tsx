@@ -18,6 +18,11 @@ type Props = {
   pricePrefix?: string
 }
 
+function extractNumber(str: string): number | null {
+  const match = str.replace(/,/g, '').match(/\d+(\.\d+)?/)
+  return match ? parseFloat(match[0]) : null
+}
+
 export const ProductCard = ({
   id,
   title,
@@ -34,12 +39,20 @@ export const ProductCard = ({
 }: Props) => {
   const productHref = slug ? `/products/${slug}` : undefined
 
+  // Calculate discount percentage if sale price is provided
+  let discountPercent: number | null = null
+  if (onSale && salePrice && price) {
+    const orig = extractNumber(price)
+    const sale = extractNumber(salePrice)
+    if (orig && sale && orig > sale) {
+      discountPercent = Math.round(((orig - sale) / orig) * 100)
+    }
+  }
+
   return (
-    <article className="group flex h-full w-full flex-col overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-card-background)] transition duration-300 hover:-translate-y-0.5 hover:border-[var(--color-primary)] hover:shadow-[0_18px_40px_rgba(34,34,34,0.09)]">
-
-      {/* Product Image */}
-      <div className="relative aspect-[4/5.4] w-full overflow-hidden bg-[var(--color-section-background)]">
-
+    <article className="group relative flex h-full w-full flex-col overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-card-background)] shadow-[0_2px_12px_rgba(0,0,0,0.04)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)]">
+      {/* Product Image Area */}
+      <div className="relative aspect-[4/5] w-full overflow-hidden bg-[var(--color-section-background)]">
         {productHref ? (
           <Link
             href={productHref}
@@ -50,8 +63,8 @@ export const ProductCard = ({
               src={image ?? '/products/placeholder.svg'}
               alt={title}
               fill
-              sizes="(max-width: 640px) 176px, 220px"
-              className="object-cover transition-transform duration-500 group-hover:scale-[1.035]"
+              sizes="(max-width: 640px) 180px, (max-width: 1024px) 240px, 280px"
+              className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
             />
           </Link>
         ) : (
@@ -59,36 +72,46 @@ export const ProductCard = ({
             src={image ?? '/products/placeholder.svg'}
             alt={title}
             fill
-            sizes="(max-width: 640px) 176px, 220px"
+            sizes="(max-width: 640px) 180px, (max-width: 1024px) 240px, 280px"
             className="object-cover"
           />
         )}
 
-        {/* Sale Badge */}
+        {/* Sale / Discount Badge Top-Left */}
         {onSale && (
-          <div className="absolute left-3 top-3 z-10 rounded-full bg-[var(--color-sale)] px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.14em] text-[var(--color-sale-text)]">
-            Sale
+          <div className="absolute left-2.5 top-2.5 z-10 rounded-md bg-[var(--color-sale)] px-2 py-0.5 text-[10px] font-bold tracking-tight text-[var(--color-sale-text)] shadow-sm">
+            {discountPercent ? `-${discountPercent}%` : 'Sale'}
           </div>
         )}
+
+        {/* Wishlist Button Top-Right */}
+        <button
+          type="button"
+          aria-label={`Add ${title} to wishlist`}
+          className="absolute right-2.5 top-2.5 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 text-[var(--color-muted)] shadow-sm backdrop-blur-sm transition-colors hover:text-[var(--color-wishlist)]"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
+          </svg>
+        </button>
       </div>
 
       {/* Product Information */}
-      <div className="flex flex-1 flex-col p-4 sm:p-5">
-
+      <div className="flex flex-1 flex-col p-4 sm:p-4.5">
         <div>
           {/* Category */}
           {category && (
-            <div className="mb-2 text-[9px] font-bold uppercase tracking-[0.16em] text-[var(--color-muted)]">
+            <div className="mb-1 text-[9.5px] font-bold uppercase tracking-[0.14em] text-[var(--color-muted)]">
               {category}
             </div>
           )}
 
           {/* Product Name */}
-          <h3 className="min-h-[44px] font-serif text-[17px] font-semibold leading-[1.35] text-[var(--color-heading)]">
+          <h3 className="line-clamp-2 min-h-[40px] font-serif text-[15px] font-semibold leading-snug text-[var(--color-heading)] sm:text-[16px]">
             {productHref ? (
               <Link
                 href={productHref}
-                className="transition-colors hover:text-[var(--color-link-hover)]"
+                className="transition-colors hover:text-[var(--color-primary)]"
               >
                 {title}
               </Link>
@@ -97,36 +120,40 @@ export const ProductCard = ({
             )}
           </h3>
 
+          {/* Star Ratings */}
+          <div className="mt-1.5 flex items-center gap-1 text-[11px] text-[#EAB308]" aria-label="5 out of 5 stars">
+            <span className="flex">★ ★ ★ ★ ★</span>
+            <span className="text-[10px] text-[var(--color-muted)]">(25)</span>
+          </div>
+
           {/* Price */}
-          <div className="mt-3 min-h-[22px]">
+          <div className="mt-2.5 flex items-baseline gap-2">
             {salePrice ? (
-              <div className="flex items-baseline gap-3">
+              <>
                 <span className="text-sm font-bold text-[var(--color-sale)]">
                   {pricePrefix ? `${pricePrefix} ` : ''}
                   {salePrice}
                 </span>
-
                 <span className="text-xs text-[var(--color-muted)] line-through">
                   {price}
                 </span>
-              </div>
+              </>
             ) : (
-              <div className="text-sm font-bold text-[var(--color-primary)]">
+              <span className="text-sm font-bold text-[var(--color-heading)]">
                 {pricePrefix ? `${pricePrefix} ` : ''}
                 {price}
-              </div>
+              </span>
             )}
           </div>
         </div>
 
-        {/* Action */}
-        <div className="mt-auto pt-4">
-
+        {/* Action Button */}
+        <div className="mt-auto pt-3.5">
           {hasVariants && productHref ? (
             <Link
               href={productHref}
               aria-label={`Select options for ${title}`}
-              className="btn-ghost block min-h-[44px] w-full px-3 py-2 text-center text-xs font-semibold uppercase leading-[26px] tracking-wider active:scale-[0.99]"
+              className="flex min-h-[40px] w-full items-center justify-center rounded-[var(--radius-button)] bg-[var(--color-button-background)] px-3 py-2 text-center text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--color-button-text)] transition hover:bg-[var(--color-button-hover)] active:scale-[0.99]"
             >
               Select Options
             </Link>
@@ -139,7 +166,6 @@ export const ProductCard = ({
               hasVariants={hasVariants}
             />
           )}
-
         </div>
       </div>
     </article>

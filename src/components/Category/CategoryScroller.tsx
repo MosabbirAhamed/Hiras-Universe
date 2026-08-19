@@ -29,9 +29,9 @@ const fallbackImages: Record<string, string> = {
   men: '/products/signature-black-tupi.png',
   tupi: '/products/premium-cotton-tupi.png',
   hijab: '/products/hero-1.webp',
-  collections: '/products/embroidered-prayer-tupi.png',
-  'shop all': '/products/classic-white-tupi.png',
-  'track order': '/products/signature-black-tupi.png',
+  collections: '/products/collections.png',
+  'shop all': '/products/shop-all.png',
+  'track order': '/products/track-order.png',
 }
 
 const CategoryNavigation = ({ categories, navigation = [] }: Props) => {

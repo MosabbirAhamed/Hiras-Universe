@@ -1,6 +1,6 @@
 import React from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
+import CategoryBanner from '../../../src/components/Category/CategoryBanner'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { getProducts, getCategories } from '../../../src/lib/repositories/fileRepo'
@@ -103,6 +103,7 @@ export default async function CategoryPage({ params }: { params: { slug: string 
   const childCategories = categories
     .filter((candidate) => candidate.parentId === category.id && candidate.active !== false)
     .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0) || a.name.localeCompare(b.name))
+  const bannerImage = category.bannerImage || category.image
 
   return (
     <main className="storefront-shell">
@@ -130,11 +131,7 @@ export default async function CategoryPage({ params }: { params: { slug: string 
             </div>
             <p className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--color-muted)]">{filtered.length} {filtered.length === 1 ? 'piece' : 'pieces'}</p>
           </div>
-          {category.bannerImage || category.image ? (
-            <div className="relative mt-8 aspect-[3/1] min-h-[150px] overflow-hidden rounded-[var(--radius-card)] bg-[var(--color-section-background)] sm:min-h-[210px]">
-              <Image src={(category.bannerImage || category.image) as string} alt={category.name} fill sizes="(min-width: 1280px) 1200px, 100vw" className="object-cover" />
-            </div>
-          ) : null}
+          {bannerImage ? <CategoryBanner src={bannerImage} alt={category.name} /> : null}
         </header>
 
         {childCategories.length ? (
